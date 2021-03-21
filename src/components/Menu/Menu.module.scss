@@ -1,0 +1,22 @@
+.Menu{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.Logo{
+    min-width: 100px;
+}
+
+.MenuItem{
+    font-weight: 800;
+    margin: 10px;
+    cursor: pointer;
+}
+.MenuItems{
+    display: flex;
+    flex-direction: row;
+}
+
+.UserWallet{
+    
+}

@@ -1,0 +1,1 @@
+module.exports = ["erc20ABI"];
