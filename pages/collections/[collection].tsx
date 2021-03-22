@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/router'
 import Unifty from "../../src/uniftyLib/UniftyLib"
 import Card from '../../src/components/Card/Card'
 import styles from './Collections.module.scss'
 
 export default function Collections(props: { unifty: Unifty }) {
-    let collectionAddress = "0x18f42d699Fc56ddd92FFDD2a5EaDBec1a4082Bf5"
-    let miFarmEnRinkedy = "0x3b93f48246AE855E3E7001bc338E43C256D7A2dD";
+    const router = useRouter();
+    const collection = router.query.collection as string || "0x3b93f48246AE855E3E7001bc338E43C256D7A2dD";
 
     let [nfts, setNfts] = useState([]);
 
     useEffect(() => {
 
         let as = async function () {
-            let nfts = await getNftsJson(props.unifty, miFarmEnRinkedy);
+            let nfts = await getNftsJson(props.unifty, collection);
             let g = [];
 
             for(const nft of nfts) {
