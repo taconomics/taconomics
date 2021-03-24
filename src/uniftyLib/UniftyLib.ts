@@ -6,20 +6,33 @@ import { genesisABI } from '../contracts/genesisABI';
 import { farmABI } from '../contracts/farmABI';
 import { farmShopABI } from '../contracts/farmShopABI';
 import { createContext, useEffect } from "react";
+import * as IPFS from 'ipfs-http-client'
 
 //const web3 = createContext(new Web3(Web3.givenProvider || "ws://localhost:8545"));
 
 export default class Unifty {
-    web3
+    web3:Web3;
     min_block = 0;
     sleep_time = 20;
+    ipfs:any;
+    nif: any;
+    erc1155: any;
+    genesis: any;
+    farm: any;
+    farmShop: any;
+    account: string;
+    defaultProxyRegistryAddress: string;
     constructor() {
         this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
         //this.web3.
 
         this.setParams("4");
         this.setAccount();
+        this.createIpfsServer();
 
+    }
+    async createIpfsServer(){
+        this.ipfs = IPFS('https://ipfs.infura.io:5001',);
     }
     async isConnected() {
         var ab;
@@ -56,11 +69,13 @@ export default class Unifty {
     async getAccount() {
         let ac = this.web3.eth.accounts.create().address;
 
-        this.web3.eth.requestAccounts().then(e => {
-            ac = e[0];
-        }).catch((e) => {
-            console.log("Request rejected");
-        });
+        let reqac  = await this.web3.eth.requestAccounts();
+
+        if(reqac != undefined){
+            ac = reqac[0];
+        }
+
+        console.log(ac);
 
         return ac;
     }
@@ -232,6 +247,93 @@ export default class Unifty {
         }
 
         return '';
+    };
+
+    /**
+     * ERC1155  // Collections
+     */
+
+    async getErc1155Meta(erc1155ContractAddress){
+
+        let erc1155 = new this.web3.eth.Contract( erc1155ABI, erc1155ContractAddress, {from:this.account} );
+        let contractURI = '';
+
+        try {
+            await this.sleep(this.sleep_time);
+            contractURI = await erc1155.methods.contractURI().call({from: this.account});
+        }catch (e){
+            console.log('error retrieving contract URI: ', e);
+        }
+
+        let name = 'n/a';
+        let symbol = 'n/a';
+
+        try {
+            await this.sleep(this.sleep_time);
+            name = await erc1155.methods.name().call({from: this.account});
+            await this.sleep(this.sleep_time);
+            symbol = await erc1155.methods.symbol().call({from: this.account});
+        }catch(e){
+            console.log('error retrieving name and symbol: ', e);
+        }
+
+        return {contractURI: contractURI, name: name, symbol: symbol};
+    };
+    async getPoolFee(){
+        await this.sleep(this.sleep_time);
+       return await this.genesis.methods.poolFee().call({from:this.account});
+    };
+    async getPoolMinimumNif(){
+        await this.sleep(this.sleep_time);
+        return await this.genesis.methods.poolFeeMinimumNif().call({from:this.account});
+    };
+
+    async iHaveAnyWildcard(){
+        await this.sleep(this.sleep_time);
+        return await this.genesis.methods.iHaveAnyWildcard().call({from:this.account});
+    };
+
+    async newErc1155(name, ticker, contractJsonUri, proxyRegistryAddress, preCallback, postCallback, errCallback){
+
+        await this.sleep(this.sleep_time);
+        let nif = this.web3.utils.toBN(await this.nif.methods.balanceOf(this.account).call({from:this.account}));
+        let minNif = this.web3.utils.toBN(await this.getPoolMinimumNif());
+
+        let gas = 0;
+
+        try {
+            await this.sleep(this.sleep_time);
+            gas = await this.genesis.methods.newPool(name, ticker, contractJsonUri, '', proxyRegistryAddress).estimateGas({
+                from: this.account,
+                value:await this.iHaveAnyWildcard() || nif.gte(minNif) ? 0 : await this.getPoolFee()
+                    
+            });
+        }catch(e){
+            errCallback(e);
+            return;
+        }
+
+        const price = await this.web3.eth.getGasPrice();
+
+        await this.genesis.methods.newPool(name, ticker, contractJsonUri, '', proxyRegistryAddress)
+        .send(
+            {
+                from:this.account,
+                value:
+                    await this.iHaveAnyWildcard() || nif.gte(minNif) ? 0 : await this.getPoolFee(),
+                gas: gas + Math.floor( gas * 0.1 ),
+                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+        })
+        .on('error', async function(e){
+            console.log(e);
+            errCallback(e);
+        })
+        .on('transactionHash', async function(transactionHash){
+            preCallback(transactionHash);
+        })
+        .on("receipt", function (receipt) {
+            postCallback(receipt);
+        });
     };
 
 

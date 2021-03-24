@@ -2,13 +2,13 @@ import { Button, HStack, Menu, MenuButton, Image, MenuList, Box, Flex } from "@c
 import React, { useState } from "react"
 import Unifty from "../../uniftyLib/UniftyLib";
 
-const Lemon_Icon = "icons/Lemon_Icon.svg";
-const Chile_Icon = "icons/Chile_Icon.svg";
-const DownArrow_Icon = "icons/DownArrow_Icon.svg";
-const Wallet_Icon = "icons/Wallet_Icon.svg";
-const Taco_Icon = "icons/Taco_Icon.svg";
-const Molcajete_Icon = "icons/Lemon_Icon.svg";
-const Cubiertos_Icon = "icons/Lemon_Icon.svg";
+const Lemon_Icon = "/icons/Lemon_Icon.svg";
+const Chile_Icon = "/icons/Chile_Icon.svg";
+const DownArrow_Icon = "/icons/DownArrow_Icon.svg";
+const Wallet_Icon = "/icons/Wallet_Icon.svg";
+const Taco_Icon = "/icons/Taco_Icon.svg";
+const Molcajete_Icon = "/icons/Lemon_Icon.svg";
+const Cubiertos_Icon = "/icons/Lemon_Icon.svg";
 
 
 

@@ -6,6 +6,7 @@ const styles = {
   global: props => ({
     body: {
       bg: mode('gray.50', '#141214')(props),
+      fontFamily:"Nunito"
     },
   }),
 };
@@ -18,6 +19,16 @@ const   colors = {
     transparent: {
       500: "#0000000",
       600:"#00000015"
+    },
+    figma:{
+      blue:"#00AEE0",
+      lightblue:"#B3EEFF",
+      footer:"#2D3539",
+      orange:{
+        500:"#FF6C63",
+        600:"#F35F33",
+        700:"#E14517"
+      }
     }
   }
 
@@ -38,6 +49,22 @@ const components = {
       },
     }),
   },
+  MenuItems:{
+    baseStyle:{
+      fontWeight:"bold"
+    },
+    variants:{
+      menu:{
+        color:"black"
+      },
+      footer:{
+        color:"white",
+      }
+    },
+    defaultProps:{
+      variant:"menu"
+    }
+  }
 };
 
 export const theme = extendTheme({
