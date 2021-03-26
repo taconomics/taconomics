@@ -49,6 +49,13 @@ const components = {
       },
     }),
   },
+  Grid:{
+    variants:{
+      content:{
+        templateColumns: "minmax(10px,.1fr) 3fr minmax(10px,.1fr)" 
+      }
+    }
+  },
   MenuItems:{
     baseStyle:{
       fontWeight:"bold"

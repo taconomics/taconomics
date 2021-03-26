@@ -1,13 +1,14 @@
 import { Box, Button, Flex, Grid } from "@chakra-ui/react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Unifty from "../../src/uniftyLib/UniftyLib";
 
 import styles from './Collections.module.scss';
+import { columnTemplate } from '../../src/components/TacoLayout'
 
-
-export default function Collections(unifty: Unifty) {
-    return (<Flex>Collections index</Flex>)
+export default function Collections({unifty}) {
+    return (<Flex><FeaturedCollections unifty={unifty}></FeaturedCollections>></Flex>)
 }
 
 export function FeaturedCollections({ unifty }) {
@@ -18,13 +19,13 @@ export function FeaturedCollections({ unifty }) {
         cards.push(<CollectionCard address={i} key={i} unifty={unifty}></CollectionCard>)
     }
 
-    return (<Box>
+    return (<Grid variant="content">
         <Box fontWeight="bold">Featured Collections</Box>
         <Flex>
             {cards}
         </Flex>
 
-    </Box>)
+    </Grid>)
 }
 
 export function CollectionCard({ address, unifty }) {
@@ -33,6 +34,7 @@ export function CollectionCard({ address, unifty }) {
 
     const [meta, setMeta] = useState(undefined);
     const [isHover, setHover] = useState(false);
+    const router = useRouter();
     useEffect(() => {
         if (address != undefined) {
             (unifty as Unifty).getErc1155Meta(address).then(metaUri => {
@@ -49,6 +51,10 @@ export function CollectionCard({ address, unifty }) {
 
     }, [])
 
+    const goToAddress = ()=>{
+        router.push("/collections/"+address)
+    }
+
     return (<Box width={wSize} height={hSize} borderRadius="lg" cursor="pointer" className={styles.collectionCard} overflow="hidden" margin="30px">
         {meta != undefined ?
             <Grid _hover={{ bgColor: "#000000a0" }} transition=" background-color 1s" onPointerEnter={() => { setHover(true) }} onPointerLeave={() => { setHover(false) }}>
@@ -59,7 +65,7 @@ export function CollectionCard({ address, unifty }) {
                             <Box maxHeight={hSize[0]*.60} overflow="hidden">
                                 {meta.description}
                             </Box>
-                            <Button variant="outline" _hover={{bgColor:"#ffffff40"}} marginTop={3}>See collection</Button>
+                            <Button variant="outline" _hover={{bgColor:"#ffffff40"}} onClick={goToAddress} marginTop={3}>See collection</Button>
                         </Box>
                     </Box>
                 </Box>
