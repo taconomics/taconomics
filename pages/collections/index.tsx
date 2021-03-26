@@ -1,4 +1,4 @@
-import { Box, Flex, Grid } from "@chakra-ui/react";
+import { Box, Button, Flex, Grid } from "@chakra-ui/react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Unifty from "../../src/uniftyLib/UniftyLib";
@@ -21,50 +21,57 @@ export function FeaturedCollections({ unifty }) {
     return (<Box>
         <Box fontWeight="bold">Featured Collections</Box>
         <Flex>
-           {cards} 
+            {cards}
         </Flex>
-        
+
     </Box>)
 }
 
 export function CollectionCard({ address, unifty }) {
-    let wSize = [200];
-    let hSize = [300];
+    let wSize = [300];
+    let hSize = [430];
 
     const [meta, setMeta] = useState(undefined);
+    const [isHover, setHover] = useState(false);
     useEffect(() => {
         if (address != undefined) {
             (unifty as Unifty).getErc1155Meta(address).then(metaUri => {
                 console.log(metaUri);
-                fetch(metaUri.contractURI).then(r => r.json()).then(e=>{
-                    console.log("meta",e)
+                fetch(metaUri.contractURI).then(r => r.json()).then(e => {
+                    console.log("meta", e)
                     setMeta(e);
                 })
-                
+
             })
-          
+
             // let jsonMeta = await fetch(metaURI.contractURI).then(r => r.json())
         }
 
     }, [])
 
-    return (<Box width={wSize} height={hSize} borderRadius="lg" className={styles.collectionCard} overflow="hidden" margin="30px">
-        {meta!=undefined?
-        <Grid>
-            <Box  gridRow="1/1" color="white" gridColumn="1/1" position="relative">
-                <Box position="absolute" bottom="0" padding="5">
-                {meta.name}
+    return (<Box width={wSize} height={hSize} borderRadius="lg" cursor="pointer" className={styles.collectionCard} overflow="hidden" margin="30px">
+        {meta != undefined ?
+            <Grid _hover={{ bgColor: "#000000a0" }} transition=" background-color 1s" onPointerEnter={() => { setHover(true) }} onPointerLeave={() => { setHover(false) }}>
+                <Box gridRow="1/1" color="white" gridColumn="1/1" position="relative">
+                    <Box position="absolute" bottom="0" padding="5">
+                        <Box fontSize="x-large" fontWeight="bold">{meta.name}</Box>
+                        <Box maxHeight={isHover ? hSize[0] + "px" : "0"} transition="max-height 1.5s" overflow="hidden">
+                            <Box maxHeight={hSize[0]*.60} overflow="hidden">
+                                {meta.description}
+                            </Box>
+                            <Button variant="outline" _hover={{bgColor:"#ffffff40"}} marginTop={3}>See collection</Button>
+                        </Box>
+                    </Box>
                 </Box>
-            </Box>
-            <Box gridRow="1/1" gridColumn="1/1" width={300} height={hSize} position="relative" zIndex="-10">
-            
-            <Image src={meta.image} layout="fill" objectFit="cover"></Image>
-           
-           </Box> 
-           
-        </Grid>
-        
-        
-        :<Box>Loading...</Box>}
+                <Box gridRow="1/1" gridColumn="1/1" width={400} height={hSize} position="relative" zIndex="-10">
+
+                    <Image src={meta.image} layout="fill" objectFit="cover"></Image>
+
+                </Box>
+
+            </Grid>
+
+
+            : <Box>Loading...</Box>}
     </Box>)
 }
