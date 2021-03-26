@@ -46,7 +46,7 @@ async function onSubmit(values, actions, toast, unifty) {
         external_link: ""
     };
     let toastTime = 20000;
-    let toastPosition = "bottom-right"
+    let toastPosition = "bottom-right     "
 
     let u = (unifty as Unifty);
     let ipfs = await u.ipfs.add(JSON.stringify(contractInfo))

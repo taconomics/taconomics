@@ -1,7 +1,6 @@
 import { Box, Button, Center, color, Flex, Grid } from '@chakra-ui/react'
 import Head from 'next/head'
 import React from 'react'
-import styles from '../styles/Home.module.css'
 import Image from 'next/image'
 import { columnTemplate } from '../src/components/TacoLayout'
 import Carousel from 'react-elastic-carousel'
@@ -34,12 +33,10 @@ export function HomeStart() {
 }
 
 export function SliderInfo() {
-  let renderArrow = ({ type, onClick, isEdge }) => {
-    return (<Box></Box>)
-  }
+
 
   return (<Center gridColumn="2 / 2" marginBottom="20px">
-    <Carousel itemsToShow={1} renderArrow={renderArrow}>
+    <Carousel itemsToShow={1} isRTL={false} showArrows={false}>
       <SliderPage>
         <SliderItem title="1. Buy $TACO" image="/img/slider/buy_taco.svg"></SliderItem>
         <SliderItem title="2. Stake Tacos and obtain Lemons" image="/img/slider/stake_tacos.svg" subtitle="Staking 1 $TACO token in the pool earns you roughly 1 lemon per day"></SliderItem>

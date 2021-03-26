@@ -6,7 +6,7 @@ import { genesisABI } from '../contracts/genesisABI';
 import { farmABI } from '../contracts/farmABI';
 import { farmShopABI } from '../contracts/farmShopABI';
 import { createContext, useEffect } from "react";
-import * as IPFS from 'ipfs-http-client'
+import ipfsClient from 'ipfs-http-client'
 
 //const web3 = createContext(new Web3(Web3.givenProvider || "ws://localhost:8545"));
 
@@ -32,7 +32,7 @@ export default class Unifty {
 
     }
     async createIpfsServer(){
-        this.ipfs = IPFS('https://ipfs.infura.io:5001',);
+        this.ipfs = ipfsClient('https://ipfs.infura.io:5001');
     }
     async isConnected() {
         var ab;
