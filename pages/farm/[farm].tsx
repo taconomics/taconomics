@@ -5,7 +5,7 @@ import Card from '../../src/components/Card/Card'
 import styles from './Collections.module.scss'
 import { Box, Flex } from "@chakra-ui/react";
 
-export default function Collections(props: { unifty: Unifty }) {
+export default function Farm(props: { unifty: Unifty }) {
     const router = useRouter();
     const farm = router.query.farm as string;
     console.log("Collection", farm)
@@ -33,7 +33,7 @@ export default function Collections(props: { unifty: Unifty }) {
 
     return (<Box>
         <Box>Farm {farm}</Box>
-        <Flex flexWrap="wrap" maxWidth="100vw">
+        <Flex flexWrap="wrap" justifyContent="center">
             {nfts}
         </Flex>
     </Box>)

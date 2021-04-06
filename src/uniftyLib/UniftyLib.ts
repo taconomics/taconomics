@@ -75,16 +75,6 @@ export default class Unifty {
             this.nif = new this.web3.eth.Contract( nifABI, '0x7e291890B01E5181f7ecC98D79ffBe12Ad23df9e', {from:this.account} );
             this.erc1155 = new this.web3.eth.Contract( erc1155ABI, '0xC0B257fe1aB2C52A0d58538Dc1Aa3376C8aF69Ff', {from:this.account} );
             this.genesis = new this.web3.eth.Contract( genesisABI, '0x74A73135ECD612d530B89Fb28125583ed39A5f22', {from:this.account} );
-    
-            this.farm = null;
-    
-            // Dixon Fix
-            /*if(this.getUrlParam('address') == '0x6321a656994aFd64b8faA79bcD99CC6a4C4e69c3'){
-                this.farm = new this.web3.eth.Contract( farmABI, '0x1826b0871096b3558E8ed1802629a0232288F8e8', {from:this.account} );
-                console.log("Dixon fix");
-            }else{
-                
-            }*/
             this.farm = new this.web3.eth.Contract( farmABI, '0xC4F31771928923490722bFfC484167c2d355be85', {from:this.account} );
             this.farmShop = new this.web3.eth.Contract(farmShopABI, '0x3E58801d8F3379bb5090Dc742e60614bC94b1bd8', {from: this.account});
             this.account = '';
@@ -112,6 +102,10 @@ export default class Unifty {
         this.account = await this.getAccount();
 
     };
+
+    async getNetwork(){
+        return await this.web3.eth.net.getId();
+    }
 
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
