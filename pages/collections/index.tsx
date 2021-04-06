@@ -8,7 +8,7 @@ import styles from './Collections.module.scss';
 import { columnTemplate } from '../../src/components/TacoLayout'
 
 export default function Collections({unifty}) {
-    return (<Flex><FeaturedCollections unifty={unifty}></FeaturedCollections>></Flex>)
+    return (<Flex><FeaturedCollections unifty={unifty}></FeaturedCollections></Flex>)
 }
 
 export function FeaturedCollections({ unifty }) {
@@ -29,8 +29,8 @@ export function FeaturedCollections({ unifty }) {
 }
 
 export function CollectionCard({ address, unifty }) {
-    let wSize = [300];
-    let hSize = [430];
+    let wSize = [260];
+    let hSize = [330];
 
     const [meta, setMeta] = useState(undefined);
     const [isHover, setHover] = useState(false);

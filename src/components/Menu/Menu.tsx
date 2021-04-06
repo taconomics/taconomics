@@ -21,7 +21,7 @@ export function MenuItems(props:{variant?}) {
     const { variant, ...rest } = props
     const styles = useStyleConfig("MenuItems",{variant})
 
-    return (<Flex fontFamily="Nunito, sans-serif;" flexGrow={4} justifyContent="space-around" variant={"footer"} alignItems="center" sx={styles} fontSize="md" paddingRight={20}>
+    return (<Flex fontFamily="Nunito, sans-serif;" flexGrow={4} textAlign="center" justifyContent="space-around" variant={"footer"} alignItems="center" sx={styles} fontSize="md" paddingRight={20}>
 
         <MenuItem><Link href="/collections">Collections</Link></MenuItem>
         <MenuItem><Link href="/art">Available pieces</Link></MenuItem>

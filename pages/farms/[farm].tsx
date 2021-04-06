@@ -45,12 +45,9 @@ export default function Farm(props: { unifty: Unifty }) {
  * @param {String} farmAddress
  * @returns {Promise} Nfts
  */
-async function getNftsJson(unifty: Unifty, farmAddress: string) {
+export async function getNftsJson(unifty: Unifty, farmAddress: string) {
     let farmNfts = await unifty.getFarmNfts(farmAddress);
     var nfts = [];
-
-    console.log(farmNfts);
-
       for await (const nft of farmNfts) {
           let realNft = await unifty.getNft(nft.erc1155, nft.id);
           let metaNft = await unifty.getNftMeta(nft.erc1155, nft.id);

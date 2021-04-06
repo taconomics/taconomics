@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { columnTemplate } from '../src/components/TacoLayout'
 import Carousel from 'react-elastic-carousel'
 import { FeaturedCollections } from './collections'
+import { RecentNfts } from './farms'
 export default function Home({unifty}) {
   return (
     <Flex flexDirection="column">
@@ -12,6 +13,7 @@ export default function Home({unifty}) {
         <HomeStart></HomeStart>
       </Box>
       <FeaturedCollections unifty={unifty}></FeaturedCollections>
+      <RecentNfts unifty={unifty} itemsSize="9"></RecentNfts>
       <AboutNFTS></AboutNFTS>
       <BePartTacoCommunity></BePartTacoCommunity>
     </Flex>
