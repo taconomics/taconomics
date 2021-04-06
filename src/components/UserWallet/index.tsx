@@ -25,7 +25,7 @@ export default function UserWallet(props:{unifty:Unifty}) {
         return e;
     })
 
-    console.log(isConnected);
+    console.log("Is connected",isConnected);
 
     return (<Box flexGrow={1.3}>
         {
@@ -38,14 +38,14 @@ export default function UserWallet(props:{unifty:Unifty}) {
 
                     <Box fontFamily="Nunito" fontWeight="extrabold">Collection manager</Box>
                     <Box fontFamily="Nunito" fontWeight="extrabold">My items</Box>
-                    <Coins></Coins>
+                    <Coins unifty={props.unifty}></Coins>
                 </Flex>
 
         }
     </Box>)
 }
 
-function Coins() {
+function Coins({unifty}) {
     let lemonBalance = 100.01;
     let iconSize = 6;
     let padding = 10;
@@ -56,6 +56,7 @@ function Coins() {
                     <Coin spacing={padding} iconSize={iconSize} balance={lemonBalance} img={Lemon_Icon}></Coin>
                     <Coin spacing={padding} iconSize={iconSize} balance={lemonBalance} img={Chile_Icon}></Coin>
                     <Image marginLeft={30} height={2} src={DownArrow_Icon}></Image>
+                        
                 </HStack>
 
             </MenuButton>

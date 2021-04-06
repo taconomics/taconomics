@@ -7,8 +7,6 @@ import React from 'react';
 
 export default function Menu({ unifty }) {
     return (<Flex flexDir="row" alignItems="center" fontFamily="Nunito">
-
-
         <Logo></Logo>
         <MenuItems></MenuItems>
         {<UserWallet unifty={unifty}></UserWallet>}
@@ -16,13 +14,13 @@ export default function Menu({ unifty }) {
 }
 
 export function Logo() {
-    return (<Box minWidth="60px"><Image src="/Logo.svg" layout="intrinsic" width={80} height={80}></Image></Box>)
+    return (<Box minWidth="60px"><Link href="/"><Image src="/Logo.svg" layout="intrinsic" width={80} height={80}></Image></Link></Box>)
 }
 
 export function MenuItems(props:{variant?}) {
     const { variant, ...rest } = props
     const styles = useStyleConfig("MenuItems",{variant})
-    console.log(props.variant)
+
     return (<Flex fontFamily="Nunito, sans-serif;" flexGrow={4} justifyContent="space-around" variant={"footer"} alignItems="center" sx={styles} fontSize="md" paddingRight={20}>
 
         <MenuItem><Link href="/collections">Collections</Link></MenuItem>

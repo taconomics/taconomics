@@ -51,7 +51,6 @@ async function onSubmit(values, actions, toast, unifty) {
     let u = (unifty as Unifty);
     let ipfs = await u.ipfs.add(JSON.stringify(contractInfo))
 
-    console.log(ipfs)
     let ipfsUrl = "https://gateway.ipfs.io/ipfs/" + ipfs;
 
     u.newErc1155(contractInfo.name, "Ticker", ipfsUrl, u.defaultProxyRegistryAddress,

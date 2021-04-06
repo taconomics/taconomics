@@ -26,7 +26,8 @@ export default class Unifty {
         this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
         //this.web3.
 
-        this.setParams("4");
+
+        this.setParams();
         this.setAccount();
         this.createIpfsServer();
 
@@ -51,8 +52,12 @@ export default class Unifty {
         }
 
     }
-    setParams(chain_id) {
+    async setParams() {
+        let network = await this.web3.eth.net.getId();
+
+        let chain_id= ""+network;
         if (chain_id === "4") {
+            console.log("En Rinkeby");
 
             this.nif = new this.web3.eth.Contract(nifABI, '0xb93370d549a4351fa52b3f99eb5c252506e5a21e', { from: this.account });
             this.erc1155 = new this.web3.eth.Contract(erc1155ABI, '0xD329D511Bc8368Be4396Cc489B6161af1b275803', { from: this.account });
@@ -63,19 +68,41 @@ export default class Unifty {
             this.defaultProxyRegistryAddress = '0xf57b2c51ded3a29e6891aba85459d600256cf317'; // opensea
 
             // xDAI MAINNET
+        } else{
+
+            console.log("En mainnet");
+
+            this.nif = new this.web3.eth.Contract( nifABI, '0x7e291890B01E5181f7ecC98D79ffBe12Ad23df9e', {from:this.account} );
+            this.erc1155 = new this.web3.eth.Contract( erc1155ABI, '0xC0B257fe1aB2C52A0d58538Dc1Aa3376C8aF69Ff', {from:this.account} );
+            this.genesis = new this.web3.eth.Contract( genesisABI, '0x74A73135ECD612d530B89Fb28125583ed39A5f22', {from:this.account} );
+    
+            this.farm = null;
+    
+            // Dixon Fix
+            /*if(this.getUrlParam('address') == '0x6321a656994aFd64b8faA79bcD99CC6a4C4e69c3'){
+                this.farm = new this.web3.eth.Contract( farmABI, '0x1826b0871096b3558E8ed1802629a0232288F8e8', {from:this.account} );
+                console.log("Dixon fix");
+            }else{
+                
+            }*/
+            this.farm = new this.web3.eth.Contract( farmABI, '0xC4F31771928923490722bFfC484167c2d355be85', {from:this.account} );
+            this.farmShop = new this.web3.eth.Contract(farmShopABI, '0x3E58801d8F3379bb5090Dc742e60614bC94b1bd8', {from: this.account});
+            this.account = '';
+            this.defaultProxyRegistryAddress = '0xa5409ec958c83c3f309868babaca7c86dcb077c1'; // opensea
+    
         }
     }
 
     async getAccount() {
         let ac = this.web3.eth.accounts.create().address;
 
-        let reqac  = await this.web3.eth.requestAccounts();
+       /* let reqac  = await this.web3.eth.requestAccounts();
 
         if(reqac != undefined){
             ac = reqac[0];
         }
 
-        console.log(ac);
+        console.log(ac);*/
 
         return ac;
     }
@@ -139,10 +166,14 @@ export default class Unifty {
 
         let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
 
+        console.log("farm",farm,"Farm adddres",farmAddress);
+
         let cards = await farm.getPastEvents('CardAdded', {
             fromBlock: this.min_block,
             toBlock: 'latest'
-        });
+        })
+
+
 
         let check_entries = [];
         cards = cards.reverse();
@@ -195,10 +226,10 @@ export default class Unifty {
             maxSupply = await erc1155.methods.maxSupply(nftId).call({ from: this.account });
         } catch (e) { }
         await this.sleep(this.sleep_time);
-        let balance = await erc1155.methods.balanceOf(this.account, nftId).call({ from: this.account });
+       // let balance = await erc1155.methods.balanceOf(this.account, nftId).call({ from: this.account });
         let uri = await this.getNftMeta(erc1155Address, nftId);
 
-        return { uri: uri, supply: supply, maxSupply: maxSupply, balance: balance };
+        return { uri: uri, supply: supply, maxSupply: maxSupply, /*/balance: balance*/ };
     };
 
     async getNftMeta(erc1155ContractAddress, nftId) {

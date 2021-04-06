@@ -1,56 +1,9 @@
-import { useEffect, useState } from "react";
-import { useRouter } from 'next/router'
-import Unifty from "../../src/uniftyLib/UniftyLib"
-import Card from '../../src/components/Card/Card'
-import styles from './Collections.module.scss'
+import { Box } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import React from "react";
 
-export default function Collections(props: { unifty: Unifty }) {
+export default function Collection(props){
     const router = useRouter();
-    const collection = router.query.collection as string || "0x3b93f48246AE855E3E7001bc338E43C256D7A2dD";
-
-    let [nfts, setNfts] = useState([]);
-
-    useEffect(() => {
-
-        let as = async function () {
-            let nfts = await getNftsJson(props.unifty, collection);
-            let g = [];
-
-            for(const nft of nfts) {
-                const name = Math.floor(Math.random() * 100);
-                g.push(<Card key={name} nft={nft}></Card>)
-            }
-            setNfts(g);
-        }
-        as();
-    }, [])
-
-    return (<div className={styles.content}>
-        <div className={styles.title}>All collections</div>
-        <div className={styles.collections}>
-            {nfts}
-        </div>
-    </div>)
-}
-
-
-/**
- * Get all NFTS from farm
- * @param {Unifty} unifty
- * @param {String} farmAddress
- * @returns {Promise} Nfts
- */
-async function getNftsJson(unifty: Unifty, farmAddress: string) {
-    let farmNfts = await unifty.getFarmNfts(farmAddress);
-    var nfts = [];
-
-    for await (const nft of farmNfts) {
-        let realNft = await unifty.getNft(nft.erc1155, nft.id);
-        let metaNft = await unifty.getNftMeta(nft.erc1155, nft.id);
-        let jsonMeta = await fetch(metaNft).then(r => r.json())
-        nfts.push({ nft: realNft, meta: jsonMeta,info:nft });
-    }
-    return nfts;
-
-
+    const collection = router.query.farm as string;
+    return (<Box>Collection {collection}</Box>)
 }
