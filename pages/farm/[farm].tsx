@@ -8,7 +8,6 @@ import { Box, Flex } from "@chakra-ui/react";
 export default function Farm(props: { unifty: Unifty }) {
     const router = useRouter();
     const farm = router.query.farm as string;
-    console.log("Collection", farm)
 
     let [nfts, setNfts] = useState([]);
 
