@@ -13,6 +13,7 @@ export default function Home({unifty}) {
         <HomeStart></HomeStart>
       </Box>
       <FeaturedCollections unifty={unifty}></FeaturedCollections>
+      <Box padding={5}></Box>
       <RecentNfts unifty={unifty} itemsSize="9"></RecentNfts>
       <AboutNFTS></AboutNFTS>
       <BePartTacoCommunity></BePartTacoCommunity>

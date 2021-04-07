@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, Grid } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Grid, Spinner } from "@chakra-ui/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -10,7 +10,7 @@ import { columnTemplate } from '../../src/components/TacoLayout'
 export default function Collections({ unifty }) {
     return (<Flex><FeaturedCollections unifty={unifty}></FeaturedCollections></Flex>)
 }
-export async function getFeaturedCollections(unifty:Unifty) {
+export async function getFeaturedCollections(unifty: Unifty) {
     let network = await unifty.getNetwork();
     let featuredCollections;
     if (network === 1) {
@@ -41,11 +41,14 @@ export function FeaturedCollections(props: { unifty: Unifty }) {
         func();
     }, [])
 
-    return (<Grid variant="content">
-        <Box fontWeight="bold">Featured Collections</Box>
-        <Flex flexWrap="wrap">
-            {cards}
-        </Flex>
+    return (<Grid variant="content" templateColumns={columnTemplate}>
+        <Box gridColumn="2/2">
+            <Box fontWeight="bold" fontSize="large">Featured Collections</Box>
+            <Flex flexWrap="wrap">
+                {cards}
+            </Flex>
+        </Box>
+
 
     </Grid>)
 }
@@ -60,7 +63,7 @@ export function CollectionCard({ address, unifty }) {
     useEffect(() => {
         if (address != undefined) {
             (unifty as Unifty).getErc1155Meta(address).then(metaUri => {
-            
+
                 fetch(metaUri.contractURI).then(r => r.json()).then(e => {
                     console.log("meta", e)
                     setMeta(e);
@@ -77,14 +80,14 @@ export function CollectionCard({ address, unifty }) {
         router.push("/collections/" + address)
     }
 
-    return (<Box width={wSize} height={hSize} borderRadius="lg" cursor="pointer" className={styles.collectionCard} overflow="hidden" margin="30px">
+    return (<Box width={wSize} marginBottom="5px" marginRight={5} height={hSize} borderRadius="lg" cursor="pointer" className={styles.collectionCard} overflow="hidden" >
         {meta != undefined ?
             <Grid maxW="100%" _hover={{ bgColor: "#000000a0" }} transition=" background-color 1s" onPointerEnter={() => { setHover(true) }} onPointerLeave={() => { setHover(false) }}>
                 <Box gridRow="1/1" color="white" gridColumn="1/1" position="relative">
                     <Box position="absolute" width={wSize} bottom="0" padding="5">
                         <Box fontSize="x-large" fontWeight="bold">{meta.name}</Box>
                         <Box maxHeight={isHover ? hSize[0] + "px" : "0"} transition="max-height 1.5s" overflow="hidden">
-                            <Box maxHeight={hSize[0] * .60} overflow="hidden">
+                            <Box maxHeight={hSize[0] * .50} overflow="hidden">
                                 {meta.description}
                             </Box>
                             <Button variant="outline" _hover={{ bgColor: "#ffffff40" }} onClick={goToAddress} marginTop={3}>See collection</Button>
@@ -100,6 +103,6 @@ export function CollectionCard({ address, unifty }) {
             </Grid>
 
 
-            : <Box>Loading...</Box>}
+            : <Center><Spinner></Spinner></Center>}
     </Box>)
 }

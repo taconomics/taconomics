@@ -1,6 +1,7 @@
-import { Box, Button, Center, Flex, HStack, Link, LinkBox } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Grid, HStack, Link, LinkBox, UseAccordionReturn } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Card from "../../src/components/Card/Card";
+import { columnTemplate } from "../../src/components/TacoLayout";
 import Unifty from "../../src/uniftyLib/UniftyLib";
 import { getNftsJson } from "./[farm]";
 
@@ -29,12 +30,17 @@ export default function FarmIndex(props) {
     </Center>)
 }
 
+export const createFakeCards = (cards:number)=>{
+    let arr = [];
+    for(let a=0;a<cards;a++){
+        arr.push(<Card key={a} nft={undefined}></Card>)
+    }
+    return arr;
+}
 export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
-    const [nfts, setNfts] = useState(undefined);
+    const [nfts, setNfts] = useState(createFakeCards(4));
 
     useEffect(() => {
-
-
         const func = async () => {
             let tacoshi = await getNftsJson(props.unifty, defaultFarms.tacoshiFarm);
             let rabbit = await getNftsJson(props.unifty, defaultFarms.tacoshiRabbit);
@@ -66,9 +72,13 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
         func();
     }, [])
 
-    return (<Box>Recently added pieces
-        <Flex flexWrap="wrap" justifyContent="center">{nfts}</Flex>
-        </Box>)
+    return (<Grid templateColumns={columnTemplate}>
+        <Box gridColumn="2/2" >
+          <Box fontSize="large" fontWeight="bold">Recently added pieces</Box> 
+        <Flex flexWrap="wrap">{nfts}</Flex> 
+        </Box>
+        
+        </Grid>)
 }
 
 const LinkToFarm = ({ children, address }) => {

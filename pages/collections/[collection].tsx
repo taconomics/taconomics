@@ -1,4 +1,4 @@
-import { Avatar, Box, Center, ExpandedIndex, Flex, Grid, Image } from "@chakra-ui/react";
+import { Avatar, Box, Center, ExpandedIndex, Flex, Grid, Image, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Card from "../../src/components/Card/Card";
@@ -7,8 +7,8 @@ import { columnTemplate } from "../../src/components/TacoLayout";
 
 export default function Collection(props: { unifty: Unifty }) {
     const router = useRouter();
-    const [nfts, setNfts] = useState([]);
-    const [erc1155Meta, setErc1155Meta] = useState({ name: "Loading...", description: "Loading..." });
+    const [nfts, setNfts] = useState([<Card key="1" nft={undefined}></Card>]);
+    const [erc1155Meta, setErc1155Meta] = useState({ name: <Center><Spinner /></Center>, description: <Center><Spinner /></Center> });
     const collection = router.query.collection as string;
 
     useEffect(() => {
@@ -65,7 +65,7 @@ function CollectionCardInfo(props: { info }) {
     const imgSizeX = ["200px"]
     const imgSizeY = ["150px"]
     return (
-        <Flex backgroundColor="white" overflow="hidden" flexDirection="row" justifyContent="center" marginTop="30px" padding={"20px"} boxShadow="base" borderRadius="sm">
+        <Flex backgroundColor="white" overflow="hidden" flexDirection="row" justifyContent="space-between" marginBottom={5} marginTop="30px" padding={"20px"} boxShadow="base" borderRadius="sm">
             <Flex flexDirection="column" paddingRight="30px">
                 <Box color="orange" fontSize="x-small">Featured collection</Box>
 
