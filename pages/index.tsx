@@ -26,7 +26,7 @@ export function HomeStart({ isMobile }) {
 
   return <Box flexDirection="column" position="relative" overflow="hidden">
     <Grid templateColumns={columnTemplate}>
-      <Box flexDir="row" gridColumn="2 / 2" width={{ lg: "30%", md: "100%" }} zIndex={1000} fontSize="x-large" fontWeight="bold"><span>Do you want to buy unique pieces of Tacoart? </span><span style={{ color: "grey" }}>(Staking Taco)</span></Box>
+      <Box flexDir="row" gridColumn="2 / 2" width={{ lg: "50%", md: "100%" }} zIndex={1000} fontSize="x-large" fontWeight="bold"><span>Do you want to buy unique pieces of Tacoart? </span><span style={{ color: "grey" }}>(Staking Taco)</span></Box>
       <SliderInfo></SliderInfo>
     </Grid>
     <Blob color="blue" size={100} right="20px" top="250px"></Blob>

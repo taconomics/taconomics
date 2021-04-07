@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, Grid, Spinner } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Grid, Spinner, useMediaQuery } from "@chakra-ui/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -28,6 +28,10 @@ export async function getFeaturedCollections(unifty: Unifty) {
 export function FeaturedCollections(props: { unifty: Unifty }) {
     let featuredCollections = [];
     let [cards, setCards] = useState(undefined);
+    const [isTablet] = useMediaQuery("(max-width: 1124px)")
+    const [isMobile] = useMediaQuery("(max-width: 768px)")
+
+    let itemsToShow = isTablet?isMobile?1:2:4;
     useEffect(() => {
 
         const func = async () => {
@@ -47,7 +51,7 @@ export function FeaturedCollections(props: { unifty: Unifty }) {
         <Box gridColumn="2/2">
             <Box fontWeight="bold" marginBottom={5} fontSize="x-large">Featured Collections</Box>
             <Flex flexWrap="wrap">
-            <Carousel itemsToShow={4} isRTL={false} showArrows={false}>
+            <Carousel itemsToShow={itemsToShow} isRTL={false} showArrows={false}>
                 {cards}
                 </Carousel>
             </Flex>
@@ -85,7 +89,7 @@ export function CollectionCard({ address, unifty }) {
         router.push("/collections/" + address)
     }
 
-    return (<Box width={wSize} marginBottom="5px" marginRight={5} height={hSize} borderRadius="lg" cursor="pointer" className={styles.collectionCard} overflow="hidden" >
+    return (<Box width={wSize} minW={wSize} marginBottom="5px" marginRight={5} height={hSize} borderRadius="lg" cursor="pointer" className={styles.collectionCard} overflow="hidden" >
         {meta != undefined ?
             <Grid maxW="100%" _hover={{ bgColor: "#000000a0" }} transition=" background-color 1s" onPointerEnter={() => { setHover(true) }} onPointerLeave={() => { setHover(false) }}>
                 <Box gridRow="1/1" color="white" gridColumn="1/1" position="relative">

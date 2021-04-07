@@ -75,7 +75,7 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
 
     return (<Grid templateColumns={columnTemplate}>
         <Box gridColumn="2/2" >
-          <Box fontSize="large" fontWeight="bold">Recently added pieces</Box> 
+          <Box fontSize="x-large" marginBottom={5} fontWeight="bold">Recently added pieces</Box> 
         <Flex flexWrap="wrap">{nfts}</Flex> 
         </Box>
         
