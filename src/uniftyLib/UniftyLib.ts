@@ -206,6 +206,12 @@ export default class Unifty {
      * Nfts
      */
 
+     async balanceOf(erc1155Address, account, nftId){
+
+        let erc1155 = new this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
+        return await erc1155.methods.balanceOf(account, nftId).call({from:this.account});
+    };
+
     async getNft(erc1155Address, nftId) {
 
         let supply = 0;

@@ -47,7 +47,6 @@ export default function Collection(props: { unifty: Unifty }) {
 
 
 export function ArtistInfo(props: { unifty: Unifty, info: any }) {
-    console.log(props.info)
     return (<Flex>
         <ArtistBadge info={props.info}></ArtistBadge>
         <Box maxWidth={["60%", "50%"]} paddingLeft={["100px"]} >
