@@ -33,7 +33,7 @@ export default function FarmIndex(props) {
 export const createFakeCards = (cards:number)=>{
     let arr = [];
     for(let a=0;a<cards;a++){
-        arr.push(<Card key={a} nft={undefined}></Card>)
+        arr.push(<Card unifty={undefined} key={a} nft={undefined}></Card>)
     }
     return arr;
 }
@@ -54,7 +54,7 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
 
                     const name = Math.floor(Math.random() * 100);
                     let nft = one?tacoshi[tacoshiCount]:rabbit[rabbitCount];
-                    let card = <Card key={name} nft={nft}></Card>;
+                    let card = <Card unifty={props.unifty} key={name} nft={nft}></Card>;
                     finalArray.push(card)
                     if(one){
                         tacoshiCount++;

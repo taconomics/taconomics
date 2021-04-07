@@ -253,13 +253,6 @@ export default class Unifty {
         return nftUri;
     };
 
-    async getNftJson(collection: string, nft: string) {
-
-        let realNft = await this.getNft(collection, nft);
-        let metaNft = await this.getNftMeta(collection, nft);
-        let jsonMeta = await fetch(metaNft).then(r => r.json())
-        return { nft: realNft, meta: jsonMeta, id: nft }
-    }
 
     async getNftMetaByEvent(erc1155ContractAddress, nftId) {
 

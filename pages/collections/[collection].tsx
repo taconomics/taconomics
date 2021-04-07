@@ -4,10 +4,11 @@ import React, { useEffect, useState } from "react";
 import Card from "../../src/components/Card/Card";
 import Unifty from "../../src/uniftyLib/UniftyLib";
 import { columnTemplate } from "../../src/components/TacoLayout";
+import { createFakeCards } from "../farms";
 
 export default function Collection(props: { unifty: Unifty }) {
     const router = useRouter();
-    const [nfts, setNfts] = useState([<Card key="1" nft={undefined}></Card>]);
+    const [nfts, setNfts] = useState([createFakeCards(4)]);
     const [erc1155Meta, setErc1155Meta] = useState({ name: <Center><Spinner /></Center>, description: <Center><Spinner /></Center> });
     const collection = router.query.collection as string;
 
@@ -18,8 +19,8 @@ export default function Collection(props: { unifty: Unifty }) {
                 let col = [];
                 for (const nft of nfts) {
                     const name = Math.floor(Math.random() * 100);
-                    let json = await props.unifty.getNftJson(collection, nft)
-                    col.push(<Card key={name} nft={json}></Card>);
+                    let json ={erc1155:collection,id:nft};
+                    col.push(<Card unifty={props.unifty} key={name} nft={json}></Card>);
                 }
                 setNfts(col);
             }
