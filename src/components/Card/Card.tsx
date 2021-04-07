@@ -26,9 +26,9 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
                 let balanceOf = await unifty.balanceOf(nft.erc1155,farmForSupply,nft.id);
                 
                 let jsonMeta = await fetch(metaNft).then(r => r.json())
-                console.log("Balance: ",balanceOf," / collection",jsonMeta.name);
+               /* console.log("Balance: ",balanceOf," / collection",jsonMeta.name);
                 console.log("realNft",realNft);
-                console.log("farmNftData",farmNftData.balance);
+                console.log("farmNftData",farmNftData.balance);*/
                 setMeta({ image: jsonMeta.image,name:jsonMeta.name,supply:balanceOf ,maxSupply:farmNftData.supply});
             }
 
@@ -36,8 +36,6 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
 
         }, [])
     }
-
-    console.log("Card MEta",meta);
     return (<Grid overflow="hidden" marginLeft={5} marginBottom="25px" templateRows="1fr 1fr" width={width + "px"} backgroundColor="white" height={height + "px"} borderRadius="15px" boxShadow="lg">
         {meta.image==""||nft==undefined?
             <Center><Spinner /></Center> :

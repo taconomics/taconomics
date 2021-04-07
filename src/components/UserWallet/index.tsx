@@ -1,4 +1,4 @@
-import { Button, HStack, Menu, MenuButton, Image, MenuList, Box, Flex } from "@chakra-ui/react"
+import { Button, HStack, Menu, MenuButton, Image, MenuList, Box, Flex, useMediaQuery } from "@chakra-ui/react"
 import React, { useState } from "react"
 import Unifty from "../../uniftyLib/UniftyLib";
 
@@ -12,40 +12,49 @@ const Cubiertos_Icon = "/icons/Lemon_Icon.svg";
 
 
 
-export default function UserWallet(props:{unifty:Unifty}) {
-    const [isConnected,setIsConnected] = useState(false);
+export default function UserWallet(props: { unifty: Unifty}) {
+    const [isConnected, setIsConnected] = useState(false);
 
+    const [isMobile] = useMediaQuery("(max-width: 1024px)")
     let onClickConnect = () => {
         console.log("Requested account");
         props.unifty.getAccount();
     }
 
-   props.unifty.isConnected().then((e)=>{
-       setIsConnected(e);
+    props.unifty.isConnected().then((e) => {
+        setIsConnected(e);
         return e;
     })
 
-    console.log("Is connected",isConnected);
-
-    return (<Box flexGrow={1.3}>
+    return (<Box flexGrow={{md:1,lg:1.3}}>
         {
             !isConnected ?
 
                 <ButtonConnect onClickConnect={onClickConnect}></ButtonConnect>
                 :
 
-                <Flex width="100%" alignItems="center" justifyContent="space-evenly">
-
-                    <Box fontFamily="Nunito" fontWeight="extrabold">Collection manager</Box>
-                    <Box fontFamily="Nunito" fontWeight="extrabold">My items</Box>
-                    <Coins unifty={props.unifty}></Coins>
-                </Flex>
+                <WalletContainer unifty={props.unifty} isMobile={isMobile}></WalletContainer>
 
         }
     </Box>)
 }
 
-function Coins({unifty}) {
+function WalletContainer(props: { unifty: Unifty, isMobile }) {
+    if (props.isMobile) {
+        return <Button>Wallet</Button>
+    } else {
+        return (
+            <Flex width="100%" alignItems="center" justifyContent="space-evenly">
+
+                <Box fontFamily="Nunito" fontWeight="extrabold">Collection manager</Box>
+                <Box fontFamily="Nunito" fontWeight="extrabold">My items</Box>
+                <Coins unifty={props.unifty}></Coins>
+            </Flex>)
+    }
+
+}
+
+function Coins({ unifty }) {
     let lemonBalance = 100.01;
     let iconSize = 6;
     let padding = 10;
@@ -56,7 +65,7 @@ function Coins({unifty}) {
                     <Coin spacing={padding} iconSize={iconSize} balance={lemonBalance} img={Lemon_Icon}></Coin>
                     <Coin spacing={padding} iconSize={iconSize} balance={lemonBalance} img={Chile_Icon}></Coin>
                     <Image marginLeft={30} height={2} src={DownArrow_Icon}></Image>
-                        
+
                 </HStack>
 
             </MenuButton>

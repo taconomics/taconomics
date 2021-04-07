@@ -1,4 +1,4 @@
-import { Box, Button, Center, color, Flex, Grid } from '@chakra-ui/react'
+import { Box, Button, Center, color, Flex, Grid, useMediaQuery } from '@chakra-ui/react'
 import Head from 'next/head'
 import React from 'react'
 import Image from 'next/image'
@@ -6,11 +6,12 @@ import { columnTemplate } from '../src/components/TacoLayout'
 import Carousel from 'react-elastic-carousel'
 import { FeaturedCollections } from './collections'
 import { RecentNfts } from './farms'
-export default function Home({unifty}) {
+export default function Home({ unifty }) {
+  const [isMobile] = useMediaQuery("(max-width: 768px)")
   return (
     <Flex flexDirection="column">
       <Box width="100%" >
-        <HomeStart></HomeStart>
+        <HomeStart isMobile={isMobile}></HomeStart>
       </Box>
       <FeaturedCollections unifty={unifty}></FeaturedCollections>
       <Box padding={5}></Box>
@@ -21,14 +22,14 @@ export default function Home({unifty}) {
   )
 }
 
-export function HomeStart() {
-  console.log(columnTemplate)
+export function HomeStart({ isMobile }) {
+
   return <Box flexDirection="column" position="relative" overflow="hidden">
     <Grid templateColumns={columnTemplate}>
-      <Box flexDir="row" gridColumn="2 / 2" width="30%" fontSize="x-large" fontWeight="bold"><span>Do you want to buy unique pieces of Tacoart? </span><span style={{ color: "grey" }}>(Staking Taco)</span></Box>
+      <Box flexDir="row" gridColumn="2 / 2" width={{ lg: "30%", md: "100%" }} zIndex={1000} fontSize="x-large" fontWeight="bold"><span>Do you want to buy unique pieces of Tacoart? </span><span style={{ color: "grey" }}>(Staking Taco)</span></Box>
       <SliderInfo></SliderInfo>
     </Grid>
-    <Blob color="blue" size={100} right="20px" bottom="0"></Blob>
+    <Blob color="blue" size={100} right="20px" top="250px"></Blob>
     <Blob color="yellow" size={150} right="20px" top="-10px"></Blob>
     <Blob color="red" size={250} right="-150px" top="60px"></Blob>
 
@@ -64,16 +65,20 @@ export function SliderInfo() {
   </Center>)
 }
 export function SliderPage(props: { children }) {
-  return (<Flex flexDir="row">
+  return (<Flex flexDir={["column","column","row"]}>
     {props.children}
   </Flex>)
 }
 
 export function SliderItem(props: { title, image, subtitle?}) {
-  return (<Flex alignItems="center" flexDir="column" padding="30px" maxW="350px" userSelect="none" textAlign="center">
-    <Box fontWeight="semibold" fontSize="x-large">{props.title}</Box>
-    <Image src={props.image} layout="intrinsic" draggable="false" width={200} height={200}></Image>
-    {props.subtitle && <Box fontSize="medium" color="gray">{props.subtitle}</Box>}
+  const imgSize = 200;
+  return (<Flex alignItems="center" flexDir={[  "row","row","column" ]} padding="30px" maxW={{lg:"350px",md:"600px",sm:"600px"}} userSelect="none">
+    <Box fontWeight="semibold" w={["60%","100%","100%"]}  marginRight={{lg:0,md:"30px",sm:"30px"}} fontSize="x-large">{props.title}</Box>
+    <Flex flexDir="column" alignItems="center" maxW={imgSize}>
+      <Image src={props.image} layout="fixed" draggable="false" width={imgSize} height={imgSize}></Image>
+      {props.subtitle && <Box fontSize="medium" color="gray">{props.subtitle}</Box>}
+    </Flex>
+
   </Flex>)
 }
 
