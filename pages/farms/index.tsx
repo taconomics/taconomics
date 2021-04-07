@@ -65,9 +65,10 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
 
                 
             }
-
-            setNfts(finalArray);
-            console.log(tacoshi.length);
+            if(finalArray.length >0){
+               setNfts(finalArray); 
+            }
+            
         }
         func();
     }, [])

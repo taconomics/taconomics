@@ -84,11 +84,11 @@ export function SliderItem(props: { title, image, subtitle?}) {
 
 
 export function AboutNFTS() {
-  let size = [100, 400];
+  let size = [400,400, 400];
   return (
-    <Flex backgroundColor="figma.lightblue" width="100%" alignItems="center" justifyContent="space-around">
+    <Flex backgroundColor="figma.lightblue" width="100%" flexDir={["column","column","row"]} alignItems="center" justifyContent="space-around">
 
-      <Flex flexDirection="column" padding={[10, 50]} maxW={[200, 600]}>
+      <Flex flexDirection="column"  padding={[10,10, 50]} maxW={[300,500, 600]}>
         <Box fontWeight="bold" padding={3} paddingLeft={0} fontSize="larger">About NFTs</Box>
         <Box fontSize="large">Non-fungible tokens (NFT) are digital assets that represent a wide range of unique tangible and intangible items, from collectible sports cards to virtual real estate and even digital sneakers.</Box>
         <Box>Read more</Box>
