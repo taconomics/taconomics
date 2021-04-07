@@ -6,6 +6,7 @@ import Unifty from "../../src/uniftyLib/UniftyLib";
 
 import styles from './Collections.module.scss';
 import { columnTemplate } from '../../src/components/TacoLayout'
+import Carousel from 'react-elastic-carousel'
 
 export default function Collections({ unifty }) {
     return (<Flex><FeaturedCollections unifty={unifty}></FeaturedCollections></Flex>)
@@ -15,7 +16,7 @@ export async function getFeaturedCollections(unifty: Unifty) {
     let featuredCollections;
     if (network === 1) {
         //On Mainet
-        featuredCollections = ["0x5d57b91984e4e7d37772c621fc91377a28a7fb1f", "0x2B015207B5259B7fBb80Bb441726305382287674", "0xd5dfb159788856f9fd5f897509d5a68b7b571ea8"]
+        featuredCollections = ["0x5d57b91984e4e7d37772c621fc91377a28a7fb1f", "0x2B015207B5259B7fBb80Bb441726305382287674", "0xd5dfb159788856f9fd5f897509d5a68b7b571ea8","0x5d57b91984e4e7d37772c621fc91377a28a7fb1f", "0x2B015207B5259B7fBb80Bb441726305382287674", "0xd5dfb159788856f9fd5f897509d5a68b7b571ea8","0x5d57b91984e4e7d37772c621fc91377a28a7fb1f", "0x2B015207B5259B7fBb80Bb441726305382287674", "0xd5dfb159788856f9fd5f897509d5a68b7b571ea8"]
     } else {
         featuredCollections = ["0x9162E7bAA5239C2eaA1901132DAd5da08730fEd8", "0x18f42d699Fc56ddd92FFDD2a5EaDBec1a4082Bf5"]
     }
@@ -42,12 +43,16 @@ export function FeaturedCollections(props: { unifty: Unifty }) {
     }, [])
 
     return (<Grid variant="content" templateColumns={columnTemplate}>
+         
         <Box gridColumn="2/2">
-            <Box fontWeight="bold" fontSize="large">Featured Collections</Box>
+            <Box fontWeight="bold" marginBottom={5} fontSize="x-large">Featured Collections</Box>
             <Flex flexWrap="wrap">
+            <Carousel itemsToShow={4} isRTL={false} showArrows={false}>
                 {cards}
+                </Carousel>
             </Flex>
         </Box>
+        
 
 
     </Grid>)
