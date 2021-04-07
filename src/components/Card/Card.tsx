@@ -5,14 +5,14 @@ import styles from './Card.module.scss';
 
 
 export default function Card({nft}){
-    let width = 300;
-    let height = 400;
+    let width = 240;
+    let height = 300;
     return (<Grid margin="20px" overflow="hidden" templateRows="1fr 1fr" width={width + "px"}  backgroundColor="white" height={height + "px"} borderRadius="15px" boxShadow="lg">
        
 
-        <Flex padding="10px" width={width+"px"} height={height+"px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
+        <Flex padding="5px" width={width+"px"} height={height+"px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
             <Box backgroundColor="white" borderRadius="3px" padding="2px" color="#41b4e6" fontWeight="extrabold">RARE</Box>
-            <Image marginTop="30px" marginBottom="30px" maxHeight="150px" src={nft.meta.image}></Image>
+            <Image marginTop="30px" marginBottom="30px" maxHeight={height/3.4+"px"} src={nft.meta.image}></Image>
             <Box>
                 <Box><Coin spacing={0} iconSize="30px" balance={99.9} img={"icons/Lemon_Icon.svg"}></Coin> <Box><b>9/10</b> Available</Box></Box>
             </Box>

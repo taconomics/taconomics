@@ -66,8 +66,8 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
         func();
     }, [])
 
-    return (<Box>Recent Nfts
-        <Flex flexWrap="wrap">{nfts}</Flex>
+    return (<Box>Recently added pieces
+        <Flex flexWrap="wrap" justifyContent="center">{nfts}</Flex>
         </Box>)
 }
 

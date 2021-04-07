@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Grid } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Grid } from "@chakra-ui/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -11,17 +11,36 @@ export default function Collections({unifty}) {
     return (<Flex><FeaturedCollections unifty={unifty}></FeaturedCollections></Flex>)
 }
 
-export function FeaturedCollections({ unifty }) {
-    let featuredCollections = ["0x9162E7bAA5239C2eaA1901132DAd5da08730fEd8", "0x18f42d699Fc56ddd92FFDD2a5EaDBec1a4082Bf5"]
-    let cards = [];
+export function FeaturedCollections(props:{ unifty:Unifty }) {
+    let featuredCollections = [];
+    let [cards,setCards] = useState(undefined);
+    useEffect(()=>{
+        
+        const func =async()=>{
+            let network= await props.unifty.getNetwork();
+            if(network===1){
+                //On Mainet
+                featuredCollections = ["0x5d57b91984e4e7d37772c621fc91377a28a7fb1f", "0x2B015207B5259B7fBb80Bb441726305382287674","0xd5dfb159788856f9fd5f897509d5a68b7b571ea8"]
+            }else{
+                featuredCollections = ["0x9162E7bAA5239C2eaA1901132DAd5da08730fEd8", "0x18f42d699Fc56ddd92FFDD2a5EaDBec1a4082Bf5"]
+            }
+            let mCards = []
+            for (let i of featuredCollections) {
+                mCards.push(<CollectionCard address={i} key={i} unifty={props.unifty}></CollectionCard>)
+            }
+            setCards(mCards);
+        }
+        func();
+    },[])
+    
+   
+    
 
-    for (let i of featuredCollections) {
-        cards.push(<CollectionCard address={i} key={i} unifty={unifty}></CollectionCard>)
-    }
+
 
     return (<Grid variant="content">
         <Box fontWeight="bold">Featured Collections</Box>
-        <Flex>
+        <Flex flexWrap="wrap">
             {cards}
         </Flex>
 
@@ -57,9 +76,9 @@ export function CollectionCard({ address, unifty }) {
 
     return (<Box width={wSize} height={hSize} borderRadius="lg" cursor="pointer" className={styles.collectionCard} overflow="hidden" margin="30px">
         {meta != undefined ?
-            <Grid _hover={{ bgColor: "#000000a0" }} transition=" background-color 1s" onPointerEnter={() => { setHover(true) }} onPointerLeave={() => { setHover(false) }}>
+            <Grid maxW="100%" _hover={{ bgColor: "#000000a0" }} transition=" background-color 1s" onPointerEnter={() => { setHover(true) }} onPointerLeave={() => { setHover(false) }}>
                 <Box gridRow="1/1" color="white" gridColumn="1/1" position="relative">
-                    <Box position="absolute" bottom="0" padding="5">
+                    <Box position="absolute" width={wSize} bottom="0" padding="5">
                         <Box fontSize="x-large" fontWeight="bold">{meta.name}</Box>
                         <Box maxHeight={isHover ? hSize[0] + "px" : "0"} transition="max-height 1.5s" overflow="hidden">
                             <Box maxHeight={hSize[0]*.60} overflow="hidden">
@@ -69,11 +88,11 @@ export function CollectionCard({ address, unifty }) {
                         </Box>
                     </Box>
                 </Box>
-                <Box gridRow="1/1" gridColumn="1/1" width={400} height={hSize} position="relative" zIndex="-10">
+                <Flex justifyContent="center" alignContent="center" gridRow="1/1" gridColumn="1/1" width={400} height={hSize} position="relative" zIndex="-10">
 
-                    <Image src={meta.image} layout="fill" objectFit="cover"></Image>
+                   <Image src={meta.image} layout="fill" className={styles.collectionImage} objectFit="cover"></Image>
 
-                </Box>
+                </Flex>
 
             </Grid>
 

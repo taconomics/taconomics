@@ -32,6 +32,6 @@ export default function Collection(props: { unifty: Unifty }) {
 
     console.log("Nfts", nfts);
     return (<Box>Collection {erc1155Meta!=undefined&&erc1155Meta.name}
-    <Flex>{nfts}</Flex>
+    <Flex flexWrap="wrap">{nfts}</Flex>
     </Box>)
 }
