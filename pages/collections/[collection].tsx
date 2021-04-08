@@ -5,6 +5,7 @@ import Card from "../../src/components/Card/Card";
 import Unifty from "../../src/uniftyLib/UniftyLib";
 import { columnTemplate } from "../../src/components/TacoLayout";
 import { createFakeCards } from "../farms";
+import { BePartTacoCommunity } from "..";
 
 export default function Collection(props: { unifty: Unifty }) {
     const router = useRouter();
@@ -35,14 +36,15 @@ export default function Collection(props: { unifty: Unifty }) {
         }
         func();
     }, [collection])
-    return (<Grid templateColumns={columnTemplate}>
+    return (<><Grid templateColumns={columnTemplate}>
         <Box gridColumn="2/2">
             <ArtistInfo unifty={props.unifty} info={erc1155Meta}></ArtistInfo>
             <CollectionCardInfo info={erc1155Meta}></CollectionCardInfo>
             <Flex flexWrap="wrap">{nfts}</Flex>
         </Box>
-
-    </Grid>)
+    </Grid>
+    <BePartTacoCommunity></BePartTacoCommunity>
+    </>)
 }
 
 

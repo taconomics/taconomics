@@ -27,8 +27,9 @@ export default class Unifty {
         //this.web3.
 
 
-        this.setParams();
+
         this.setAccount();
+        this.setParams();
         this.createIpfsServer();
 
     }
@@ -75,6 +76,7 @@ export default class Unifty {
             this.nif = new this.web3.eth.Contract(nifABI, '0x7e291890B01E5181f7ecC98D79ffBe12Ad23df9e', { from: this.account });
             this.erc1155 = new this.web3.eth.Contract(erc1155ABI, '0xC0B257fe1aB2C52A0d58538Dc1Aa3376C8aF69Ff', { from: this.account });
             this.genesis = new this.web3.eth.Contract(genesisABI, '0x74A73135ECD612d530B89Fb28125583ed39A5f22', { from: this.account });
+
             this.farm = new this.web3.eth.Contract(farmABI, '0xC4F31771928923490722bFfC484167c2d355be85', { from: this.account });
             this.farmShop = new this.web3.eth.Contract(farmShopABI, '0x3E58801d8F3379bb5090Dc742e60614bC94b1bd8', { from: this.account });
             this.account = '';
@@ -86,25 +88,28 @@ export default class Unifty {
     async getAccount() {
         let ac = this.web3.eth.accounts.create().address;
 
-        /* let reqac  = await this.web3.eth.requestAccounts();
- 
-         if(reqac != undefined){
-             ac = reqac[0];
-         }
- 
-         console.log(ac);*/
+        let reqac = await this.web3.eth.requestAccounts();
+
+        if (reqac != undefined) {
+            ac = reqac[0];
+        }
+
+        console.log("Account:", ac);
 
         return ac;
     }
 
     async setAccount() {
-
         this.account = await this.getAccount();
-
     };
 
     async getNetwork() {
         return await this.web3.eth.net.getId();
+    }
+    async readUri(uri){
+        let jsonMeta = await fetch(uri).then(r => r.json())
+
+        return jsonMeta;
     }
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -206,10 +211,10 @@ export default class Unifty {
      * Nfts
      */
 
-     async balanceOf(erc1155Address, account, nftId){
+    async balanceOf(erc1155Address, account, nftId) {
 
-        let erc1155 = new this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
-        return await erc1155.methods.balanceOf(account, nftId).call({from:this.account});
+        let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
+        return await erc1155.methods.balanceOf(account, nftId).call({ from: this.account });
     };
 
     async getNft(erc1155Address, nftId) {
@@ -286,10 +291,19 @@ export default class Unifty {
 
     async getMyErc1155(index) {
         await this.sleep(this.sleep_time);
-        let erc1155 = await this.genesis.methods.getPool(this.account, index).call({ from: this.account });
-        let meta = await this.getErc1155Meta(erc1155);
-        let _pool = { erc1155: erc1155, contractURI: meta.contractURI, name: meta.name, symbol: meta.symbol };
-        return _pool;
+        if (this.genesis != undefined && this.account != "") {
+            let erc1155 = await this.genesis.methods.getPool(this.account, index).call({ from: this.account });
+           // console.log(erc1155);
+            let meta = await this.getErc1155Meta(erc1155);
+            let _pool = { erc1155: erc1155, contractURI: meta.contractURI, name: meta.name, symbol: meta.symbol };
+            return _pool;
+        }
+
+    };
+
+    async getMyErc1155Length() {
+        await this.sleep(this.sleep_time);
+        return await this.genesis.methods.getPoolsLength(this.account).call({ from: this.account });
     };
 
     async getNftsByUri(erc1155Address) {

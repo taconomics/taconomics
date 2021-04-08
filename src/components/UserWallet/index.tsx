@@ -1,4 +1,4 @@
-import { Button, HStack, Menu, MenuButton, Image, MenuList, Box, Flex, useMediaQuery } from "@chakra-ui/react"
+import { Button, HStack, Menu, MenuButton, Image, MenuList, Box, Flex, useMediaQuery, Link } from "@chakra-ui/react"
 import React, { useState } from "react"
 import Unifty from "../../uniftyLib/UniftyLib";
 
@@ -46,7 +46,7 @@ function WalletContainer(props: { unifty: Unifty, isMobile }) {
         return (
             <Flex width="100%" alignItems="center" justifyContent="space-evenly">
 
-                <Box fontFamily="Nunito" fontWeight="extrabold">Collection manager</Box>
+                <Box fontFamily="Nunito" fontWeight="extrabold"><Link href="/manager">Collection manager</Link></Box>
                 <Box fontFamily="Nunito" fontWeight="extrabold">My items</Box>
                 <Coins unifty={props.unifty}></Coins>
             </Flex>)

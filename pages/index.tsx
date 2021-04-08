@@ -101,12 +101,13 @@ export function AboutNFTS() {
 }
 
 export function BePartTacoCommunity() {
+  let sizeBlob = [150,150,250];
   return (<Box position="relative" overflow="hidden">
-    <Blob color="blue" size={250} right="20px"></Blob>
-    <Blob color="yellow" size={250} right="40%" bottom="-60px"></Blob>
-    <Blob color="red" size={250} left="45px" top="60px"></Blob>
-    <Flex width="100%" flexDirection="column" alignItems="center" padding={130} fontWeight="bold">
-      <Box zIndex="1000" fontSize="large" width="40%" textAlign="center">Be part of the artists that contribute to the Taconomics community</Box>
+    <Blob color="blue" size={sizeBlob} right={["-0px","10px","20px"]}></Blob>
+    <Blob color="yellow" size={sizeBlob} right="40%" bottom="-60px"></Blob>
+    <Blob color="red" size={sizeBlob} left="45px" top="60px"></Blob>
+    <Flex width="100%" flexDirection="column" alignItems="center" padding={[10,10,150]} fontWeight="bold">
+      <Box zIndex="1000" fontSize="large" width={["100%","100%","40%"]} textAlign="center">Be part of the artists that contribute to the Taconomics community</Box>
       <SellYourArtButton></SellYourArtButton>
     </Flex>
 

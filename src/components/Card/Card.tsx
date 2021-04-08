@@ -15,7 +15,7 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
     const [meta, setMeta] = useState({ image: "",name:"",supply:0,maxSupply:0 });
     if (unifty != undefined) {
         useEffect(() => {
-            const func = async () => {
+            async function func (){
                 let realNft = await unifty.getNft(nft.erc1155, nft.id);
                 let metaNft = await unifty.getNftMeta(nft.erc1155, nft.id);
                 let network = await unifty.getNetwork()

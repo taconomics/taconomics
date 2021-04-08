@@ -41,7 +41,7 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
     const [nfts, setNfts] = useState(createFakeCards(4));
 
     useEffect(() => {
-        const func = async () => {
+        async function func() {
             let tacoshi = await getNftsJson(props.unifty, defaultFarms.tacoshiFarm);
             let rabbit = await getNftsJson(props.unifty, defaultFarms.tacoshiRabbit);
             let one = true;
@@ -65,8 +65,13 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
 
                 
             }
-            if(finalArray.length >0){
-               setNfts(finalArray); 
+            if(finalArray.length == props.itemsSize){
+                try{
+                    setNfts(finalArray); 
+                }catch(e){
+                    console.log("Error in RecentNtfs",e)
+                }
+               
             }
             
         }

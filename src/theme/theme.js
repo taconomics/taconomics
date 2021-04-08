@@ -36,7 +36,6 @@ const   colors = {
     content:{
       gridColumnStart:2,
       gridColumnEnd:2,
-
     }
   }
 
