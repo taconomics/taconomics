@@ -6,38 +6,38 @@ const styles = {
   global: props => ({
     body: {
       bg: mode('gray.50', '#141214')(props),
-      fontFamily:"Nunito"
+      fontFamily: "Nunito"
     },
   }),
 };
-const   colors = {
-  background:"black",
-    blackButton: {
-      500: "#28363E",
-      600:"#182023"
-    },
-    transparent: {
-      500: "#0000000",
-      600:"#00000015"
-    },
-    figma:{
-      blue:"#00AEE0",
-      lightblue:"#B3EEFF",
-      footer:"#2D3539",
-      orange:{
-        500:"#FF6C63",
-        600:"#F35F33",
-        700:"#E14517"
-      }
+const colors = {
+  background: "black",
+  blackButton: {
+    500: "#28363E",
+    600: "#182023"
+  },
+  transparent: {
+    500: "#0000000",
+    600: "#00000015"
+  },
+  figma: {
+    blue: "#00AEE0",
+    lightblue: "#B3EEFF",
+    footer: "#2D3539",
+    orange: {
+      500: "#FF6C63",
+      600: "#F35F33",
+      700: "#E14517"
     }
   }
+}
 
-  const layerStyles={
-    content:{
-      gridColumnStart:2,
-      gridColumnEnd:2,
-    }
+const layerStyles = {
+  content: {
+    gridColumnStart: 2,
+    gridColumnEnd: 2,
   }
+}
 
 const components = {
   Drawer: {
@@ -48,27 +48,34 @@ const components = {
       },
     }),
   },
-  Grid:{
-    variants:{
-      content:{
-        templateColumns: "minmax(10px,.1fr) 3fr minmax(10px,.1fr)" 
+  Grid: {
+    variants: {
+      content: {
+        templateColumns: "minmax(10px,.1fr) 3fr minmax(10px,.1fr)"
       }
     }
   },
-  MenuItems:{
-    baseStyle:{
-      fontWeight:"bold"
+  Button: {
+    variant: {
+      orangeOutline: {
+        backgroundColor: "figma.orange.500"
+      }
+    }
+  },
+  MenuItems: {
+    baseStyle: {
+      fontWeight: "bold"
     },
-    variants:{
-      menu:{
-        color:"black"
+    variants: {
+      menu: {
+        color: "black"
       },
-      footer:{
-        color:"white",
+      footer: {
+        color: "white",
       }
     },
-    defaultProps:{
-      variant:"menu"
+    defaultProps: {
+      variant: "menu"
     }
   }
 };

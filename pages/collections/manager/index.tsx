@@ -1,9 +1,9 @@
-import { Box, Button, Center, Flex, Grid, Spinner } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Grid, Spinner,Image } from "@chakra-ui/react";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { columnTemplate } from "../../src/components/TacoLayout";
-import Unifty from "../../src/uniftyLib/UniftyLib";
+import { columnTemplate } from "../../../src/components/TacoLayout";
+import Unifty from "../../../src/uniftyLib/UniftyLib";
 
 export default function Manager(props: { unifty: Unifty }) {
     const [myCol, setCol] = useState([]);
@@ -40,7 +40,8 @@ export default function Manager(props: { unifty: Unifty }) {
 }
 
 function CollectionCard(props: { erc: any, unifty: Unifty }) {
-    const [meta, setMeta] = useState({description:<Spinner></Spinner>});
+    const [meta, setMeta] = useState({ description: <Spinner></Spinner>,image:"" });
+
 
     useEffect(() => {
         async function func() {
@@ -52,14 +53,19 @@ function CollectionCard(props: { erc: any, unifty: Unifty }) {
         }
         func();
     }, [])
-    return (<Box backgroundColor="white" borderRadius="lg" margin={5} boxShadow="lg" padding={5}>
-        <Box color="figma.orange.500" fontWeight="bold" fontSize={"x-small"}>My collection</Box>
-        <Flex>
-            <Box fontSize="x-large" fontWeight="bold" padding={2}>{props.erc.name}</Box>
-            <Button marginLeft={5}>Edit collection</Button>
-        </Flex>
+    return (<Flex flexDir="row" alignItems="center" justifyContent="space-between" backgroundColor="white" borderRadius="lg" margin={5} boxShadow="lg" padding={5}>
         <Box>
-            {meta.description}
+            <Box color="figma.orange.500" fontWeight="bold" fontSize={"x-small"}>My collection</Box>
+            <Flex>
+                <Box fontSize="x-large" fontWeight="bold" padding={2}>{props.erc.name}</Box>
+                <Button variant="outline" colorScheme="figma.orange" marginLeft={5} fontWeight="bold">Edit collection</Button>
+            </Flex>
+            <Box>
+                {meta.description}
+            </Box>
         </Box>
-    </Box>)
+        <Box minWidth="200px" height="100px" overflow="hidden" backgroundImage={"url("+meta.image+")"} backgroundPosition="center" backgroundSize="500px" borderRadius="lg">
+        </Box>
+
+    </Flex>)
 }
