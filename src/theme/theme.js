@@ -25,9 +25,10 @@ const colors = {
     lightblue: "#B3EEFF",
     footer: "#2D3539",
     orange: {
+      50:"#FFF3F0",
       500: "#FF6C63",
       600: "#F35F33",
-      700: "#E14517"
+      700: "#E14517",
     }
   }
 }

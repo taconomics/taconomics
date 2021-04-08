@@ -46,7 +46,7 @@ function WalletContainer(props: { unifty: Unifty, isMobile }) {
         return (
             <Flex width="100%" alignItems="center" justifyContent="space-evenly">
 
-                <Box fontFamily="Nunito" fontWeight="extrabold"><Link href="/manager">Collection manager</Link></Box>
+                <Box fontFamily="Nunito" fontWeight="extrabold"><Link href="/collections/manager">Collection manager</Link></Box>
                 <Box fontFamily="Nunito" fontWeight="extrabold">My items</Box>
                 <Coins unifty={props.unifty}></Coins>
             </Flex>)

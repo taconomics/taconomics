@@ -1,4 +1,5 @@
 import { Box, Button, Center, Flex, Grid, Spinner,Image } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -19,10 +20,10 @@ export default function Manager(props: { unifty: Unifty }) {
 
                 for (let a = 0; a < length; a++) {
                     let erc = await props.unifty.getMyErc1155(a);
-                    myCollections.push(<CollectionCard erc={erc} unifty={props.unifty}></CollectionCard>)
+                    myCollections.push(<CollectionCard id={a} erc={erc} unifty={props.unifty}></CollectionCard>)
                 }
                 //let myCollections = await props.unifty.getMyErc1155(1);*/
-                console.log("En manager", myCollections)
+
                 setCol(myCollections);
             }
 
@@ -39,32 +40,36 @@ export default function Manager(props: { unifty: Unifty }) {
     </Grid>)
 }
 
-function CollectionCard(props: { erc: any, unifty: Unifty }) {
+function CollectionCard(props: { erc: any, unifty: Unifty,id:number }) {
     const [meta, setMeta] = useState({ description: <Spinner></Spinner>,image:"" });
+    const router = useRouter();
 
+    const goToEdit =()=>{
+        router.push(router.route+"/"+props.id)
+    }
+    console.log(props.erc);
 
     useEffect(() => {
         async function func() {
 
             let meta = await props.unifty.getErc1155Meta(props.erc.erc1155);
             let realmeta = await props.unifty.readUri(meta.contractURI);
-            console.log(realmeta);
             setMeta(realmeta);
         }
         func();
     }, [])
     return (<Flex flexDir="row" alignItems="center" justifyContent="space-between" backgroundColor="white" borderRadius="lg" margin={5} boxShadow="lg" padding={5}>
         <Box>
-            <Box color="figma.orange.500" fontWeight="bold" fontSize={"x-small"}>My collection</Box>
+            <Box color="figma.orange.600" fontWeight="bold" fontSize={"x-small"}>My collection</Box>
             <Flex>
                 <Box fontSize="x-large" fontWeight="bold" padding={2}>{props.erc.name}</Box>
-                <Button variant="outline" colorScheme="figma.orange" marginLeft={5} fontWeight="bold">Edit collection</Button>
+                <Button variant="outline" colorScheme="figma.orange" marginLeft={5} fontWeight="bold" onClick={goToEdit}>Edit collection</Button>
             </Flex>
             <Box>
                 {meta.description}
             </Box>
         </Box>
-        <Box minWidth="200px" height="100px" overflow="hidden" backgroundImage={"url("+meta.image+")"} backgroundPosition="center" backgroundSize="500px" borderRadius="lg">
+        <Box minWidth="300px" height="180px" overflow="hidden" marginLeft={5} backgroundImage={"url("+meta.image+")"} backgroundPosition="center" backgroundSize="500px" borderRadius="lg">
         </Box>
 
     </Flex>)

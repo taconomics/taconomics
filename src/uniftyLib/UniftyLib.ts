@@ -422,6 +422,35 @@ export default class Unifty {
             });
     };
 
+    async updateUri(nftId, jsonUrl, erc1155Address, preCallback, postCallback, errCallback){
+
+        let erc1155 = new this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
+
+        await this.sleep(this.sleep_time);
+        const gas = await erc1155.methods.updateUri(parseInt(nftId), jsonUrl).estimateGas({
+            from:this.account,
+        });
+        const price = await this.web3.eth.getGasPrice();
+
+        erc1155.methods.updateUri(parseInt(nftId), jsonUrl)
+            .send({
+                from:this.account,
+                gas: gas + Math.floor( gas * 0.1 ),
+                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+            })
+            .on('error', async function(e){
+                console.log(e);
+                errCallback(e);
+            })
+            .on('transactionHash', async function(transactionHash){
+                console.log('hash', transactionHash);
+                preCallback(transactionHash);
+            })
+            .on("receipt", function (receipt) {
+                postCallback(receipt);
+            });
+    };
+
 
 
 }
