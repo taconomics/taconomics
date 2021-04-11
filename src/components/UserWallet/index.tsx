@@ -30,10 +30,6 @@ export default function UserWallet(props: { unifty: Unifty}) {
         con();
     },[])
 
-   /* props.unifty.isConnected().then((e) => {
-        setIsConnected(e);
-        return e;
-    })*/
 
     return (<Box flexGrow={{md:1,lg:1.3}}>
         {
@@ -71,9 +67,13 @@ function Coins(props:{ unifty:Unifty }) {
             let connected = await props.unifty.isConnected();
            let chilesPoints = await props.unifty.farmPointsEarned(props.unifty.rabbitFarm,props.unifty.account);
            let lemonPoints = await props.unifty.farmPointsEarned(props.unifty.tacoshiFarm,props.unifty.account);
-           setChiles(chilesPoints);
-           setLemons(lemonPoints);
+           setChiles(Math.ceil(chilesPoints));
+           setLemons(Math.ceil(lemonPoints));
         }
+
+        setInterval(()=>{
+            func();
+        },5000);
         func();
     })
 

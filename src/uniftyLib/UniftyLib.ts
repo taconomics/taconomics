@@ -123,7 +123,7 @@ export default class Unifty {
         return await this.web3.eth.net.getId();
     }
     async readUri(uri){
-        let jsonMeta = await fetch(uri).then(r => r.json())
+        let jsonMeta = await fetch(uri).then(r => r.json()).catch(e=>{console.error(e)})
 
         return jsonMeta;
     }
@@ -152,6 +152,13 @@ export default class Unifty {
         let earned = await farm.methods.earned(account).call({from:this.account});
         let decimals = await this.farmTokenDecimals(farmAddress);
         return earned / Math.pow(10, decimals >= 0 ? decimals : 0);
+    };
+    async farmShopGetPrice(shopAddress, erc1155Address, id){
+        await this.sleep(this.sleep_time);
+        let shop = new this.web3.eth.Contract( farmShopABI, shopAddress, {from:this.account} );
+
+        let ret = await shop.methods.getPrice(erc1155Address, id).call({from:this.account});
+        return ret;
     };
 
     async farmTokenDecimals(farmAddress) {

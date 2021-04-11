@@ -114,13 +114,11 @@ export function CollectionCard({ address, unifty }) {
             (unifty as Unifty).getErc1155Meta(address).then(metaUri => {
 
                 fetch(metaUri.contractURI).then(r => r.json()).then(e => {
-                    console.log("meta", e)
                     setMeta(e);
-                })
+                }).catch(e=>{console.error(e)})
 
             })
 
-            // let jsonMeta = await fetch(metaURI.contractURI).then(r => r.json())
         }
 
     }, [])

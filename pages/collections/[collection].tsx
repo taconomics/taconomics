@@ -20,16 +20,18 @@ export default function Collection(props: { unifty: Unifty }) {
                 let col = [];
                 for (const nft of nfts) {
                     const name = Math.floor(Math.random() * 100);
-                    let json ={erc1155:collection,id:nft};
+                    let json = { erc1155: collection, id: nft };
                     col.push(<Card unifty={props.unifty} key={name} nft={json}></Card>);
                 }
                 setNfts(col);
             }
             let erc1155Meta = await props.unifty.getErc1155Meta(collection);
 
-            fetch(erc1155Meta.contractURI).then(r => r.json()).then(e => {
+            fetch(erc1155Meta.contractURI).then(r => r.json()).catch(e => { console.error(e) }).then(e => {
                 console.log(e);
                 setErc1155Meta(e);
+            }).catch(e => {
+                console.error("error", e);
             })
 
 
@@ -43,7 +45,7 @@ export default function Collection(props: { unifty: Unifty }) {
             <Flex flexWrap="wrap">{nfts}</Flex>
         </Box>
     </Grid>
-    <BePartTacoCommunity></BePartTacoCommunity>
+        <BePartTacoCommunity></BePartTacoCommunity>
     </>)
 }
 
@@ -66,17 +68,22 @@ function ArtistBadge(props: { info }) {
 function CollectionCardInfo(props: { info }) {
     const imgSizeX = ["200px"]
     const imgSizeY = ["150px"]
-    return (
-        <Flex backgroundColor="white" overflow="hidden" flexDirection="row" justifyContent="space-between" marginBottom={5} marginTop="30px" padding={"20px"} boxShadow="base" borderRadius="sm">
+    if(props.info!=undefined){
+          return (
+      <Flex backgroundColor="white" overflow="hidden" flexDirection="row" justifyContent="space-between" marginBottom={5} marginTop="30px" padding={"20px"} boxShadow="base" borderRadius="sm">
             <Flex flexDirection="column" paddingRight="30px">
                 <Box color="orange" fontSize="x-small">Featured collection</Box>
 
                 <Box fontWeight="bold" padding="15px" paddingLeft="0px" fontSize="xl">{props.info.name}</Box>
                 <Box fontSize="sm">{props.info.description}</Box>
             </Flex>
-                <Center>
-                    <Box backgroundImage={"url("+props.info.image+")"} backgroundPosition="center" backgroundSize={imgSizeX} borderRadius="lg" width={imgSizeX} height={imgSizeY}></Box>
-                </Center>
+            <Center>
+                <Box backgroundImage={"url(" + props.info.image + ")"} backgroundPosition="center" backgroundSize={imgSizeX} borderRadius="lg" width={imgSizeX} height={imgSizeY}></Box>
+            </Center>
 
         </Flex>)
+    }else{
+        return(<Spinner></Spinner>)
+    }
+  
 }

@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, Grid, HStack, Image, Spinner } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Grid, HStack, Image, Spinner, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { defaultFarms } from '../../../pages/farms';
 import Unifty from '../../uniftyLib/UniftyLib';
@@ -12,8 +12,8 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
     const nft = props.nft;
     const unifty = props.unifty;
 
-    const [meta, setMeta] = useState({ image: "", name: "", supply: 0, maxSupply: 0, coin: "" });
-    if (unifty != undefined && nft != undefined) {
+    const [meta, setMeta] = useState({ image: "", name: "", supply: 0, maxSupply: 0, coin: "", price: 0 });
+    if (unifty != undefined && nft != undefined && meta != undefined) {
         useEffect(() => {
             async function func() {
 
@@ -22,6 +22,8 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
                 let network = await unifty.getNetwork()
                 let farmForSupply = unifty.tacoshiFarm;
 
+
+
                 let farmNftData = await unifty.farmNftData(farmForSupply, nft.erc1155, nft.id);
 
                 if (farmNftData.supply == 0) {
@@ -29,21 +31,26 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
                     farmNftData = await unifty.farmNftData(farmForSupply, nft.erc1155, nft.id);
                 }
 
+                let price = Number(farmNftData.points) / 1000000000000000000
+
+                console.log("FarmNftData", farmNftData);
+
+
+
                 let balanceOf = await unifty.balanceOf(nft.erc1155, farmForSupply, nft.id);
 
-                let jsonMeta = await fetch(metaNft).then(r => r.json())
-                /* console.log("Balance: ",balanceOf," / collection",jsonMeta.name);
-                 console.log("realNft",realNft);
-                 console.log("farmNftData",farmNftData.balance);*/
+                let jsonMeta = await fetch(metaNft).then(r => r.json()).catch(e => { console.error(e) })
+
+                console.log();
                 let coin = unifty.getCoinName(farmForSupply);
-                setMeta({ image: jsonMeta.image, name: jsonMeta.name, supply: balanceOf, maxSupply: farmNftData.supply, coin: coin });
+                setMeta({ image: jsonMeta.image, name: jsonMeta.name, supply: balanceOf, maxSupply: farmNftData.supply, coin: coin, price: price });
             }
 
             func();
 
         }, [])
     }
-    return (<Grid overflow="hidden" marginLeft={5} marginBottom="25px" templateRows="1fr 1fr" width={width + "px"} backgroundColor="white" height={height + "px"} borderRadius="15px" boxShadow="lg">
+    return (<Grid overflow="hidden" fontSize="sm" marginLeft={5} marginBottom="25px" templateRows="1fr 1fr" width={width + "px"} backgroundColor="white" height={height + "px"} borderRadius="15px" boxShadow="base">
         {meta.image == "" || nft == undefined ?
             <Center><Spinner /></Center> :
             <Flex padding="5px" width={width + "px"} height={height + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
@@ -54,7 +61,7 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
                 </Box>
                 {meta.coin != "" &&
                     <HStack>
-                        <Box><Coin spacing={0} iconSize="30px" balance={99.9} img={"/icons/" + meta.coin + "_Icon.svg"}></Coin></Box>
+                        <Box><Coin spacing={0} iconSize="20px" balance={meta.price} img={"/icons/" + meta.coin + "_Icon.svg"}></Coin></Box>
                         <CardAvailable supply={meta.supply} maxSupply={meta.maxSupply}></CardAvailable>
 
                     </HStack>
@@ -73,7 +80,12 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
 }
 
 function CardAvailable(props: { supply, maxSupply }) {
-    return <HStack><Box fontWeight="bold">{props.supply + "/" + props.maxSupply}</Box> <Box>Available</Box></HStack>
+    return <HStack>{props.supply > 0 ?
+        <HStack>
+            <Box fontWeight="bold">{props.supply + "/" + props.maxSupply}</Box> <Box fontSize="sm" color="gray">Available</Box>
+        </HStack> : 
+        <Box color="figma.orange.500">Sold out</Box>
+        }</HStack>
 }
 
 function CardTypeBadge(props) {
