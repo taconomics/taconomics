@@ -1,5 +1,6 @@
 import { Button, HStack, Menu, MenuButton, Image, MenuList, Box, Flex, useMediaQuery, Link } from "@chakra-ui/react"
 import React, { useState } from "react"
+import { useEffect } from "react";
 import Unifty from "../../uniftyLib/UniftyLib";
 
 const Lemon_Icon = "/icons/Lemon_Icon.svg";
@@ -21,10 +22,18 @@ export default function UserWallet(props: { unifty: Unifty}) {
         props.unifty.getAccount();
     }
 
-    props.unifty.isConnected().then((e) => {
+    useEffect(()=>{
+        async function con(){
+           let connected= await props.unifty.isConnected();
+           setIsConnected(connected);
+        }
+        con();
+    },[])
+
+   /* props.unifty.isConnected().then((e) => {
         setIsConnected(e);
         return e;
-    })
+    })*/
 
     return (<Box flexGrow={{md:1,lg:1.3}}>
         {
@@ -54,8 +63,20 @@ function WalletContainer(props: { unifty: Unifty, isMobile }) {
 
 }
 
-function Coins({ unifty }) {
-    let lemonBalance = 100.01;
+function Coins(props:{ unifty:Unifty }) {
+    const [chilesBalance,setChiles] = useState(0);
+    const [lemonBalance,setLemons] = useState(0);
+    useEffect(()=>{
+        async function func(){
+            let connected = await props.unifty.isConnected();
+           let chilesPoints = await props.unifty.farmPointsEarned(props.unifty.rabbitFarm,props.unifty.account);
+           let lemonPoints = await props.unifty.farmPointsEarned(props.unifty.tacoshiFarm,props.unifty.account);
+           setChiles(chilesPoints);
+           setLemons(lemonPoints);
+        }
+        func();
+    })
+
     let iconSize = 6;
     let padding = 10;
     return (
@@ -63,7 +84,7 @@ function Coins({ unifty }) {
             <MenuButton as={Button} colorScheme="transparent" margin={6}>
                 <HStack>
                     <Coin spacing={padding} iconSize={iconSize} balance={lemonBalance} img={Lemon_Icon}></Coin>
-                    <Coin spacing={padding} iconSize={iconSize} balance={lemonBalance} img={Chile_Icon}></Coin>
+                    <Coin spacing={padding} iconSize={iconSize} balance={chilesBalance} img={Chile_Icon}></Coin>
                     <Image marginLeft={30} height={2} src={DownArrow_Icon}></Image>
 
                 </HStack>

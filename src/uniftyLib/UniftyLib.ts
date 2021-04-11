@@ -22,6 +22,8 @@ export default class Unifty {
     farmShop: any;
     account: string;
     defaultProxyRegistryAddress: string;
+    tacoshiFarm:string;
+    rabbitFarm:string;
     constructor() {
         this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
         //this.web3.
@@ -67,6 +69,8 @@ export default class Unifty {
             this.farmShop = new this.web3.eth.Contract(farmShopABI, '0xe6f337111Cb71CC1dfB92175cC0e8Cbc3F584fBA', { from: this.account });
             this.account = '';
             this.defaultProxyRegistryAddress = '0xf57b2c51ded3a29e6891aba85459d600256cf317'; // opensea
+            this.rabbitFarm = "0x6200fD0aB93A50fC3b1EF2692Aad8A6b4C8835c0";
+            this.tacoshiFarm= "0xb04f44e15d76b111001D339c60A5AC09B7767571";
 
             // xDAI MAINNET
         } else {
@@ -81,7 +85,19 @@ export default class Unifty {
             this.farmShop = new this.web3.eth.Contract(farmShopABI, '0x3E58801d8F3379bb5090Dc742e60614bC94b1bd8', { from: this.account });
             this.account = '';
             this.defaultProxyRegistryAddress = '0xa5409ec958c83c3f309868babaca7c86dcb077c1'; // opensea
+            this.rabbitFarm = "0xe567c8eE1C362C6CfCb217e43aCfd0F68dC456F2";
+            this.tacoshiFarm= "0xA6fBbE582D41c6ebbb4ad5803793dcce8662C910";
 
+        }
+    }
+
+    getCoinName(address:string){
+        if(address == this.tacoshiFarm){
+            return "Lemon"
+        }
+
+        if(address == this.rabbitFarm){
+            return "Chile"
         }
     }
 
@@ -122,11 +138,20 @@ export default class Unifty {
      * @param {*} farmAddress 
      * @returns Farm token
      */
+    
 
     async farmToken(farmAddress) {
         await this.sleep(this.sleep_time);
         let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
         return await farm.methods.token().call({ from: this.account });
+    };
+
+    async farmPointsEarned(farmAddress, account){
+        await this.sleep(this.sleep_time);
+        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        let earned = await farm.methods.earned(account).call({from:this.account});
+        let decimals = await this.farmTokenDecimals(farmAddress);
+        return earned / Math.pow(10, decimals >= 0 ? decimals : 0);
     };
 
     async farmTokenDecimals(farmAddress) {

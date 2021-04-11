@@ -38,12 +38,13 @@ export const createFakeCards = (cards:number)=>{
     return arr;
 }
 export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
-    const [nfts, setNfts] = useState(createFakeCards(4));
+    const [nfts, setNfts] = useState(createFakeCards(0));
 
     useEffect(() => {
         async function func() {
-            let tacoshi = await getNftsJson(props.unifty, defaultFarms.tacoshiFarm);
-            let rabbit = await getNftsJson(props.unifty, defaultFarms.tacoshiRabbit);
+            let connected = await props.unifty.isConnected();
+            let tacoshi = await getNftsJson(props.unifty, props.unifty.tacoshiFarm);
+            let rabbit = await getNftsJson(props.unifty, props.unifty.rabbitFarm);
             let one = true;
 
             let tacoshiCount = 0;
@@ -61,7 +62,7 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
                     }else{
                         rabbitCount++;
                     }
-                    one!=one;
+                    one=!one;
 
                 
             }
