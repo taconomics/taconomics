@@ -25,8 +25,12 @@ export default function ManageCollection(props: { unifty: Unifty }) {
             if (connected && props.unifty.account != "") {
                 let erc = await props.unifty.getMyErc1155(collection)
                 let realmeta = await props.unifty.readUri(erc.contractURI);
-                setImage(realmeta.image);
-                setMeta({ erc: erc, meta: realmeta });
+                if(realmeta != undefined){
+                    setImage(realmeta.image);
+                    setMeta({ erc: erc, meta: realmeta });
+                }
+                
+                
             }
 
         }

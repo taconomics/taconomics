@@ -36,8 +36,6 @@ export default function Card(props: { nft: any, unifty: Unifty, canEdit?}) {
 
                 let price = Number(farmNftData.points) / 1000000000000000000
 
-                console.log("FarmNftData", farmNftData);
-
                 let balanceOf = await unifty.balanceOf(nft.erc1155, farmForSupply, nft.id);
 
                 let jsonMeta = await fetch(metaNft).then(r => r.json()).catch(e => { console.error(e) })

@@ -22,8 +22,8 @@ export default class Unifty {
     farmShop: any;
     account: string;
     defaultProxyRegistryAddress: string;
-    tacoshiFarm:string;
-    rabbitFarm:string;
+    tacoshiFarm: string;
+    rabbitFarm: string;
     constructor() {
         this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
         //this.web3.
@@ -70,7 +70,7 @@ export default class Unifty {
             this.account = '';
             this.defaultProxyRegistryAddress = '0xf57b2c51ded3a29e6891aba85459d600256cf317'; // opensea
             this.rabbitFarm = "0x6200fD0aB93A50fC3b1EF2692Aad8A6b4C8835c0";
-            this.tacoshiFarm= "0xb04f44e15d76b111001D339c60A5AC09B7767571";
+            this.tacoshiFarm = "0xb04f44e15d76b111001D339c60A5AC09B7767571";
 
             // xDAI MAINNET
         } else {
@@ -86,17 +86,17 @@ export default class Unifty {
             this.account = '';
             this.defaultProxyRegistryAddress = '0xa5409ec958c83c3f309868babaca7c86dcb077c1'; // opensea
             this.rabbitFarm = "0xe567c8eE1C362C6CfCb217e43aCfd0F68dC456F2";
-            this.tacoshiFarm= "0xA6fBbE582D41c6ebbb4ad5803793dcce8662C910";
+            this.tacoshiFarm = "0xA6fBbE582D41c6ebbb4ad5803793dcce8662C910";
 
         }
     }
 
-    getCoinName(address:string){
-        if(address == this.tacoshiFarm){
+    getCoinName(address: string) {
+        if (address == this.tacoshiFarm) {
             return "Lemon"
         }
 
-        if(address == this.rabbitFarm){
+        if (address == this.rabbitFarm) {
             return "Chile"
         }
     }
@@ -122,10 +122,11 @@ export default class Unifty {
     async getNetwork() {
         return await this.web3.eth.net.getId();
     }
-    async readUri(uri){
-        let jsonMeta = await fetch(uri).then(r => r.json()).catch(e=>{console.error(e)})
-
-        return jsonMeta;
+    async readUri(uri) {
+        if (uri != undefined) {
+            let jsonMeta = await fetch(uri).then(r => r.json()).catch(e => { if(e!=undefined)console.error("Error reading uri") })
+            return jsonMeta;
+        }
     }
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -138,7 +139,7 @@ export default class Unifty {
      * @param {*} farmAddress 
      * @returns Farm token
      */
-    
+
 
     async farmToken(farmAddress) {
         await this.sleep(this.sleep_time);
@@ -146,18 +147,18 @@ export default class Unifty {
         return await farm.methods.token().call({ from: this.account });
     };
 
-    async farmPointsEarned(farmAddress, account){
+    async farmPointsEarned(farmAddress, account) {
         await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
-        let earned = await farm.methods.earned(account).call({from:this.account});
+        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+        let earned = await farm.methods.earned(account).call({ from: this.account });
         let decimals = await this.farmTokenDecimals(farmAddress);
         return earned / Math.pow(10, decimals >= 0 ? decimals : 0);
     };
-    async farmShopGetPrice(shopAddress, erc1155Address, id){
+    async farmShopGetPrice(shopAddress, erc1155Address, id) {
         await this.sleep(this.sleep_time);
-        let shop = new this.web3.eth.Contract( farmShopABI, shopAddress, {from:this.account} );
+        let shop = new this.web3.eth.Contract(farmShopABI, shopAddress, { from: this.account });
 
-        let ret = await shop.methods.getPrice(erc1155Address, id).call({from:this.account});
+        let ret = await shop.methods.getPrice(erc1155Address, id).call({ from: this.account });
         return ret;
     };
 
@@ -316,29 +317,29 @@ export default class Unifty {
 
         return '';
     };
-    async newNft(supply, maxSupply, jsonUrl, erc1155Address, preCallback, postCallback, errCallback){
+    async newNft(supply, maxSupply, jsonUrl, erc1155Address, preCallback, postCallback, errCallback) {
 
         console.log('address: ', erc1155Address);
 
-        let erc1155 = new this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
+        let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
 
         await this.sleep(this.sleep_time);
         const gas = await erc1155.methods.create(parseInt(maxSupply), parseInt(supply), jsonUrl, this.web3.utils.fromAscii('')).estimateGas({
-            from:this.account,
+            from: this.account,
         });
         const price = await this.web3.eth.getGasPrice();
 
         erc1155.methods.create(parseInt(maxSupply), parseInt(supply), jsonUrl, this.web3.utils.fromAscii(''))
             .send({
-                from:this.account,
-                gas: gas + Math.floor( gas * 0.1 ),
-                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+                from: this.account,
+                gas: gas + Math.floor(gas * 0.1),
+                gasPrice: Number(price) + Math.floor(Number(price) * 0.1)
             })
-            .on('error', async function(e){
+            .on('error', async function (e) {
                 console.log(e);
                 errCallback();
             })
-            .on('transactionHash', async function(transactionHash){
+            .on('transactionHash', async function (transactionHash) {
                 console.log('hash', transactionHash);
                 preCallback();
             })
@@ -355,7 +356,7 @@ export default class Unifty {
         await this.sleep(this.sleep_time);
         if (this.genesis != undefined && this.account != "") {
             let erc1155 = await this.genesis.methods.getPool(this.account, index).call({ from: this.account });
-           // console.log(erc1155);
+            // console.log(erc1155);
             let meta = await this.getErc1155Meta(erc1155);
             let _pool = { erc1155: erc1155, contractURI: meta.contractURI, name: meta.name, symbol: meta.symbol };
             return _pool;
@@ -484,27 +485,27 @@ export default class Unifty {
             });
     };
 
-    async updateUri(nftId, jsonUrl, erc1155Address, preCallback, postCallback, errCallback){
+    async updateUri(nftId, jsonUrl, erc1155Address, preCallback, postCallback, errCallback) {
 
-        let erc1155 = new this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
+        let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
 
         await this.sleep(this.sleep_time);
         const gas = await erc1155.methods.updateUri(parseInt(nftId), jsonUrl).estimateGas({
-            from:this.account,
+            from: this.account,
         });
         const price = await this.web3.eth.getGasPrice();
 
         erc1155.methods.updateUri(parseInt(nftId), jsonUrl)
             .send({
-                from:this.account,
-                gas: gas + Math.floor( gas * 0.1 ),
-                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+                from: this.account,
+                gas: gas + Math.floor(gas * 0.1),
+                gasPrice: Number(price) + Math.floor(Number(price) * 0.1)
             })
-            .on('error', async function(e){
+            .on('error', async function (e) {
                 console.log(e);
                 errCallback(e);
             })
-            .on('transactionHash', async function(transactionHash){
+            .on('transactionHash', async function (transactionHash) {
                 console.log('hash', transactionHash);
                 preCallback(transactionHash);
             })
@@ -513,30 +514,30 @@ export default class Unifty {
             });
     };
 
-    async setContractURI(erc1155Address, uri, preCallback, postCallback, errCallback){
+    async setContractURI(erc1155Address, uri, preCallback, postCallback, errCallback) {
 
-        let erc1155 = new  this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
+        let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
 
         await this.sleep(this.sleep_time);
-        let balanceOf = await this.nif.methods.balanceOf(this.account).call({from:this.account});
+        let balanceOf = await this.nif.methods.balanceOf(this.account).call({ from: this.account });
 
         await this.sleep(this.sleep_time);
         const gas = await erc1155.methods.setContractURI(uri).estimateGas({
-            from:this.account
+            from: this.account
         });
         const price = await this.web3.eth.getGasPrice();
 
         await erc1155.methods.setContractURI(uri)
             .send({
-                from:this.account,
-                gas: gas + Math.floor( gas * 0.1 ),
-                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+                from: this.account,
+                gas: gas + Math.floor(gas * 0.1),
+                gasPrice: Number(price) + Math.floor(Number(price) * 0.1)
             })
-            .on('error', async function(e){
+            .on('error', async function (e) {
                 console.log(e);
                 errCallback();
             })
-            .on('transactionHash', async function(transactionHash){
+            .on('transactionHash', async function (transactionHash) {
                 console.log('hash', transactionHash);
                 preCallback();
             })

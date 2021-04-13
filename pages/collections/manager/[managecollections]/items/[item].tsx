@@ -15,7 +15,7 @@ export default function ItemManager(props: { unifty: Unifty }) {
     const collection = router.query.managecollections as string;
     const isNew = item == "new" ? true : false;
     const [erc, setErc] = useState(undefined);
-    const [meta, setMeta] = useState(undefined);
+    const [meta, setMeta] = useState(isNew?{name:"",description:"",image:""}:undefined);
     const toast = useToast();
     const unifty = props.unifty;
 
@@ -40,13 +40,12 @@ export default function ItemManager(props: { unifty: Unifty }) {
 
         func()
 
-    }, [setErc, collection, item,setMeta])
-    console.log("Dentro", erc);
+    }, [setErc, collection, item,setMeta,isNew])
     return (<GridContent  >
         <Box fontSize="xl" fontWeight="bold">{isNew ? "New Item" : "Edit Item"}</Box>
-        {meta?<Formik initialValues={{ name: meta.name, rarity: "ExtraRaro", lemons: 1, eth: 10, instant: 10, url: "drokt.com", description: meta.description }} onSubmit={(values, actions) => {
+        {meta!=undefined?<Formik initialValues={{ name: meta.name, rarity: "ExtraRaro", lemons: 1, eth: 10, instant: 10, url: "drokt.com", description: meta.description }} onSubmit={(values, actions) => {
             console.log(erc)
-            onSubmit(values, actions, props.unifty, erc, toast);
+            onSubmit(values, actions, props.unifty, erc, toast,meta,isNew,item);
         }}>
             {
                 (props) => (
@@ -65,7 +64,7 @@ export default function ItemManager(props: { unifty: Unifty }) {
                                     <DNumberInput />
                                 </InputValidator>
                                 <InputValidator name="url" placeholder="Url" label="Url" ></InputValidator>
-                                <DisplayImage meta={meta} unifty={unifty}></DisplayImage>
+                                <DisplayImage setMeta={setMeta} meta={meta} unifty={unifty}></DisplayImage>
                             </VStack>
                             <Box flexGrow={3}>
                                 <InputValidator name="description" label="Description" placeholder="Item description...">
@@ -107,22 +106,61 @@ function validateNumber(value) {
             }
     return error
 }
-function DisplayImage({unifty,meta}) {
+function DisplayImage({unifty,meta,setMeta}) {
     console.log(meta)
-    const [image,setImage] = useState(meta.image?meta.image:undefined);
+   const setImage =(image)=>{
+       setMeta({...meta,image:image});
+       
+   }
 
-    return (<Box><UploadImage setImage={setImage} image={image} unifty={unifty}></UploadImage></Box>)
+    return (<Box><UploadImage setImage={setImage} image={meta.image} unifty={unifty}></UploadImage></Box>)
 }
-async function onSubmit(values, actions, unifty: Unifty, erc, toast) {
-
-    let jsonUrl = ""
+async function onSubmit(values, actions, unifty: Unifty, erc, toast,meta,isNew,item) {
     let toastTime = 20000;
     let toastPosition = "bottom-right"
-    console.log(erc)
+    let nftInfo = {
+        name : values.name,
+        description : values.description,
+        image : meta.image,
+        external_link : meta.url,
+        attributes: meta.attributes
+    };
+    toast({
+        title: "Uploading data to IPFS",
+        description: "Please wait...",
+        status: "info",
+        duration: toastTime/2,
+        position: toastPosition,
+        isClosable: true,
+    })
+    let ipfs = await unifty.ipfs.add(JSON.stringify(nftInfo));
+    toast({
+        title: "Uploading data to IPFS",
+        description: "Done",
+        status: "success",
+        duration: toastTime/2,
+        position: toastPosition,
+        isClosable: true,
+    })
+
+    let jsonUrl = "https://gateway.ipfs.io/ipfs/" + ipfs.path
+    console.log("Jsonurl",jsonUrl)
+    if(isNew){
+        newNft(unifty,toast,jsonUrl,erc,actions);
+    }else{
+        updateNft(unifty,toast,jsonUrl,erc,item,actions);
+    }
+    
+
+}
+
+function newNft(unifty,toast,jsonUrl,erc,actions){
+    let toastTime = 20000;
+    let toastPosition = "bottom-right"
     const nft = unifty.newNft(1, 1000, jsonUrl, erc.erc1155, (e) => {
         console.log("precall", e)
         toast({
-            title: "Updating collection",
+            title: "Creating new NFT",
             description: "Please wait...",
             status: "info",
             duration: toastTime,
@@ -134,7 +172,7 @@ async function onSubmit(values, actions, unifty: Unifty, erc, toast) {
             console.log("postcall", e);
             toast({
                 title: "Transaction finished",
-                description: "Collection has been updated successfully.",
+                description: "New NFT has been created.",
                 status: "success",
                 duration: toastTime,
                 position: toastPosition,
@@ -154,5 +192,45 @@ async function onSubmit(values, actions, unifty: Unifty, erc, toast) {
             })
             actions.resetForm();
         })
+}
 
+
+function updateNft(unifty:Unifty,toast,jsonUrl,erc,item,actions){
+    let toastTime = 20000;
+    let toastPosition = "bottom-right"
+    const nft = unifty.updateUri(item,jsonUrl,erc.erc1155, (e) => {
+        console.log("precall", e)
+        toast({
+            title: "Updating NFT",
+            description: "Please wait...",
+            status: "info",
+            duration: toastTime,
+            position: toastPosition,
+            isClosable: true,
+        })
+    },
+        e => {
+            console.log("postcall", e);
+            toast({
+                title: "Transaction finished",
+                description: "NFT has been updated.",
+                status: "success",
+                duration: toastTime,
+                position: toastPosition,
+                isClosable: true,
+            })
+            actions.resetForm();
+        },
+        e => {
+            console.error("error", e)
+            toast({
+                title: "Transaction finished",
+                description: "Something happened...",
+                status: "error",
+                duration: toastTime,
+                position: toastPosition,
+                isClosable: true,
+            })
+            actions.resetForm();
+        })
 }
