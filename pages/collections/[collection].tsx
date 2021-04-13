@@ -16,13 +16,7 @@ export default function Collection(props: { unifty: Unifty }) {
     useEffect(() => {
         const func = async () => {
             if (collection != undefined) {
-                let nfts = await props.unifty.getNftsByUri(collection);
-                let col = [];
-                for (const nft of nfts) {
-                    const name = Math.floor(Math.random() * 100);
-                    let json = { erc1155: collection, id: nft };
-                    col.push(<Card unifty={props.unifty} key={name} nft={json}></Card>);
-                }
+               let col = await getCollectionCards(props.unifty,collection);
                 setNfts(col);
             }
             let erc1155Meta = await props.unifty.getErc1155Meta(collection);
@@ -49,6 +43,17 @@ export default function Collection(props: { unifty: Unifty }) {
     </>)
 }
 
+export async function getCollectionCards(unifty:Unifty,collection:string) {
+    let nfts = await unifty.getNftsByUri(collection);
+    let col = [];
+    for (const nft of nfts) {
+        const name = Math.floor(Math.random() * 100);
+        let json = { erc1155: collection, id: nft };
+        col.push(<Card unifty={unifty} key={name} nft={json}></Card>);
+    }
+    return col;
+}
+
 
 export function ArtistInfo(props: { unifty: Unifty, info: any }) {
     return (<Flex>
@@ -68,22 +73,22 @@ function ArtistBadge(props: { info }) {
 function CollectionCardInfo(props: { info }) {
     const imgSizeX = ["200px"]
     const imgSizeY = ["150px"]
-    if(props.info!=undefined){
-          return (
-      <Flex backgroundColor="white" overflow="hidden" flexDirection="row" justifyContent="space-between" marginBottom={5} marginTop="30px" padding={"20px"} boxShadow="base" borderRadius="sm">
-            <Flex flexDirection="column" paddingRight="30px">
-                <Box color="orange" fontSize="x-small">Featured collection</Box>
+    if (props.info != undefined) {
+        return (
+            <Flex backgroundColor="white" overflow="hidden" flexDirection="row" justifyContent="space-between" marginBottom={5} marginTop="30px" padding={"20px"} boxShadow="base" borderRadius="sm">
+                <Flex flexDirection="column" paddingRight="30px">
+                    <Box color="orange" fontSize="x-small">Featured collection</Box>
 
-                <Box fontWeight="bold" padding="15px" paddingLeft="0px" fontSize="xl">{props.info.name}</Box>
-                <Box fontSize="sm">{props.info.description}</Box>
-            </Flex>
-            <Center>
-                <Box backgroundImage={"url(" + props.info.image + ")"} backgroundPosition="center" backgroundSize={imgSizeX} borderRadius="lg" width={imgSizeX} height={imgSizeY}></Box>
-            </Center>
+                    <Box fontWeight="bold" padding="15px" paddingLeft="0px" fontSize="xl">{props.info.name}</Box>
+                    <Box fontSize="sm">{props.info.description}</Box>
+                </Flex>
+                <Center>
+                    <Box backgroundImage={"url(" + props.info.image + ")"} backgroundPosition="center" backgroundSize={imgSizeX} borderRadius="lg" width={imgSizeX} height={imgSizeY}></Box>
+                </Center>
 
-        </Flex>)
-    }else{
-        return(<Spinner></Spinner>)
+            </Flex>)
+    } else {
+        return (<Spinner></Spinner>)
     }
-  
+
 }

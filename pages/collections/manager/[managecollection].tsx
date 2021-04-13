@@ -1,9 +1,10 @@
-import { Box, Button, Center, chakra, Flex, FormControl, FormErrorMessage, FormLabel, Input, Textarea, useToast } from "@chakra-ui/react";
+import { Box, Button, Center, chakra, Flex, FormControl, FormErrorMessage, FormLabel, HStack, Input, Textarea, useToast } from "@chakra-ui/react";
 import { Field, Form, Formik, useFormik } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import GridContent from "../../../src/components/GridContent";
 import Unifty from "../../../src/uniftyLib/UniftyLib";
+import { getCollectionCards } from "../[collection]";
 
 export default function ManageCollection(props: { unifty: Unifty }) {
     const router = useRouter();
@@ -37,9 +38,31 @@ export default function ManageCollection(props: { unifty: Unifty }) {
                 {data.meta.name != undefined && <FormEdit image={image} id={collection} toast={toast} data={data} unifty={props.unifty}></FormEdit>}
             </Box>
         </Flex>}
+        <CollectionItems unifty={props.unifty} collection={data.erc}></CollectionItems>
     </GridContent>)
 }
-function CollectionImage({ image, setImage,unifty }) {
+
+function CollectionItems(props: { unifty: Unifty, collection: any }) {
+    const [items, set] = useState([]);
+    useEffect(() => {
+        async function name() {
+            if (props.collection.erc1155 != undefined) {
+                console.log("Items collection", props.collection.erc1155)
+                let items = await getCollectionCards(props.unifty, props.collection.erc1155);
+                console.log(items);
+                set(items);
+            }
+
+        }
+        name();
+    }, [props.collection])
+    return (
+        <Box>
+            <Box fontSize="xl" fontWeight="bold">Items</Box>
+            <HStack>{items}</HStack>
+        </Box>)
+}
+function CollectionImage({ image, setImage, unifty }) {
     const [hover, setHover] = useState(false)
     const onEnter = () => {
         setHover(true);
@@ -60,27 +83,27 @@ function CollectionImage({ image, setImage,unifty }) {
         </Center>}
     </Box>)
 }
-const FileUpload = ({ setImage ,unifty}) => {
+const FileUpload = ({ setImage, unifty }) => {
     const inputRef = useRef<HTMLInputElement>();
     const [file, setFile] = useState(undefined)
-    const u:Unifty = unifty;
+    const u: Unifty = unifty;
     const clickButton = () => {
         inputRef.current.click();
     }
     const handleFileInput = (e) => {
         // handle validations
-       
+
         var reader = new FileReader();
-        reader.onload =async function () {
+        reader.onload = async function () {
             console.log(reader.result)
             setFile(reader.result)
-           let ipfs = await u.ipfs.add(reader.result);
-           let ipfsUrl = "https://gateway.ipfs.io/ipfs/" + ipfs.path;
-           setImage(ipfsUrl);
-           console.log(ipfsUrl);
+            let ipfs = await u.ipfs.add(reader.result);
+            let ipfsUrl = "https://gateway.ipfs.io/ipfs/" + ipfs.path;
+            setImage(ipfsUrl);
+            console.log(ipfsUrl);
         };
         reader.readAsArrayBuffer(e.target.files[0]);
-        
+
     }
     return (<Box>
         <input style={{ display: "none" }} ref={inputRef} type="file" accept="image/*" onChange={handleFileInput} />
@@ -88,7 +111,7 @@ const FileUpload = ({ setImage ,unifty}) => {
     </Box>)
 }
 
-function FormEdit({ toast, unifty, data, id,image }) {
+function FormEdit({ toast, unifty, data, id, image }) {
     data["id"] = id;
     console.log(data)
     toast = useToast();
@@ -97,7 +120,7 @@ function FormEdit({ toast, unifty, data, id,image }) {
         <Formik
             initialValues={{ name: data.meta.name, ticker: data.erc.symbol, description: data.meta.description }}
             onSubmit={(values, actions) => {
-                onSubmit(values, actions, toast, unifty, data,image);
+                onSubmit(values, actions, toast, unifty, data, image);
             }}
         >
             {(props) => (
@@ -155,38 +178,60 @@ function validateName(value) {
 }
 
 
-async function onSubmit(values, actions, toast, unifty, data,image) {
+async function onSubmit(values, actions, toast, unifty, data, image) {
     console.log("Values", values)
     let contractInfo = {
         name: values.name,
         description: values.description,
-        image: image!=unifty?image:"",
+        image: image != unifty ? image : "",
         external_link: ""
     };
     let toastTime = 20000;
-    let toastPosition = "bottom-right     "
+    let toastPosition = "bottom-right"
+    console.log("actions", actions)
 
     let u = (unifty as Unifty);
     let ipfs = await u.ipfs.add(JSON.stringify(contractInfo))
 
     let ipfsUrl = "https://gateway.ipfs.io/ipfs/" + ipfs.path;
 
-    console.log(data.erc.erc1155)
 
-    toast({
-        title: "Transaction started.",
-        description: "Please wait...",
-        status: "info",
-        duration: 1000,
-        position: "bottom-left",
-        isClosable: true,
-    })
 
     u.setContractURI(data.erc.erc1155, ipfsUrl,
         (e) => {
             console.log("precall", e)
+            toast({
+                title: "Updating collection",
+                description: "Please wait...",
+                status: "info",
+                duration: toastTime,
+                position: toastPosition,
+                isClosable: true,
+            })
         },
-        e => { console.log("postcall", e) },
-        e => { console.error("error", e) })
+        e => {
+            console.log("postcall", e);
+            toast({
+                title: "Transaction finished",
+                description: "Collection has been updated successfully.",
+                status: "success",
+                duration: toastTime,
+                position: toastPosition,
+                isClosable: true,
+            })
+            actions.resetForm();
+        },
+        e => {
+            console.error("error", e)
+            toast({
+                title: "Transaction finished",
+                description: "Something happened...",
+                status: "error",
+                duration: toastTime,
+                position: toastPosition,
+                isClosable: true,
+            })
+            actions.resetForm();
+        })
 
 }

@@ -6,7 +6,7 @@ import { Coin } from '../UserWallet';
 import styles from './Card.module.scss';
 
 
-export default function Card(props: { nft: any, unifty: Unifty }) {
+export default function Card(props: { nft: any, unifty: Unifty,canEdit? }) {
     let width = 240;
     let height = 300;
     const nft = props.nft;
@@ -19,7 +19,6 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
 
                 let realNft = await unifty.getNft(nft.erc1155, nft.id);
                 let metaNft = await unifty.getNftMeta(nft.erc1155, nft.id);
-                let network = await unifty.getNetwork()
                 let farmForSupply = unifty.tacoshiFarm;
 
 
@@ -35,13 +34,9 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
 
                 console.log("FarmNftData", farmNftData);
 
-
-
                 let balanceOf = await unifty.balanceOf(nft.erc1155, farmForSupply, nft.id);
 
                 let jsonMeta = await fetch(metaNft).then(r => r.json()).catch(e => { console.error(e) })
-
-                console.log();
                 let coin = unifty.getCoinName(farmForSupply);
                 setMeta({ image: jsonMeta.image, name: jsonMeta.name, supply: balanceOf, maxSupply: farmNftData.supply, coin: coin, price: price });
             }
