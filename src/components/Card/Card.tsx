@@ -88,7 +88,7 @@ export function EmptyCard(props:{ setHover, children ,valid?}) {
     valid = valid==undefined?true:valid;
     setHover = setHover ? setHover : (hover) => { }
     return (
-        <Grid display={valid?"grid":"none"} overflow="hidden" position="relative" fontSize="sm" marginLeft={5} marginBottom="25px" templateRows="1fr 1fr" width={cardWidth + "px"}
+        <Grid  overflow="hidden" position="relative" fontSize="sm" marginLeft={5} marginBottom="25px" templateRows="1fr 1fr" width={cardWidth + "px"}
             backgroundColor="white" height={cardHeight + "px"} borderRadius="15px" boxShadow="base"
             onPointerEnter={() => { setHover(true) }} onPointerLeave={() => { setHover(false) }}
         >

@@ -10,8 +10,8 @@ const Chile_Icon = "/icons/Chile_Icon.svg";
 const DownArrow_Icon = "/icons/DownArrow_Icon.svg";
 const Wallet_Icon = "/icons/Wallet_Icon.svg";
 const Taco_Icon = "/icons/Taco_Icon.svg";
-const Molcajete_Icon = "/icons/Lemon_Icon.svg";
-const Cubiertos_Icon = "/icons/Lemon_Icon.svg";
+const Molcajete_Icon = "/icons/Molcajete_Icon.svg";
+const Cubiertos_Icon = "/icons/Cubiertos_Icon.svg";
 
 
 
