@@ -316,6 +316,36 @@ export default class Unifty {
 
         return '';
     };
+    async newNft(supply, maxSupply, jsonUrl, erc1155Address, preCallback, postCallback, errCallback){
+
+        console.log('address: ', erc1155Address);
+
+        let erc1155 = new this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
+
+        await this.sleep(this.sleep_time);
+        const gas = await erc1155.methods.create(parseInt(maxSupply), parseInt(supply), jsonUrl, this.web3.utils.fromAscii('')).estimateGas({
+            from:this.account,
+        });
+        const price = await this.web3.eth.getGasPrice();
+
+        erc1155.methods.create(parseInt(maxSupply), parseInt(supply), jsonUrl, this.web3.utils.fromAscii(''))
+            .send({
+                from:this.account,
+                gas: gas + Math.floor( gas * 0.1 ),
+                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+            })
+            .on('error', async function(e){
+                console.log(e);
+                errCallback();
+            })
+            .on('transactionHash', async function(transactionHash){
+                console.log('hash', transactionHash);
+                preCallback();
+            })
+            .on("receipt", function (receipt) {
+                postCallback(receipt);
+            });
+    };
 
     /**
      * ERC1155  // Collections

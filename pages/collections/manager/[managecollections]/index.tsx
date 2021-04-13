@@ -1,23 +1,28 @@
-import { Box, Button, Center, chakra, Flex, FormControl, FormErrorMessage, FormLabel, HStack, Input, Textarea, useToast } from "@chakra-ui/react";
+import { Box, Button, Center, chakra, Flex, FormControl, FormErrorMessage, FormLabel, HStack, Input, Textarea, useToast, VStack, Image, LinkBox, LinkOverlay } from "@chakra-ui/react";
 import { Field, Form, Formik, useFormik } from "formik";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
-import GridContent from "../../../src/components/GridContent";
-import Unifty from "../../../src/uniftyLib/UniftyLib";
-import { getCollectionCards } from "../[collection]";
+import { cardHeight, cardWidth, EmptyCard } from "../../../../src/components/Card/Card";
+import GridContent from "../../../../src/components/GridContent";
+import Unifty from "../../../../src/uniftyLib/UniftyLib";
+import { getCollectionCards } from "../../[collection]";
+import NextLink from 'next/link'
+import UploadImage from "../../../../src/components/UploadImage";
 
 export default function ManageCollection(props: { unifty: Unifty }) {
     const router = useRouter();
-    const collection = router.query.managecollection as string;
+    const collection = router.query.managecollections as string;
     const toast = useToast();
     const [data, setMeta] = useState({ erc: {}, meta: { name: undefined } });
     const [image, setImage] = useState("");
+
+    console.log("collection", collection)
 
     useEffect(() => {
 
         async function func() {
             let connected = await props.unifty.isConnected();
-            if (connected) {
+            if (connected && props.unifty.account != "") {
                 let erc = await props.unifty.getMyErc1155(collection)
                 let realmeta = await props.unifty.readUri(erc.contractURI);
                 setImage(realmeta.image);
@@ -33,7 +38,7 @@ export default function ManageCollection(props: { unifty: Unifty }) {
     return (<GridContent>
         <Box fontSize="x-large" fontWeight="bold" marginBottom={5}>Edit collection</Box>
         {data.meta != undefined && <Flex>
-            <CollectionImage unifty={props.unifty} setImage={setImage} image={image}></CollectionImage>
+            <UploadImage unifty={props.unifty} setImage={setImage} image={image}></UploadImage>
             <Box flexGrow={2}>
                 {data.meta.name != undefined && <FormEdit image={image} id={collection} toast={toast} data={data} unifty={props.unifty}></FormEdit>}
             </Box>
@@ -48,8 +53,9 @@ function CollectionItems(props: { unifty: Unifty, collection: any }) {
         async function name() {
             if (props.collection.erc1155 != undefined) {
                 console.log("Items collection", props.collection.erc1155)
-                let items = await getCollectionCards(props.unifty, props.collection.erc1155);
+                let items = await getCollectionCards(props.unifty, props.collection.erc1155, true);
                 console.log(items);
+                items.push(<AddItemCard />)
                 set(items);
             }
 
@@ -59,57 +65,33 @@ function CollectionItems(props: { unifty: Unifty, collection: any }) {
     return (
         <Box>
             <Box fontSize="xl" fontWeight="bold">Items</Box>
-            <HStack>{items}</HStack>
+            <HStack flexWrap="wrap">{items}</HStack>
         </Box>)
 }
-function CollectionImage({ image, setImage, unifty }) {
-    const [hover, setHover] = useState(false)
-    const onEnter = () => {
-        setHover(true);
-    }
-    const onExit = () => {
-        setHover(false);
-    }
+function AddItemCard() {
+    const router = useRouter();
 
-    const uploadPhoto = () => {
+    console.log(router);
 
-    }
-    return (<Box minWidth="300px" height="180px" overflow="hidden" marginRight={10} onPointerEnter={onEnter} onPointerLeave={onExit}
+    return (<EmptyCard setHover={undefined}>
 
-        backgroundImage={image != undefined ? "url(" + image + ")" : "none"} backgroundPosition="center"
-        backgroundSize="500px" borderRadius="lg">
-        {<Center backgroundColor="blackAlpha.400" height="100%" marginTop={hover ? "0%" : "100%"} transition="margin-top .5s">
-            <FileUpload unifty={unifty} setImage={setImage}></FileUpload>
-        </Center>}
-    </Box>)
+        <LinkBox cursor="pointer">
+        <NextLink href={router.asPath + "/items/new"} passHref>
+            <Center w={cardWidth} h={cardHeight}>
+                <LinkOverlay>
+
+                    <VStack>
+                        <Image src="/icons/Add_Icon.svg"></Image>
+                        <Box>Add new item</Box>
+                    </VStack>
+                </LinkOverlay>
+
+            </Center>
+        </NextLink>
+        </LinkBox>
+    </EmptyCard>)
 }
-const FileUpload = ({ setImage, unifty }) => {
-    const inputRef = useRef<HTMLInputElement>();
-    const [file, setFile] = useState(undefined)
-    const u: Unifty = unifty;
-    const clickButton = () => {
-        inputRef.current.click();
-    }
-    const handleFileInput = (e) => {
-        // handle validations
 
-        var reader = new FileReader();
-        reader.onload = async function () {
-            console.log(reader.result)
-            setFile(reader.result)
-            let ipfs = await u.ipfs.add(reader.result);
-            let ipfsUrl = "https://gateway.ipfs.io/ipfs/" + ipfs.path;
-            setImage(ipfsUrl);
-            console.log(ipfsUrl);
-        };
-        reader.readAsArrayBuffer(e.target.files[0]);
-
-    }
-    return (<Box>
-        <input style={{ display: "none" }} ref={inputRef} type="file" accept="image/*" onChange={handleFileInput} />
-        <Button variant="outline" colorScheme="figma.white" onClick={clickButton}>Chosse photo</Button>
-    </Box>)
-}
 
 function FormEdit({ toast, unifty, data, id, image }) {
     data["id"] = id;

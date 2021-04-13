@@ -16,7 +16,7 @@ export default function Collection(props: { unifty: Unifty }) {
     useEffect(() => {
         const func = async () => {
             if (collection != undefined) {
-               let col = await getCollectionCards(props.unifty,collection);
+               let col = await getCollectionCards(props.unifty,collection,false);
                 setNfts(col);
             }
             let erc1155Meta = await props.unifty.getErc1155Meta(collection);
@@ -43,13 +43,15 @@ export default function Collection(props: { unifty: Unifty }) {
     </>)
 }
 
-export async function getCollectionCards(unifty:Unifty,collection:string) {
+export async function getCollectionCards(unifty:Unifty,collection:string,canEdit:boolean) {
     let nfts = await unifty.getNftsByUri(collection);
     let col = [];
+    console.log(nfts);
     for (const nft of nfts) {
+        
         const name = Math.floor(Math.random() * 100);
         let json = { erc1155: collection, id: nft };
-        col.push(<Card unifty={unifty} key={name} nft={json}></Card>);
+        col.push(<Card unifty={unifty} canEdit={canEdit} key={name} nft={json}></Card>);
     }
     return col;
 }

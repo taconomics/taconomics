@@ -2,6 +2,8 @@ import { Button, HStack, Menu, MenuButton, Image, MenuList, Box, Flex, useMediaQ
 import React, { useState } from "react"
 import { useEffect } from "react";
 import Unifty from "../../uniftyLib/UniftyLib";
+import NextLink from 'next/link'
+
 
 const Lemon_Icon = "/icons/Lemon_Icon.svg";
 const Chile_Icon = "/icons/Chile_Icon.svg";
@@ -51,7 +53,7 @@ function WalletContainer(props: { unifty: Unifty, isMobile }) {
         return (
             <Flex width="100%" alignItems="center" justifyContent="space-evenly">
 
-                <Box fontFamily="Nunito" fontWeight="extrabold"><Link href="/collections/manager">Collection manager</Link></Box>
+                <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>
                 <Box fontFamily="Nunito" fontWeight="extrabold">My items</Box>
                 <Coins unifty={props.unifty}></Coins>
             </Flex>)

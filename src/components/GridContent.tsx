@@ -2,10 +2,10 @@ import { Box, chakra, Container, Grid } from "@chakra-ui/react"
 import React from "react"
 import { columnTemplate } from "./TacoLayout"
 
-function GridContentSX({ children }) {
-    return <Grid templateColumns={columnTemplate}>
+function GridContentSX(props) {
+    return <Grid templateColumns={columnTemplate} {...props}>
         <Box gridColumn="2/2">
-            {children}
+            {props.children}
         </Box>
     </Grid>
 }

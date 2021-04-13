@@ -1,8 +1,9 @@
 import styles from './Menu.module.scss'
 import UserWallet from '../UserWallet';
-import { Box, Button, Center, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Flex, Input, Link, useDisclosure, useMediaQuery, useStyleConfig } from '@chakra-ui/react'
+import { Box, Button, Center, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Flex, Input, Link, LinkBox, LinkOverlay, useDisclosure, useMediaQuery, useStyleConfig } from '@chakra-ui/react'
 import Image from 'next/image';
 import React from 'react';
+import NextLink from "next/link"
 //import img from "./"
 
 export default function Menu({ unifty }) {
@@ -18,7 +19,11 @@ export default function Menu({ unifty }) {
 }
 
 export function Logo() {
-    return (<Box minWidth="60px"><Link href="/"><Image src="/Logo.svg" layout="intrinsic" width={80} height={80}></Image></Link></Box>)
+    return (<LinkBox minWidth="60px">
+        <NextLink href="/" passHref>
+            <LinkOverlay><Image src="/Logo.svg" layout="intrinsic" width={80} height={80}></Image>
+            </LinkOverlay>
+        </NextLink></LinkBox>)
 }
 
 export function MenuItemsMobile() {
@@ -59,8 +64,8 @@ export function MenuItems(props: { variant?}) {
 
     return (<Flex fontFamily="Nunito, sans-serif;" flexGrow={4} textAlign="center" justifyContent="space-around" variant={"footer"} alignItems="center" sx={styles} fontSize="md" paddingRight={20}>
 
-        <MenuItem><Link href="/collections">Collections</Link></MenuItem>
-        <MenuItem><Link href="/art">Available pieces</Link></MenuItem>
+        <MenuItem><NextLink href="/collections">Collections</NextLink></MenuItem>
+        <MenuItem><NextLink href="/art">Available pieces</NextLink></MenuItem>
         <MenuItem>Buy TACO</MenuItem>
         <MenuItem>Sell your art</MenuItem>
         <MenuItem>About us</MenuItem>
