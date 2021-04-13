@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, HStack, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, propNames, Stack, Textarea, useToast, VStack } from "@chakra-ui/react";
+import { Box, Button, FormControl, FormErrorMessage, FormLabel, HStack, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, propNames, Spinner, Stack, Textarea, useToast, VStack } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
@@ -44,7 +44,7 @@ export default function ItemManager(props: { unifty: Unifty }) {
     console.log("Dentro", erc);
     return (<GridContent  >
         <Box fontSize="xl" fontWeight="bold">{isNew ? "New Item" : "Edit Item"}</Box>
-        <Formik initialValues={{ name: "El NFT", rarity: "ExtraRaro", lemons: 1, eth: 10, instant: 10, url: "drokt.com", description: "Mi nuevo NFT" }} onSubmit={(values, actions) => {
+        {meta?<Formik initialValues={{ name: meta.name, rarity: "ExtraRaro", lemons: 1, eth: 10, instant: 10, url: "drokt.com", description: meta.description }} onSubmit={(values, actions) => {
             console.log(erc)
             onSubmit(values, actions, props.unifty, erc, toast);
         }}>
@@ -84,7 +84,8 @@ export default function ItemManager(props: { unifty: Unifty }) {
                 )
             }
 
-        </Formik>
+        </Formik>:
+        <Spinner></Spinner>}
     </GridContent>)
 }
 
