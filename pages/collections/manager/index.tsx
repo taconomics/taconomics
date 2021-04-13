@@ -47,7 +47,6 @@ function CollectionCard(props: { erc: any, unifty: Unifty, id: number }) {
     const goToEdit = () => {
         router.push(router.route + "/" + props.id)
     }
-    console.log(props.erc);
 
     useEffect(() => {
         async function func() {
@@ -58,7 +57,7 @@ function CollectionCard(props: { erc: any, unifty: Unifty, id: number }) {
         }
         func();
     }, [])
-    return (<Flex flexDir="row" alignItems="center" justifyContent="space-between" backgroundColor="white" borderRadius="lg" margin={5} boxShadow="lg" padding={5}>
+    return (<Flex flexDir="row" key={props.id} alignItems="center" justifyContent="space-between" backgroundColor="white" borderRadius="lg" margin={5} boxShadow="lg" padding={5}>
         <Box>
             <Box color="figma.orange.600" fontWeight="bold" fontSize={"x-small"}>My collection</Box>
             <Flex>

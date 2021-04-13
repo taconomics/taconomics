@@ -46,7 +46,6 @@ export default function Collection(props: { unifty: Unifty }) {
 export async function getCollectionCards(unifty:Unifty,collection:string,canEdit:boolean) {
     let nfts = await unifty.getNftsByUri(collection);
     let col = [];
-    console.log(nfts);
     for (const nft of nfts) {
         
         const name = Math.floor(Math.random() * 100);

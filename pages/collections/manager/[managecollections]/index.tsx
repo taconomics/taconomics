@@ -16,8 +16,6 @@ export default function ManageCollection(props: { unifty: Unifty }) {
     const [data, setMeta] = useState({ erc: {}, meta: { name: undefined } });
     const [image, setImage] = useState("");
 
-    console.log("collection", collection)
-
     useEffect(() => {
 
         async function func() {
@@ -56,9 +54,8 @@ function CollectionItems(props: { unifty: Unifty, collection: any }) {
     useEffect(() => {
         async function name() {
             if (props.collection.erc1155 != undefined) {
-                console.log("Items collection", props.collection.erc1155)
+
                 let items = await getCollectionCards(props.unifty, props.collection.erc1155, true);
-                console.log(items);
                 items.push(<AddItemCard />)
                 set(items);
             }
@@ -75,9 +72,7 @@ function CollectionItems(props: { unifty: Unifty, collection: any }) {
 function AddItemCard() {
     const router = useRouter();
 
-    console.log(router);
-
-    return (<EmptyCard setHover={undefined}>
+    return (<EmptyCard key={12345} setHover={undefined}>
 
         <LinkBox cursor="pointer">
         <NextLink href={router.asPath + "/items/new"} passHref>
@@ -99,7 +94,6 @@ function AddItemCard() {
 
 function FormEdit({ toast, unifty, data, id, image }) {
     data["id"] = id;
-    console.log(data)
     toast = useToast();
 
     return (

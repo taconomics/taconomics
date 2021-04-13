@@ -58,7 +58,7 @@ export default function Card(props: { nft: any, unifty: Unifty, canEdit?}) {
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
                 <CardTypeBadge></CardTypeBadge>
                 <Image maxHeight={cardHeight / 3.4 + "px"} src={meta.image}></Image>
-                <Box fontSize="large" fontWeight="bold">
+                <Box fontSize="large" textAlign="center" fontWeight="bold">
                     {meta.name}
                 </Box>
                 {meta.coin != "" &&

@@ -157,7 +157,7 @@ async function onSubmit(values, actions, unifty: Unifty, erc, toast,meta,isNew,i
 function newNft(unifty,toast,jsonUrl,erc,actions){
     let toastTime = 20000;
     let toastPosition = "bottom-right"
-    const nft = unifty.newNft(1, 1000, jsonUrl, erc.erc1155, (e) => {
+    const nft = unifty.newNft(100, 1000, jsonUrl, erc.erc1155, (e) => {
         console.log("precall", e)
         toast({
             title: "Creating new NFT",
