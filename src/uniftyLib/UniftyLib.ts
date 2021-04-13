@@ -483,6 +483,38 @@ export default class Unifty {
             });
     };
 
+    async setContractURI(erc1155Address, uri, preCallback, postCallback, errCallback){
+
+        let erc1155 = new  this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
+
+        await this.sleep(this.sleep_time);
+        let balanceOf = await this.nif.methods.balanceOf(this.account).call({from:this.account});
+
+        await this.sleep(this.sleep_time);
+        const gas = await erc1155.methods.setContractURI(uri).estimateGas({
+            from:this.account
+        });
+        const price = await this.web3.eth.getGasPrice();
+
+        await erc1155.methods.setContractURI(uri)
+            .send({
+                from:this.account,
+                gas: gas + Math.floor( gas * 0.1 ),
+                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+            })
+            .on('error', async function(e){
+                console.log(e);
+                errCallback();
+            })
+            .on('transactionHash', async function(transactionHash){
+                console.log('hash', transactionHash);
+                preCallback();
+            })
+            .on("receipt", function (receipt) {
+                postCallback(receipt);
+            });
+    };
+
 
 
 }

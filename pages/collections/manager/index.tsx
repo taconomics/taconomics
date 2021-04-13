@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, Grid, Spinner,Image } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Grid, Spinner, Image } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { useState } from "react";
@@ -40,12 +40,12 @@ export default function Manager(props: { unifty: Unifty }) {
     </Grid>)
 }
 
-function CollectionCard(props: { erc: any, unifty: Unifty,id:number }) {
-    const [meta, setMeta] = useState({ description: <Spinner></Spinner>,image:"" });
+function CollectionCard(props: { erc: any, unifty: Unifty, id: number }) {
+    const [meta, setMeta] = useState({ description: <Spinner></Spinner>, image: "",name:"" });
     const router = useRouter();
 
-    const goToEdit =()=>{
-        router.push(router.route+"/"+props.id)
+    const goToEdit = () => {
+        router.push(router.route + "/" + props.id)
     }
     console.log(props.erc);
 
@@ -62,15 +62,18 @@ function CollectionCard(props: { erc: any, unifty: Unifty,id:number }) {
         <Box>
             <Box color="figma.orange.600" fontWeight="bold" fontSize={"x-small"}>My collection</Box>
             <Flex>
-                <Box fontSize="x-large" fontWeight="bold" padding={2}>{props.erc.name}</Box>
+                {meta!=undefined&&<Box fontSize="x-large" fontWeight="bold" padding={2}>{meta.name}</Box>}
                 <Button variant="outline" colorScheme="figma.orange" marginLeft={5} fontWeight="bold" onClick={goToEdit}>Edit collection</Button>
             </Flex>
             <Box>
-                {meta.description}
+                {meta != undefined && meta.description}
             </Box>
         </Box>
-        <Box minWidth="300px" height="180px" overflow="hidden" marginLeft={5} backgroundImage={"url("+meta.image+")"} backgroundPosition="center" backgroundSize="500px" borderRadius="lg">
-        </Box>
+        {meta != undefined &&
+            <Box minWidth="300px" height="180px" overflow="hidden" marginLeft={5} backgroundImage={"url(" + meta.image + ")"} backgroundPosition="center" backgroundSize="500px" borderRadius="lg">
+            </Box>
+        }
+
 
     </Flex>)
 }

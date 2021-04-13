@@ -67,7 +67,7 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
                     </HStack>
                 }
                 <Box><b>0.1</b> to mint</Box>
-                <Button>Connect to wallet</Button>
+                <CardButton unifty={props.unifty}></CardButton>
 
             </Flex>
         }
@@ -78,7 +78,9 @@ export default function Card(props: { nft: any, unifty: Unifty }) {
             </Box>}
     </Grid>)
 }
-
+function CardButton(props:{unifty:Unifty}){
+    return ( <Button variant="outline" colorScheme="figma.orange">Connect to wallet</Button>)
+}
 function CardAvailable(props: { supply, maxSupply }) {
     return <HStack>{props.supply > 0 ?
         <HStack>
