@@ -1,7 +1,7 @@
-import { Box, Button, chakra, Flex, FormControl, FormErrorMessage, FormLabel, Input, Textarea, useToast } from "@chakra-ui/react";
+import { Box, Button, Center, chakra, Flex, FormControl, FormErrorMessage, FormLabel, Input, Textarea, useToast } from "@chakra-ui/react";
 import { Field, Form, Formik, useFormik } from "formik";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import GridContent from "../../../src/components/GridContent";
 import Unifty from "../../../src/uniftyLib/UniftyLib";
 
@@ -9,7 +9,8 @@ export default function ManageCollection(props: { unifty: Unifty }) {
     const router = useRouter();
     const collection = router.query.managecollection as string;
     const toast = useToast();
-    const [data, setMeta] = useState({ erc: {}, meta: { image: "", name: undefined } });
+    const [data, setMeta] = useState({ erc: {}, meta: { name: undefined } });
+    const [image, setImage] = useState("");
 
     useEffect(() => {
 
@@ -18,7 +19,7 @@ export default function ManageCollection(props: { unifty: Unifty }) {
             if (connected) {
                 let erc = await props.unifty.getMyErc1155(collection)
                 let realmeta = await props.unifty.readUri(erc.contractURI);
-
+                setImage(realmeta.image);
                 setMeta({ erc: erc, meta: realmeta });
             }
 
@@ -31,18 +32,63 @@ export default function ManageCollection(props: { unifty: Unifty }) {
     return (<GridContent>
         <Box fontSize="x-large" fontWeight="bold" marginBottom={5}>Edit collection</Box>
         {data.meta != undefined && <Flex>
-            <Box minWidth="300px" height="180px" overflow="hidden" marginRight={10}
-                backgroundImage={data.meta.image != undefined ? "url(" + data.meta.image + ")" : "none"} backgroundPosition="center"
-                backgroundSize="500px" borderRadius="lg">
-            </Box>
+            <CollectionImage unifty={props.unifty} setImage={setImage} image={image}></CollectionImage>
             <Box flexGrow={2}>
-                {data.meta.name != undefined && <FormEdit id={collection} toast={toast} data={data} unifty={props.unifty}></FormEdit>}
+                {data.meta.name != undefined && <FormEdit image={image} id={collection} toast={toast} data={data} unifty={props.unifty}></FormEdit>}
             </Box>
         </Flex>}
     </GridContent>)
 }
+function CollectionImage({ image, setImage,unifty }) {
+    const [hover, setHover] = useState(false)
+    const onEnter = () => {
+        setHover(true);
+    }
+    const onExit = () => {
+        setHover(false);
+    }
 
-function FormEdit({ toast, unifty, data, id }) {
+    const uploadPhoto = () => {
+
+    }
+    return (<Box minWidth="300px" height="180px" overflow="hidden" marginRight={10} onPointerEnter={onEnter} onPointerLeave={onExit}
+
+        backgroundImage={image != undefined ? "url(" + image + ")" : "none"} backgroundPosition="center"
+        backgroundSize="500px" borderRadius="lg">
+        {<Center backgroundColor="blackAlpha.400" height="100%" marginTop={hover ? "0%" : "100%"} transition="margin-top .5s">
+            <FileUpload unifty={unifty} setImage={setImage}></FileUpload>
+        </Center>}
+    </Box>)
+}
+const FileUpload = ({ setImage ,unifty}) => {
+    const inputRef = useRef<HTMLInputElement>();
+    const [file, setFile] = useState(undefined)
+    const u:Unifty = unifty;
+    const clickButton = () => {
+        inputRef.current.click();
+    }
+    const handleFileInput = (e) => {
+        // handle validations
+       
+        var reader = new FileReader();
+        reader.onload =async function () {
+            console.log(reader.result)
+            setFile(reader.result)
+           let ipfs = await u.ipfs.add(reader.result);
+           let ipfsUrl = "https://gateway.ipfs.io/ipfs/" + ipfs.path;
+           setImage(ipfsUrl);
+           console.log(ipfsUrl);
+        };
+        reader.readAsArrayBuffer(e.target.files[0]);
+        
+    }
+    return (<Box>
+        <input style={{ display: "none" }} ref={inputRef} type="file" accept="image/*" onChange={handleFileInput} />
+        <Button variant="outline" colorScheme="figma.white" onClick={clickButton}>Chosse photo</Button>
+    </Box>)
+}
+
+function FormEdit({ toast, unifty, data, id,image }) {
     data["id"] = id;
     console.log(data)
     toast = useToast();
@@ -51,7 +97,7 @@ function FormEdit({ toast, unifty, data, id }) {
         <Formik
             initialValues={{ name: data.meta.name, ticker: data.erc.symbol, description: data.meta.description }}
             onSubmit={(values, actions) => {
-                onSubmit(values, actions, toast, unifty, data);
+                onSubmit(values, actions, toast, unifty, data,image);
             }}
         >
             {(props) => (
@@ -109,12 +155,12 @@ function validateName(value) {
 }
 
 
-async function onSubmit(values, actions, toast, unifty, data) {
+async function onSubmit(values, actions, toast, unifty, data,image) {
     console.log("Values", values)
     let contractInfo = {
         name: values.name,
         description: values.description,
-        image: "",
+        image: image!=unifty?image:"",
         external_link: ""
     };
     let toastTime = 20000;

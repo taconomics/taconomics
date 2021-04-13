@@ -29,6 +29,12 @@ const colors = {
       500: "#FF6C63",
       600: "#F35F33",
       700: "#E14517",
+    },
+    white: {
+      50:"#FFFFFF20",
+      500: "#FFFFFF",
+      600: "#FFFFFF",
+      700: "#FFFFFF",
     }
   }
 }
