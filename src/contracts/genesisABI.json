@@ -1,4 +1,4 @@
-export const genesisABI = [
+[
     {
         "constant": false,
         "inputs": [
@@ -517,4 +517,4 @@ export const genesisABI = [
         "stateMutability": "view",
         "type": "function"
     }
-];
+]

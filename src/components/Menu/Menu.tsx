@@ -65,9 +65,9 @@ export function MenuItems(props: { variant?}) {
     return (<Flex fontFamily="Nunito, sans-serif;" flexGrow={4} textAlign="center" justifyContent="space-around" variant={"footer"} alignItems="center" sx={styles} fontSize="md" paddingRight={20}>
 
         <MenuItem><NextLink href="/collections">Collections</NextLink></MenuItem>
-        <MenuItem><NextLink href="/art">Available pieces</NextLink></MenuItem>
+        <MenuItem><NextLink href="/available-pieces">Available pieces</NextLink></MenuItem>
         <MenuItem>Buy TACO</MenuItem>
-        <MenuItem>Sell your art</MenuItem>
+        <MenuItem><NextLink href="/sell-your-art">Sell your art</NextLink></MenuItem>
         <MenuItem>About us</MenuItem>
 
 

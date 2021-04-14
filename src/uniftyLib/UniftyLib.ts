@@ -1,12 +1,13 @@
 import Web3 from "web3";
-import { erc1155ABI } from '../contracts/erc1155ABI';
-import { erc20ABI } from '../contracts/erc20ABI';
-import { nifABI } from '../contracts/nifABI';
-import { genesisABI } from '../contracts/genesisABI';
-import { farmABI } from '../contracts/farmABI';
-import { farmShopABI } from '../contracts/farmShopABI';
+const erc1155ABI = require('../contracts/erc1155ABI.json');
+const erc20ABI = require('../contracts/erc20ABI.json');
+const nifABI = require('../contracts/nifABI.json') ;
+const genesisABI = require('../contracts/genesisABI.json');
+const  farmABI= require('../contracts/farmABI.json');
+const farmShopABI = require('../contracts/farmShopABI.json');
 import { createContext, useEffect } from "react";
 import ipfsClient from 'ipfs-http-client'
+import { ClientOptions } from "ipfs-http-client/src/lib/core";
 
 //const web3 = createContext(new Web3(Web3.givenProvider || "ws://localhost:8545"));
 
@@ -36,7 +37,8 @@ export default class Unifty {
 
     }
     async createIpfsServer() {
-        this.ipfs = ipfsClient('https://ipfs.infura.io:5001');
+        let options:ClientOptions = {url:"https://ipfs.infura.io:5001"}
+        this.ipfs = ipfsClient(options);
     }
     async isConnected() {
         var ab;

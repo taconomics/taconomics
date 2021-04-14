@@ -11,13 +11,8 @@ export default function TacoLayout(props){
     const unifty = new Unifty();
    // const colTem = "minmax(10px,.1fr) 3fr minmax(10px,.1fr)";
     const rowTem = "100px 3fr 1fr";
-    const [reload,setReload] = useState(undefined);
 
    let clonedElement = React.cloneElement(props.children, { unifty:unifty })
-   useEffect(()=>{
-    setReload("si");
-   })
-   console.log(reload);
     return(<Grid templateColumns={columnTemplate} maxWidth="100vw" templateRows={rowTem}>
       
         <Box gridColumn="2/2"><Menu unifty={unifty}></Menu></Box>

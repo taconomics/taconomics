@@ -8,14 +8,12 @@ import styles from './Collections.module.scss';
 import { columnTemplate } from '../../src/components/TacoLayout'
 import Carousel from 'react-elastic-carousel'
 import { BePartTacoCommunity } from "..";
+import GridContent from "../../src/components/GridContent";
 
 export default function Collections({ unifty }) {
     return (<>
-        
-    <Flex w={"100vw"}>
-        <AllCollections unifty={unifty}></AllCollections>
-    </Flex>
-    <BePartTacoCommunity></BePartTacoCommunity>
+            <AllCollections unifty={unifty}></AllCollections>
+        <BePartTacoCommunity></BePartTacoCommunity>
     </>)
 }
 export async function getFeaturedCollections(unifty: Unifty) {
@@ -24,7 +22,7 @@ export async function getFeaturedCollections(unifty: Unifty) {
     if (network === 1) {
         //On Mainet
         featuredCollections = ["0x5d57b91984e4e7d37772c621fc91377a28a7fb1f", "0x2B015207B5259B7fBb80Bb441726305382287674",
-         "0xd5dfb159788856f9fd5f897509d5a68b7b571ea8","0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb"]
+            "0xd5dfb159788856f9fd5f897509d5a68b7b571ea8", "0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb"]
     } else {
         featuredCollections = ["0x9162E7bAA5239C2eaA1901132DAd5da08730fEd8", "0x18f42d699Fc56ddd92FFDD2a5EaDBec1a4082Bf5"]
     }
@@ -34,7 +32,7 @@ export async function getFeaturedCollections(unifty: Unifty) {
 
 }
 
-export function AllCollections(props: { unifty: Unifty }){
+export function AllCollections(props: { unifty: Unifty }) {
     let featuredCollections = [];
     let [cards, setCards] = useState(undefined);
     useEffect(() => {
@@ -51,19 +49,14 @@ export function AllCollections(props: { unifty: Unifty }){
         func();
     }, [])
 
-    return (<Grid variant="content" templateColumns={columnTemplate}>
-         
-        <Box gridColumn="2/2">
-            <Box fontWeight="bold" marginBottom={5} fontSize="x-large">All Collections</Box>
-            <Flex flexWrap="wrap">
-    
-                {cards}
-            </Flex>
-        </Box>
-        
+    return (<GridContent>
+        <Box fontWeight="bold" marginBottom={5} fontSize="x-large">All Collections</Box>
+        <Flex w="100%" flexWrap="wrap">
 
-
-    </Grid>) 
+            {cards}
+        </Flex>
+    </GridContent>
+    )
 }
 export function FeaturedCollections(props: { unifty: Unifty }) {
     let featuredCollections = [];
@@ -71,7 +64,7 @@ export function FeaturedCollections(props: { unifty: Unifty }) {
     const [isTablet] = useMediaQuery("(max-width: 1124px)")
     const [isMobile] = useMediaQuery("(max-width: 768px)")
 
-    let itemsToShow = isTablet?isMobile?1:2:4;
+    let itemsToShow = isTablet ? isMobile ? 1 : 2 : 4;
     useEffect(() => {
 
         const func = async () => {
@@ -87,16 +80,16 @@ export function FeaturedCollections(props: { unifty: Unifty }) {
     }, [])
 
     return (<Grid variant="content" templateColumns={columnTemplate}>
-         
+
         <Box gridColumn="2/2">
             <Box fontWeight="bold" marginBottom={5} fontSize="x-large">Featured Collections</Box>
             <Flex flexWrap="wrap">
-            <Carousel itemsToShow={itemsToShow} isRTL={false} showArrows={false}>
-                {cards}
+                <Carousel itemsToShow={itemsToShow} isRTL={false} showArrows={false}>
+                    {cards}
                 </Carousel>
             </Flex>
         </Box>
-        
+
 
 
     </Grid>)
@@ -115,7 +108,7 @@ export function CollectionCard({ address, unifty }) {
 
                 fetch(metaUri.contractURI).then(r => r.json()).then(e => {
                     setMeta(e);
-                }).catch(e=>{console.error(e)})
+                }).catch(e => { console.error(e) })
 
             })
 

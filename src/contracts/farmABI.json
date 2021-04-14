@@ -1,4 +1,4 @@
-export const farmABI = [
+ [
     {
         "inputs": [
             {
@@ -1867,4 +1867,4 @@ export const farmABI = [
         "stateMutability": "nonpayable",
         "type": "function"
     }
-];
+]

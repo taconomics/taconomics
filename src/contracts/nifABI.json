@@ -1,4 +1,4 @@
-export const nifABI = [
+[
     {
         "inputs": [],
         "stateMutability": "nonpayable",
@@ -287,4 +287,4 @@ export const nifABI = [
         "stateMutability": "view",
         "type": "function"
     }
-];
+]

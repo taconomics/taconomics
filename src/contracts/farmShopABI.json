@@ -1,4 +1,4 @@
-export const farmShopABI = [
+[
     {
         "inputs": [],
         "payable": false,
@@ -798,4 +798,4 @@ export const farmShopABI = [
         "stateMutability": "view",
         "type": "function"
     }
-];
+]

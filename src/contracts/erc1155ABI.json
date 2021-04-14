@@ -1,4 +1,4 @@
-export const erc1155ABI = [
+[
     {
         "inputs": [
             {
@@ -925,4 +925,4 @@ export const erc1155ABI = [
         "stateMutability": "pure",
         "type": "function"
     }
-];
+]
