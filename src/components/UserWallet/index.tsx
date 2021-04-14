@@ -33,7 +33,7 @@ export default function UserWallet(props: { unifty: Unifty}) {
     },[])
 
 
-    return (<Box flexGrow={{md:1,lg:1.3}}>
+    return (<Box flexGrow={{md:1,lg:1.3}} >
         {
             !isConnected ?
 
@@ -51,7 +51,7 @@ function WalletContainer(props: { unifty: Unifty, isMobile }) {
         return <Button>Wallet</Button>
     } else {
         return (
-            <Flex width="100%" alignItems="center" justifyContent="space-evenly">
+            <Flex width="100%" flexDir="row" alignItems="center" justifyContent="space-between">
 
                 <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>
                 <Box fontFamily="Nunito" fontWeight="extrabold">My items</Box>
@@ -82,8 +82,8 @@ function Coins(props:{ unifty:Unifty }) {
     let iconSize = 6;
     let padding = 10;
     return (
-        <Menu placement="top-end">
-            <MenuButton as={Button} colorScheme="transparent" margin={6}>
+        <Menu placement="top-end" >
+            <MenuButton as={Button} colorScheme="transparent" margin={0}>
                 <HStack>
                     <Coin spacing={padding} iconSize={iconSize} balance={lemonBalance} img={Lemon_Icon}></Coin>
                     <Coin spacing={padding} iconSize={iconSize} balance={chilesBalance} img={Chile_Icon}></Coin>
