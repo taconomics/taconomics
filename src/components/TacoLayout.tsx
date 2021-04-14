@@ -13,7 +13,7 @@ export default function TacoLayout(props){
     const rowTem = "100px 3fr 1fr";
 
    let clonedElement = React.cloneElement(props.children, { unifty:unifty })
-    return(<Grid templateColumns={columnTemplate} maxWidth="100vw" templateRows={rowTem}>
+    return(<Grid templateColumns={columnTemplate} maxWidth="100vw" minH={"20vw"} templateRows={rowTem}>
       
         <Box gridColumn="2/2"><Menu unifty={unifty}></Menu></Box>
         <Box  gridColumn="1/4">{clonedElement}</Box>
