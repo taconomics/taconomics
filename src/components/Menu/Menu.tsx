@@ -68,7 +68,7 @@ export function MenuItems(props: { variant?}) {
         <MenuItem><NextLink href="/available-pieces">Available pieces</NextLink></MenuItem>
         <MenuItem><NextLink href="/buy-taco">Buy TACO</NextLink></MenuItem>
         <MenuItem><NextLink href="/sell-your-art">Sell your art</NextLink></MenuItem>
-        <MenuItem>About us</MenuItem>
+        <MenuItem><NextLink href="/about">About us</NextLink></MenuItem>
 
 
 
