@@ -241,6 +241,15 @@ export default class Unifty {
 
         return card_data;
     };
+    async farmBalanceOf(farmAddress, account){
+        await this.sleep(this.sleep_time);
+        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        let balance = await farm.methods.balanceOf(account).call({from:this.account});
+        let decimals = await this.farmTokenDecimals(farmAddress);
+        console.log("Received balance", balance);
+        return balance / Math.pow(10, decimals >= 0 ? decimals : 0);
+    };
+
 
     /**
      * Nfts

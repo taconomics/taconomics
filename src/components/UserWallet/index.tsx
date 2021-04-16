@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import { useEffect } from "react";
 import Unifty from "../../uniftyLib/UniftyLib";
 import NextLink from 'next/link'
+import ManageStake from "../ManageStake";
 
 
 const Lemon_Icon = "/icons/Lemon_Icon.svg";
@@ -98,7 +99,7 @@ function Coins(props:{ unifty:Unifty }) {
 
             </MenuButton>
             <MenuList borderColor="#D4D4D4" borderWidth="2px" padding="25px" minW="100%">
-                <ManageStakeMenu></ManageStakeMenu>
+                <ManageStakeMenu unifty={props.unifty}></ManageStakeMenu>
             </MenuList>
         </Menu>
 
@@ -118,14 +119,28 @@ function ButtonConnect({ onClickConnect }) {
     return (<Button onClick={onClickConnect} colorScheme="blackButton" leftIcon={<Image width="20px" src={Wallet_Icon} />}>Connect wallet</Button>)
 }
 
-function ManageStakeMenu(props) {
+function ManageStakeMenu(props:{unifty:Unifty}) {
+    const [taco,setTaco] = useState(0);
+    const [salsa,setSalsa] = useState(0);
+    useEffect(()=>{
+        async function name() {
+           let tacoStake = await props.unifty.farmBalanceOf(props.unifty.rabbitFarm,props.unifty.account)
+           let salsaStake = await props.unifty.farmBalanceOf(props.unifty.tacoshiFarm,props.unifty.account)
+
+           setTaco(tacoStake);
+           setSalsa(salsaStake);
+
+        }
+        name();
+    })
     let tacoBalance = 999.99;
     let iconSize = "20px"
     let marginTop = "20px"
     return (<Flex flexDir="column" alignItems="center">
-        <Flex marginTop={marginTop}><Coin balance={tacoBalance} iconSize={iconSize} img={Taco_Icon} spacing={0} >Stacked</Coin></Flex>
-        <Flex marginTop={marginTop}><Coin balance={tacoBalance} iconSize={iconSize} img={Molcajete_Icon} spacing={0} >Stacked</Coin></Flex>
+        <Flex marginTop={marginTop}><Coin balance={taco} iconSize={iconSize} img={Taco_Icon} spacing={0} >Stacked</Coin></Flex>
+        <Flex marginTop={marginTop}><Coin balance={salsa} iconSize={iconSize} img={Molcajete_Icon} spacing={0} >Stacked</Coin></Flex>
         <Button marginTop="20px" colorScheme="blackButton"><Image paddingRight={2} height={5} src={Cubiertos_Icon}></Image>Manage Stake</Button>
+        <ManageStake unifty={props.unifty}></ManageStake>
     </Flex>)
 }
 
