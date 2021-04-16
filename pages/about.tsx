@@ -66,7 +66,7 @@ function FAQuestion({ title, description }) {
     const click = () => {
         setOpen(!open);
     }
-    return (<Flex borderBottom="1px solid gray" w="100%" marginY={5} flexDir="column" onClick={click}>
+    return (<Flex borderBottom="1px solid gray"  cursor="pointer" w="100%" marginY={5} flexDir="column" onClick={click}>
         <Flex alignItems="center" justifyContent="space-between" w="100%">
             <Box fontWeight="bold" color="gray.600">{title}</Box>
             <Button borderRadius="full" onClick={click} colorScheme={!open ? "white" : "figma.orange"}>{!open ? <HiPlus color="gray" size={iconsSize} /> : <HiMinus size={iconsSize} />}</Button>

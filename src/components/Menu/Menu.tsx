@@ -10,7 +10,7 @@ export default function Menu({ unifty }) {
 
     const [isMobile] = useMediaQuery("(max-width: 768px)")
 
-    return (<Flex flexDir="row" alignItems="center" justifyContent="space-between" fontFamily="Nunito">
+    return (<Flex flexDir="row" w="100%" alignItems="center" justifyContent="space-between" fontFamily="Nunito">
         {isMobile && <MenuItemsMobile></MenuItemsMobile>}
         <Logo></Logo>
         {!isMobile && <MenuItems></MenuItems>}

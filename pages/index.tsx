@@ -6,7 +6,7 @@ import { columnTemplate } from '../src/components/TacoLayout'
 import Carousel from 'react-elastic-carousel'
 import { FeaturedCollections } from './collections'
 import { RecentNfts } from './farms'
-export default function Home({ unifty }) {
+export default function Home({ unifty}) {
   const [isMobile] = useMediaQuery("(max-width: 768px)")
   return (
     <Flex flexDirection="column">
@@ -15,7 +15,7 @@ export default function Home({ unifty }) {
       </Box>
       <FeaturedCollections unifty={unifty}></FeaturedCollections>
       <Box padding={5}></Box>
-      <RecentNfts unifty={unifty} itemsSize="3"></RecentNfts>
+      <RecentNfts unifty={unifty} itemsSize={15}></RecentNfts>
       <AboutNFTS></AboutNFTS>
       <BePartTacoCommunity></BePartTacoCommunity>
     </Flex>
@@ -116,7 +116,7 @@ export function BePartTacoCommunity() {
 export function Blob(props) {
   const { color, size = 100, right, left, top, bottom } = props;
   // let size =props.size || 30;
-  return (<Flex position="absolute" height={size} width={size} right={right} top={top} left={left} bottom={bottom}  >
+  return (<Flex position="absolute" zIndex="-1" height={size} width={size} right={right} top={top} left={left} bottom={bottom}  >
     <Image draggable={false} src={"/img/blob " + color + ".svg"} layout="fill"></Image>
   </Flex>
   )

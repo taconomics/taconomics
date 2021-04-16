@@ -33,7 +33,7 @@ export default function UserWallet(props: { unifty: Unifty}) {
     },[])
 
 
-    return (<Box flexGrow={{md:1,lg:1.3}} >
+    return (<Box flexGrow={{md:1,lg:1.3}}>
         {
             !isConnected ?
 
@@ -47,17 +47,22 @@ export default function UserWallet(props: { unifty: Unifty}) {
 }
 
 function WalletContainer(props: { unifty: Unifty, isMobile }) {
-    if (props.isMobile) {
-        return <Button>Wallet</Button>
-    } else {
-        return (
-            <Flex width="100%" flexDir="row" alignItems="center" justifyContent="space-between">
 
-                <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>
-                <Box fontFamily="Nunito" fontWeight="extrabold">My items</Box>
-                <Coins unifty={props.unifty}></Coins>
+        return (
+            <Flex width={["auto","auto","100%"]} flexDir="row" alignItems="center" justifyContent={["end","end","space-between"]}>
+                {
+                    props.isMobile?
+                    <Button>Wallet</Button>:
+                    <>
+                    <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>
+                    <Box fontFamily="Nunito" fontWeight="extrabold">My items</Box>
+                    <Coins unifty={props.unifty}></Coins>
+                    </>
+
+                }
+               
             </Flex>)
-    }
+    
 
 }
 
