@@ -118,7 +118,7 @@ function ManageStakeMenu(props: { unifty: Unifty }) {
 
         }
         name();
-    }, [])
+    }, [isOpen])
     let iconSize = "20px"
     let marginTop = "20px"
     return (<Flex flexDir="column" alignItems="center">
