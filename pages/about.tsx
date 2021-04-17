@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import GridContent from "../src/components/GridContent";
 import { HiPlus, HiMinus } from 'react-icons/hi'
 
-export default function () {
+export default function About () {
     return (<GridContent>
         <WhatIsTaconomics></WhatIsTaconomics>
         <WhatsSpecial></WhatsSpecial>

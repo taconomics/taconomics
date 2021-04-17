@@ -5,7 +5,7 @@ import TacoSwitch, { TacoOption } from "../src/components/TacoSwitch";
 import { FiChevronDown } from 'react-icons/fi'
 import { BsArrowDown } from 'react-icons/bs'
 
-export default function () {
+export default function BuyTacoPage() {
     const [buyingTaco, setBuyingTaco] = useState(true);
     const onChange = (index, name) => {
         if (name == "taco") {
@@ -17,8 +17,8 @@ export default function () {
     return (<Center flexDir="column">
         <Flex padding={5} backgroundColor="white" shadow="lg" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5}>
             <TacoSwitch onChange={onChange}>
-                <TacoOption name="taco">Buy TACO</TacoOption>
-                <TacoOption name="salsa">Make Salsa</TacoOption>
+                <TacoOption key="taco" name="taco">Buy TACO</TacoOption>
+                <TacoOption key="salsa" name="salsa">Make Salsa</TacoOption>
             </TacoSwitch>
         </Flex>
         {buyingTaco?

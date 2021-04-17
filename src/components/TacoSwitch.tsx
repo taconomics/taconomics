@@ -18,10 +18,9 @@ export default function TacoSwitchSX(props) {
     </Flex>)
 }
 
-export const TacoSwitch = chakra(TacoSwitchSX,{shouldForwardProp: (prop) => !["onChange"].includes(prop),});
+export const TacoSwitch = chakra(TacoSwitchSX);
 
 function TacoOptionSX(props) {
-    
     const color = props.index == props.active ? "figma.orange.500" : "black";
     if(props.index==props.active && props.onChange !=undefined){
         props.onChange(props.active,props.name);

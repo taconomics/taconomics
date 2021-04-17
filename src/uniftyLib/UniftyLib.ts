@@ -116,6 +116,9 @@ export default class Unifty {
 
         return ac;
     }
+    getFarmAddress(isTaco){
+        return isTaco?this.rabbitFarm:this.tacoshiFarm;
+    }
 
     async setAccount() {
         this.account = await this.getAccount();
@@ -133,6 +136,25 @@ export default class Unifty {
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+    resolveNumberString(number, decimals){
+
+        let splitted = number.split(".");
+        if(splitted.length == 1 && decimals > 0){
+            splitted[1] = '';
+        }
+        if(splitted.length > 1) {
+            let size = decimals - splitted[1].length;
+            for (let i = 0; i < size; i++) {
+                splitted[1] += "0";
+            }
+            number = "" + (splitted[0] == 0 ? '' : splitted[0]) + splitted[1];
+            if(parseInt(number) == 0){
+                number = "0";
+            }
+        }
+
+        return number;
+    };
     /**
      * Farms
      */
@@ -241,13 +263,47 @@ export default class Unifty {
 
         return card_data;
     };
+
     async farmBalanceOf(farmAddress, account){
         await this.sleep(this.sleep_time);
         let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
         let balance = await farm.methods.balanceOf(account).call({from:this.account});
         let decimals = await this.farmTokenDecimals(farmAddress);
-        console.log("Received balance", balance);
         return balance / Math.pow(10, decimals >= 0 ? decimals : 0);
+    };
+    async farmBalanceOfRaw(farmAddress, account){
+        await this.sleep(this.sleep_time);
+        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        let balance = await farm.methods.balanceOf(account).call({from:this.account});
+        return balance;
+    };
+
+    async farmMaxStakeRaw(farmAddress){
+        await this.sleep(this.sleep_time);
+        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        let max = await farm.methods.maxStake().call({from:this.account});
+        return max;
+    };
+    async farmMinStakeRaw(farmAddress){
+        await this.sleep(this.sleep_time);
+        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        let max = await farm.methods.minStake().call({from:this.account});
+        return max;
+    };
+    async farmMaxStake(farmAddress){
+        await this.sleep(this.sleep_time);
+        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        let max = await farm.methods.maxStake().call({from:this.account});
+        let decimals = await this.farmTokenDecimals(farmAddress);
+        return max / Math.pow(10, decimals >= 0 ? decimals : 0);
+    };
+
+    async farmMinStake(farmAddress){
+        await this.sleep(this.sleep_time);
+        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        let max = await farm.methods.minStake().call({from:this.account});
+        let decimals = await this.farmTokenDecimals(farmAddress);
+        return max / Math.pow(10, decimals >= 0 ? decimals : 0);
     };
 
 

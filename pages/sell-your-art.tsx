@@ -6,7 +6,7 @@ import GridContent from "../src/components/GridContent";
 import InputValidator from "../src/components/InputValidator";
 import Unifty from "../src/uniftyLib/UniftyLib";
 
-export default function (props: { unifty: Unifty }) {
+export default function SellYourArtPage(props: { unifty: Unifty }) {
     return (<GridContent marginBottom={20}>
         <Flex flexDirection={["column","column","row"]} alignItems={["center","center","start"]}>
             <BePart></BePart>
