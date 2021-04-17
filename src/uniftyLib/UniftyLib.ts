@@ -155,6 +155,22 @@ export default class Unifty {
 
         return number;
     };
+
+    formatNumberString (string, decimals) {
+
+        let pos = string.length - decimals;
+
+        if(decimals == 0) {
+            // nothing
+        }else
+        if(pos > 0){
+            string = string.substring(0, pos) + "." + string.substring(pos, string.length);
+        }else{
+            string = '0.' + ( "0".repeat( decimals - string.length ) ) + string;
+        }
+
+        return string
+    };
     /**
      * Farms
      */
@@ -306,6 +322,83 @@ export default class Unifty {
         return max / Math.pow(10, decimals >= 0 ? decimals : 0);
     };
 
+    async allowanceErc20(erc20Address, owner, spender){
+        await this.sleep(this.sleep_time);
+        let erc20 = new this.web3.eth.Contract( erc20ABI, erc20Address, {from:this.account} );
+        let decimals = await erc20.methods.decimals().call({from:this.account});
+        await this.sleep(this.sleep_time);
+        let allowance = await erc20.methods.allowance(owner, spender).call({from:this.account});
+        return allowance / Math.pow(10, decimals >= 0 ? decimals : 0);
+    };
+    async allowanceErc20Raw(erc20Address, owner, spender){
+        await this.sleep(this.sleep_time);
+        let erc20 = new this.web3.eth.Contract( erc20ABI, erc20Address, {from:this.account} );
+        let allowance = await erc20.methods.allowance(owner, spender).call({from:this.account});
+        return allowance;
+    };
+    async approveErc20(erc20Address, amount, spender, preCallback, postCallback, errCallback){
+
+        console.log("Approve amount", amount);
+
+        let erc20 = new this.web3.eth.Contract( erc20ABI, erc20Address, {from:this.account} );
+
+        await this.sleep(this.sleep_time);
+        const gas = await erc20.methods.approve(spender, ""+amount).estimateGas({
+            from:this.account,
+        });
+        const price = await this.web3.eth.getGasPrice();
+
+        erc20.methods.approve(spender, ""+amount)
+            .send({
+                from:this.account,
+                gas: gas + Math.floor( gas * 0.1 ),
+                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+            })
+            .on('error', async function(e){
+                errCallback(e);
+            })
+            .on('transactionHash', async function(transactionHash){
+                preCallback(transactionHash);
+            })
+            .on("receipt", function (receipt) {
+                postCallback(receipt);
+            });
+    };
+    async farmStake(farmAddress, amount, preCallback, postCallback, errCallback){
+
+        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+
+        console.log("stake amount", amount);
+
+        let gas = 0;
+        try {
+            await this.sleep(this.sleep_time);
+            gas = await farm.methods.stake(""+amount).estimateGas({
+                from: this.account,
+            });
+        }catch(e){
+            errCallback("gas");
+            return;
+        }
+
+        const price = await this.web3.eth.getGasPrice();
+
+        farm.methods.stake(""+amount)
+            .send({
+                from:this.account,
+                gas: gas + Math.floor( gas * 0.1 ),
+                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+            })
+            .on('error', async function(e){
+                errCallback('');
+            })
+            .on('transactionHash', async function(transactionHash){
+                preCallback();
+            })
+            .on("receipt", function (receipt) {
+                postCallback(receipt);
+            });
+    };
 
     /**
      * Nfts

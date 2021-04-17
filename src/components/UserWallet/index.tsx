@@ -86,23 +86,6 @@ function Coins(props: { unifty: Unifty }) {
 
     let iconSize = 6;
     let padding = 10;
-    /*return (
-        <Menu placement="top-end" >
-            <MenuButton as={Button} colorScheme="transparent" margin={0}>
-                <HStack>
-                    <Coin spacing={padding} iconSize={iconSize} balance={lemonBalance} img={Lemon_Icon}></Coin>
-                    <Coin spacing={padding} iconSize={iconSize} balance={chilesBalance} img={Chile_Icon}></Coin>
-                    <Image marginLeft={30} height={2} src={DownArrow_Icon}></Image>
-
-                </HStack>
-
-            </MenuButton>
-            <MenuList borderColor="#D4D4D4" borderWidth="2px" padding="25px" minW="100%">
-                <MenuItem><ManageStakeMenu unifty={props.unifty}></ManageStakeMenu></MenuItem>
-            </MenuList>
-        </Menu>
-
-    )*/
     return (<TacoButtonBox lemonBalance={lemonBalance} chilesBalance={chilesBalance}>
         <ManageStakeMenu unifty={props.unifty} />
     </TacoButtonBox>)
