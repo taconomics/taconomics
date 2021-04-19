@@ -14,6 +14,7 @@ interface Results {
 }
 interface Preferences {
     showError: boolean;
+    toastTime?:number;
 }
 export const useTrasactionToaster = (_onLoad: Values, _onSucces: Values, _onError: Values, preferences?: Preferences) => {
     const toastTime = 10000;
@@ -25,7 +26,7 @@ export const useTrasactionToaster = (_onLoad: Values, _onSucces: Values, _onErro
             title: _onLoad.title,
             description: _onLoad.description,
             status: "info",
-            duration: toastTime / 2,
+            duration: preferences.toastTime?preferences.toastTime:toastTime,
             position: toastPosition,
             isClosable: true,
         })
@@ -38,7 +39,7 @@ export const useTrasactionToaster = (_onLoad: Values, _onSucces: Values, _onErro
             title: _onSucces.title,
             description: _onSucces.description,
             status: "success",
-            duration: toastTime / 2,
+            duration: preferences.toastTime?preferences.toastTime:toastTime,
             position: toastPosition,
             isClosable: true,
         })
@@ -53,7 +54,7 @@ export const useTrasactionToaster = (_onLoad: Values, _onSucces: Values, _onErro
             title: _onError.title,
             description: preferences.showError ? e.message : _onError.description,
             status: "error",
-            duration: toastTime / 2,
+            duration:preferences.toastTime?preferences.toastTime:toastTime,
             position: toastPosition,
             isClosable: true,
         })

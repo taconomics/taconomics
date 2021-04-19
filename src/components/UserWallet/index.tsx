@@ -134,7 +134,7 @@ function ManageStakeMenu(props: { unifty: Unifty }) {
 function TacoButtonBox({ lemonBalance, chilesBalance, children }) {
     let iconSize = 6;
     let padding = 10;
-    const [isOpen,setOpen] = useState(true);
+    const [isOpen,setOpen] = useState(false);
     const wrapperRef = useRef(null);
     
     useOutsideAlerter(wrapperRef,setOpen);
@@ -156,7 +156,7 @@ function TacoButtonBox({ lemonBalance, chilesBalance, children }) {
 
 function TacoButtonBoxItem({ children,setOpen,isOpen }) {
     return (<Flex display={isOpen?"flex":"none"} position="absolute" onfo justifyContent="center" width="100%" padding={2} borderRadius="lg" right={0} marginTop={2}
-        zIndex={100} backgroundColor="white" border="2px solid gray">
+        zIndex={100} backgroundColor="white" border="2px solid" borderColor="gray.200">
         {children}
     </Flex>)
 }
