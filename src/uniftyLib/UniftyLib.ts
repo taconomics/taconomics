@@ -377,7 +377,7 @@ export default class Unifty {
                 from: this.account,
             });
         }catch(e){
-            errCallback("gas");
+            errCallback(e);
             return;
         }
 
@@ -390,7 +390,7 @@ export default class Unifty {
                 gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
             })
             .on('error', async function(e){
-                errCallback('');
+                errCallback(e);
             })
             .on('transactionHash', async function(transactionHash){
                 preCallback();
@@ -398,6 +398,46 @@ export default class Unifty {
             .on("receipt", function (receipt) {
                 postCallback(receipt);
             });
+    };
+    async farmUnstake(farmAddress, amount, preCallback, postCallback, errCallback){
+
+        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+
+        let gas = 0;
+
+        try {
+            await this.sleep(this.sleep_time);
+            gas = await farm.methods.withdraw(""+amount).estimateGas({
+                from: this.account,
+            });
+        }catch(e){
+            errCallback(e);
+            return;
+        }
+
+        const price = await this.web3.eth.getGasPrice();
+
+        farm.methods.withdraw(""+amount)
+            .send({
+                from:this.account,
+                gas: gas + Math.floor( gas * 0.1 ),
+                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+            })
+            .on('error', async function(e){
+                errCallback(e);
+            })
+            .on('transactionHash', async function(transactionHash){
+                preCallback();
+            })
+            .on("receipt", function (receipt) {
+                postCallback(receipt);
+            });
+    };
+    async balanceOfErc20Raw(erc20Address, owner){
+        await this.sleep(this.sleep_time);
+        let erc20 = new this.web3.eth.Contract( erc20ABI, erc20Address, {from:this.account} );
+        let balance = await erc20.methods.balanceOf(owner).call({from:this.account});
+        return balance;
     };
 
     /**
