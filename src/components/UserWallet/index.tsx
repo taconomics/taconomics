@@ -86,7 +86,7 @@ function Coins(props: { unifty: Unifty,changer}) {
     let iconSize = 6;
     let padding = 10;
     return (<TacoButtonBox lemonBalance={lemonBalance} chilesBalance={chilesBalance}>
-        <ManageStakeMenu unifty={props.unifty} />
+        <ManageStakeMenu changer={props.changer} unifty={props.unifty} />
     </TacoButtonBox>)
 }
 
@@ -103,12 +103,13 @@ function ButtonConnect({ onClickConnect }) {
     return (<Button onClick={onClickConnect} colorScheme="blackButton" leftIcon={<Image width="20px" src={Wallet_Icon} />}>Connect wallet</Button>)
 }
 
-function ManageStakeMenu(props: { unifty: Unifty }) {
+function ManageStakeMenu(props: { unifty: Unifty,changer }) {
     const [taco, setTaco] = useState(0);
     const [salsa, setSalsa] = useState(0);
     const { isOpen, onOpen, onClose } = useDisclosure()
     useEffect(() => {
         async function name() {
+            await props.unifty.isConnected();
             let tacoStake = await props.unifty.farmBalanceOf(props.unifty.rabbitFarm, props.unifty.account)
             let salsaStake = await props.unifty.farmBalanceOf(props.unifty.tacoshiFarm, props.unifty.account)
 
@@ -117,7 +118,7 @@ function ManageStakeMenu(props: { unifty: Unifty }) {
 
         }
         name();
-    }, [isOpen])
+    }, [isOpen,props.changer])
     let iconSize = "20px"
     let marginTop = "20px"
     return (<Flex flexDir="column" alignItems="center">

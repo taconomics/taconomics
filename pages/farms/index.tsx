@@ -55,7 +55,7 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize,changer }) {
             let finalArray = [];
             for(let a =0;a<props.itemsSize;a++){
 
-                    const name = Math.floor(Math.random() * 100);
+                    const name = Math.floor(Math.random() * 1000000);
                     let nft = one?tacoshi[tacoshiCount]:rabbit[rabbitCount];
                     let card = <Card changer={props.changer} unifty={props.unifty} key={name} nft={nft}></Card>;
                     finalArray.push(card)
