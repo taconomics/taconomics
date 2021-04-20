@@ -1,9 +1,9 @@
 import Web3 from "web3";
 const erc1155ABI = require('../contracts/erc1155ABI.json');
 const erc20ABI = require('../contracts/erc20ABI.json');
-const nifABI = require('../contracts/nifABI.json') ;
+const nifABI = require('../contracts/nifABI.json');
 const genesisABI = require('../contracts/genesisABI.json');
-const  farmABI= require('../contracts/farmABI.json');
+const farmABI = require('../contracts/farmABI.json');
 const farmShopABI = require('../contracts/farmShopABI.json');
 import { createContext, useEffect } from "react";
 import ipfsClient from 'ipfs-http-client'
@@ -25,19 +25,19 @@ export default class Unifty {
     defaultProxyRegistryAddress: string;
     tacoshiFarm: string;
     rabbitFarm: string;
+    chain_id: string;
     constructor() {
+        this.init();
+
+    }
+    init() {
         this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
-        //this.web3.
-
-
-
         this.setAccount();
         this.setParams();
         this.createIpfsServer();
-
     }
     async createIpfsServer() {
-        let options:ClientOptions = {url:"https://ipfs.infura.io:5001"}
+        let options: ClientOptions = { url: "https://ipfs.infura.io:5001" }
         this.ipfs = ipfsClient(options);
     }
     async isConnected() {
@@ -60,8 +60,8 @@ export default class Unifty {
     async setParams() {
         let network = await this.web3.eth.net.getId();
 
-        let chain_id = "" + network;
-        if (chain_id === "4") {
+        this.chain_id = "" + network;
+        if (this.chain_id === "4") {
             console.log("En Rinkeby");
 
             this.nif = new this.web3.eth.Contract(nifABI, '0xb93370d549a4351fa52b3f99eb5c252506e5a21e', { from: this.account });
@@ -104,20 +104,20 @@ export default class Unifty {
     }
 
     async getAccount() {
-        let ac = this.web3.eth.accounts.create().address;
-
+        let ac;
+        if (this.account == "") {
+            ac = this.web3.eth.accounts.create().address;
+            console.log("Created account cuz is undefined")
+        }
         let reqac = await this.web3.eth.requestAccounts();
 
         if (reqac != undefined) {
             ac = reqac[0];
         }
-
-        console.log("Account:", ac);
-
         return ac;
     }
-    getFarmAddress(isTaco){
-        return isTaco?this.rabbitFarm:this.tacoshiFarm;
+    getFarmAddress(isTaco) {
+        return isTaco ? this.rabbitFarm : this.tacoshiFarm;
     }
 
     async setAccount() {
@@ -129,26 +129,26 @@ export default class Unifty {
     }
     async readUri(uri) {
         if (uri != undefined) {
-            let jsonMeta = await fetch(uri).then(r => r.json()).catch(e => { if(e!=undefined)console.error("Error reading uri") })
+            let jsonMeta = await fetch(uri).then(r => r.json()).catch(e => { if (e != undefined) console.error("Error reading uri") })
             return jsonMeta;
         }
     }
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-    resolveNumberString(number, decimals){
+    resolveNumberString(number, decimals) {
 
         let splitted = number.split(".");
-        if(splitted.length == 1 && decimals > 0){
+        if (splitted.length == 1 && decimals > 0) {
             splitted[1] = '';
         }
-        if(splitted.length > 1) {
+        if (splitted.length > 1) {
             let size = decimals - splitted[1].length;
             for (let i = 0; i < size; i++) {
                 splitted[1] += "0";
             }
             number = "" + (splitted[0] == 0 ? '' : splitted[0]) + splitted[1];
-            if(parseInt(number) == 0){
+            if (parseInt(number) == 0) {
                 number = "0";
             }
         }
@@ -156,18 +156,18 @@ export default class Unifty {
         return number;
     };
 
-    formatNumberString (string, decimals) {
+    formatNumberString(string, decimals) {
 
         let pos = string.length - decimals;
 
-        if(decimals == 0) {
+        if (decimals == 0) {
             // nothing
-        }else
-        if(pos > 0){
-            string = string.substring(0, pos) + "." + string.substring(pos, string.length);
-        }else{
-            string = '0.' + ( "0".repeat( decimals - string.length ) ) + string;
-        }
+        } else
+            if (pos > 0) {
+                string = string.substring(0, pos) + "." + string.substring(pos, string.length);
+            } else {
+                string = '0.' + ("0".repeat(decimals - string.length)) + string;
+            }
 
         return string
     };
@@ -280,163 +280,163 @@ export default class Unifty {
         return card_data;
     };
 
-    async farmBalanceOf(farmAddress, account){
+    async farmBalanceOf(farmAddress, account) {
         await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
-        let balance = await farm.methods.balanceOf(account).call({from:this.account});
+        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+        let balance = await farm.methods.balanceOf(account).call({ from: this.account });
         let decimals = await this.farmTokenDecimals(farmAddress);
         return balance / Math.pow(10, decimals >= 0 ? decimals : 0);
     };
-    async farmBalanceOfRaw(farmAddress, account){
+    async farmBalanceOfRaw(farmAddress, account) {
         await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
-        let balance = await farm.methods.balanceOf(account).call({from:this.account});
+        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+        let balance = await farm.methods.balanceOf(account).call({ from: this.account });
         return balance;
     };
 
-    async farmMaxStakeRaw(farmAddress){
+    async farmMaxStakeRaw(farmAddress) {
         await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
-        let max = await farm.methods.maxStake().call({from:this.account});
+        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+        let max = await farm.methods.maxStake().call({ from: this.account });
         return max;
     };
-    async farmMinStakeRaw(farmAddress){
+    async farmMinStakeRaw(farmAddress) {
         await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
-        let max = await farm.methods.minStake().call({from:this.account});
+        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+        let max = await farm.methods.minStake().call({ from: this.account });
         return max;
     };
-    async farmMaxStake(farmAddress){
+    async farmMaxStake(farmAddress) {
         await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
-        let max = await farm.methods.maxStake().call({from:this.account});
+        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+        let max = await farm.methods.maxStake().call({ from: this.account });
         let decimals = await this.farmTokenDecimals(farmAddress);
         return max / Math.pow(10, decimals >= 0 ? decimals : 0);
     };
 
-    async farmMinStake(farmAddress){
+    async farmMinStake(farmAddress) {
         await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
-        let max = await farm.methods.minStake().call({from:this.account});
+        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+        let max = await farm.methods.minStake().call({ from: this.account });
         let decimals = await this.farmTokenDecimals(farmAddress);
         return max / Math.pow(10, decimals >= 0 ? decimals : 0);
     };
 
-    async allowanceErc20(erc20Address, owner, spender){
+    async allowanceErc20(erc20Address, owner, spender) {
         await this.sleep(this.sleep_time);
-        let erc20 = new this.web3.eth.Contract( erc20ABI, erc20Address, {from:this.account} );
-        let decimals = await erc20.methods.decimals().call({from:this.account});
+        let erc20 = new this.web3.eth.Contract(erc20ABI, erc20Address, { from: this.account });
+        let decimals = await erc20.methods.decimals().call({ from: this.account });
         await this.sleep(this.sleep_time);
-        let allowance = await erc20.methods.allowance(owner, spender).call({from:this.account});
+        let allowance = await erc20.methods.allowance(owner, spender).call({ from: this.account });
         return allowance / Math.pow(10, decimals >= 0 ? decimals : 0);
     };
-    async allowanceErc20Raw(erc20Address, owner, spender){
+    async allowanceErc20Raw(erc20Address, owner, spender) {
         await this.sleep(this.sleep_time);
-        let erc20 = new this.web3.eth.Contract( erc20ABI, erc20Address, {from:this.account} );
-        let allowance = await erc20.methods.allowance(owner, spender).call({from:this.account});
+        let erc20 = new this.web3.eth.Contract(erc20ABI, erc20Address, { from: this.account });
+        let allowance = await erc20.methods.allowance(owner, spender).call({ from: this.account });
         return allowance;
     };
-    async approveErc20(erc20Address, amount, spender, preCallback, postCallback, errCallback){
+    async approveErc20(erc20Address, amount, spender, preCallback, postCallback, errCallback) {
 
         console.log("Approve amount", amount);
 
-        let erc20 = new this.web3.eth.Contract( erc20ABI, erc20Address, {from:this.account} );
+        let erc20 = new this.web3.eth.Contract(erc20ABI, erc20Address, { from: this.account });
 
         await this.sleep(this.sleep_time);
-        const gas = await erc20.methods.approve(spender, ""+amount).estimateGas({
-            from:this.account,
+        const gas = await erc20.methods.approve(spender, "" + amount).estimateGas({
+            from: this.account,
         });
         const price = await this.web3.eth.getGasPrice();
 
-        erc20.methods.approve(spender, ""+amount)
+        erc20.methods.approve(spender, "" + amount)
             .send({
-                from:this.account,
-                gas: gas + Math.floor( gas * 0.1 ),
-                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+                from: this.account,
+                gas: gas + Math.floor(gas * 0.1),
+                gasPrice: Number(price) + Math.floor(Number(price) * 0.1)
             })
-            .on('error', async function(e){
+            .on('error', async function (e) {
                 errCallback(e);
             })
-            .on('transactionHash', async function(transactionHash){
+            .on('transactionHash', async function (transactionHash) {
                 preCallback(transactionHash);
             })
             .on("receipt", function (receipt) {
                 postCallback(receipt);
             });
     };
-    async farmStake(farmAddress, amount, preCallback, postCallback, errCallback){
+    async farmStake(farmAddress, amount, preCallback, postCallback, errCallback) {
 
-        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
 
         console.log("stake amount", amount);
 
         let gas = 0;
         try {
             await this.sleep(this.sleep_time);
-            gas = await farm.methods.stake(""+amount).estimateGas({
+            gas = await farm.methods.stake("" + amount).estimateGas({
                 from: this.account,
             });
-        }catch(e){
+        } catch (e) {
             errCallback(e);
             return;
         }
 
         const price = await this.web3.eth.getGasPrice();
 
-        farm.methods.stake(""+amount)
+        farm.methods.stake("" + amount)
             .send({
-                from:this.account,
-                gas: gas + Math.floor( gas * 0.1 ),
-                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+                from: this.account,
+                gas: gas + Math.floor(gas * 0.1),
+                gasPrice: Number(price) + Math.floor(Number(price) * 0.1)
             })
-            .on('error', async function(e){
+            .on('error', async function (e) {
                 errCallback(e);
             })
-            .on('transactionHash', async function(transactionHash){
+            .on('transactionHash', async function (transactionHash) {
                 preCallback();
             })
             .on("receipt", function (receipt) {
                 postCallback(receipt);
             });
     };
-    async farmUnstake(farmAddress, amount, preCallback, postCallback, errCallback){
+    async farmUnstake(farmAddress, amount, preCallback, postCallback, errCallback) {
 
-        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
 
         let gas = 0;
 
         try {
             await this.sleep(this.sleep_time);
-            gas = await farm.methods.withdraw(""+amount).estimateGas({
+            gas = await farm.methods.withdraw("" + amount).estimateGas({
                 from: this.account,
             });
-        }catch(e){
+        } catch (e) {
             errCallback(e);
             return;
         }
 
         const price = await this.web3.eth.getGasPrice();
 
-        farm.methods.withdraw(""+amount)
+        farm.methods.withdraw("" + amount)
             .send({
-                from:this.account,
-                gas: gas + Math.floor( gas * 0.1 ),
-                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 )
+                from: this.account,
+                gas: gas + Math.floor(gas * 0.1),
+                gasPrice: Number(price) + Math.floor(Number(price) * 0.1)
             })
-            .on('error', async function(e){
+            .on('error', async function (e) {
                 errCallback(e);
             })
-            .on('transactionHash', async function(transactionHash){
+            .on('transactionHash', async function (transactionHash) {
                 preCallback();
             })
             .on("receipt", function (receipt) {
                 postCallback(receipt);
             });
     };
-    async balanceOfErc20Raw(erc20Address, owner){
+    async balanceOfErc20Raw(erc20Address, owner) {
         await this.sleep(this.sleep_time);
-        let erc20 = new this.web3.eth.Contract( erc20ABI, erc20Address, {from:this.account} );
-        let balance = await erc20.methods.balanceOf(owner).call({from:this.account});
+        let erc20 = new this.web3.eth.Contract(erc20ABI, erc20Address, { from: this.account });
+        let balance = await erc20.methods.balanceOf(owner).call({ from: this.account });
         return balance;
     };
 
@@ -603,30 +603,34 @@ export default class Unifty {
     };
 
     async getErc1155Meta(erc1155ContractAddress) {
+        console.log("erccontac adress",erc1155ContractAddress)
+        if (erc1155ContractAddress != undefined || erc1155ContractAddress != "") {
 
-        let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155ContractAddress, { from: this.account });
-        let contractURI = '';
+          
+            let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155ContractAddress, { from: this.account });
+            let contractURI = '';
 
-        try {
-            await this.sleep(this.sleep_time);
-            contractURI = await erc1155.methods.contractURI().call({ from: this.account });
-        } catch (e) {
-            console.log('error retrieving contract URI: ', e);
+            try {
+                await this.sleep(this.sleep_time);
+                contractURI = await erc1155.methods.contractURI().call({ from: this.account });
+            } catch (e) {
+                console.log('error retrieving contract URI: ', e);
+            }
+
+            let name = 'n/a';
+            let symbol = 'n/a';
+
+            try {
+                await this.sleep(this.sleep_time);
+                name = await erc1155.methods.name().call({ from: this.account });
+                await this.sleep(this.sleep_time);
+                symbol = await erc1155.methods.symbol().call({ from: this.account });
+            } catch (e) {
+                console.log('error retrieving name and symbol: ', e);
+            }
+
+            return { contractURI: contractURI, name: name, symbol: symbol };
         }
-
-        let name = 'n/a';
-        let symbol = 'n/a';
-
-        try {
-            await this.sleep(this.sleep_time);
-            name = await erc1155.methods.name().call({ from: this.account });
-            await this.sleep(this.sleep_time);
-            symbol = await erc1155.methods.symbol().call({ from: this.account });
-        } catch (e) {
-            console.log('error retrieving name and symbol: ', e);
-        }
-
-        return { contractURI: contractURI, name: name, symbol: symbol };
     };
     async getPoolFee() {
         await this.sleep(this.sleep_time);

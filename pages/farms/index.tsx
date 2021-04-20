@@ -33,15 +33,17 @@ export default function FarmIndex(props) {
 export const createFakeCards = (cards:number)=>{
     let arr = [];
     for(let a=0;a<cards;a++){
-        arr.push(<Card unifty={undefined} key={a} nft={undefined}></Card>)
+        arr.push(<Card changer={undefined} unifty={undefined} key={a} nft={undefined}></Card>)
     }
     return arr;
 }
-export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
-    const [nfts, setNfts] = useState(createFakeCards(0));
+export function RecentNfts(props: { unifty: Unifty, itemsSize,changer }) {
+    const [nfts, setNfts] = useState([]);
 
     useEffect(() => {
+        setNfts([])
         async function func() {
+           
             let connected = await props.unifty.isConnected();
             let tacoshi = await getNftsJson(props.unifty, props.unifty.tacoshiFarm);
             let rabbit = await getNftsJson(props.unifty, props.unifty.rabbitFarm);
@@ -55,7 +57,7 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
 
                     const name = Math.floor(Math.random() * 100);
                     let nft = one?tacoshi[tacoshiCount]:rabbit[rabbitCount];
-                    let card = <Card unifty={props.unifty} key={name} nft={nft}></Card>;
+                    let card = <Card changer={props.changer} unifty={props.unifty} key={name} nft={nft}></Card>;
                     finalArray.push(card)
                     if(one){
                         tacoshiCount++;
@@ -77,12 +79,12 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize }) {
             
         }
         func();
-    }, [])
+    }, [props.changer])
 
     return (<Grid templateColumns={columnTemplate}>
         <Box gridColumn="2/2" >
           <Box fontSize="x-large" marginBottom={5} fontWeight="bold">Recently added pieces</Box> 
-        <Flex flexWrap="wrap" justifyContent={["center","center","left"]}>{nfts}</Flex> 
+        <Flex flexWrap="wrap" justifyContent={["center","center","left"]}>{nfts?nfts:createFakeCards(0)}</Flex> 
         </Box>
         
         </Grid>)

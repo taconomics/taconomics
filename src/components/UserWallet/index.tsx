@@ -17,7 +17,7 @@ const Cubiertos_Icon = "/icons/Cubiertos_Icon.svg";
 
 
 
-export default function UserWallet(props: { unifty: Unifty }) {
+export default function UserWallet(props: { unifty: Unifty,changer }) {
     const [isConnected, setIsConnected] = useState(false);
 
     const [isMobile] = useMediaQuery("(max-width: 1024px)")
@@ -32,7 +32,7 @@ export default function UserWallet(props: { unifty: Unifty }) {
             setIsConnected(connected);
         }
         con();
-    }, [])
+    }, [props.changer])
 
 
     return (<Box flexGrow={{ md: 1, lg: 1.3 }}>
@@ -42,13 +42,13 @@ export default function UserWallet(props: { unifty: Unifty }) {
                 <ButtonConnect onClickConnect={onClickConnect}></ButtonConnect>
                 :
 
-                <WalletContainer unifty={props.unifty} isMobile={isMobile}></WalletContainer>
+                <WalletContainer changer={props.changer} unifty={props.unifty} isMobile={isMobile}></WalletContainer>
 
         }
     </Box>)
 }
 
-function WalletContainer(props: { unifty: Unifty, isMobile }) {
+function WalletContainer(props: { unifty: Unifty, isMobile,changer }) {
 
     return (
         <Flex width={["auto", "auto", "100%"]} flexDir="row" alignItems="center" justifyContent={["end", "end", "space-between"]}>
@@ -58,7 +58,7 @@ function WalletContainer(props: { unifty: Unifty, isMobile }) {
                     <>
                         <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>
                         <Box fontFamily="Nunito" fontWeight="extrabold">My items</Box>
-                        <Coins unifty={props.unifty}></Coins>
+                        <Coins changer={props.changer} unifty={props.unifty}></Coins>
                     </>
 
             }
@@ -68,10 +68,9 @@ function WalletContainer(props: { unifty: Unifty, isMobile }) {
 
 }
 
-function Coins(props: { unifty: Unifty }) {
+function Coins(props: { unifty: Unifty,changer}) {
     const [chilesBalance, setChiles] = useState(0);
     const [lemonBalance, setLemons] = useState(0);
-
     async function func() {
         let connected = await props.unifty.isConnected();
         let chilesPoints = await props.unifty.farmPointsEarned(props.unifty.rabbitFarm, props.unifty.account);
@@ -79,10 +78,10 @@ function Coins(props: { unifty: Unifty }) {
         setChiles(Math.ceil(chilesPoints));
         setLemons(Math.ceil(lemonPoints));
     }
-
+    useEffect(()=>{
+        func();
+    },[props.changer])
     useInterval(func, 1000);
-    func();
-
 
     let iconSize = 6;
     let padding = 10;

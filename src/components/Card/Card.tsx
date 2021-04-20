@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 
 export const cardWidth = 240;
 export const cardHeight = 300;
-export default function Card(props: { nft: any, unifty: Unifty, canEdit?}) {
+export default function Card(props: { nft: any, unifty: Unifty, canEdit?,changer}) {
 
     const nft = props.nft;
     const unifty = props.unifty;
@@ -50,7 +50,7 @@ export default function Card(props: { nft: any, unifty: Unifty, canEdit?}) {
 
             func();
 
-        }, [])
+        }, [props.changer,props.nft])
     }
     return (<EmptyCard setHover={setHover} valid={valid}>
         {meta.image == "" || nft == undefined ?

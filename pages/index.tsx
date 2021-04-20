@@ -6,16 +6,16 @@ import { columnTemplate } from '../src/components/TacoLayout'
 import Carousel from 'react-elastic-carousel'
 import { FeaturedCollections } from './collections'
 import { RecentNfts } from './farms'
-export default function Home({ unifty}) {
+export default function Home({ unifty,changer}) {
   const [isMobile] = useMediaQuery("(max-width: 768px)")
   return (
     <Flex flexDirection="column">
       <Box width="100%" >
         <HomeStart isMobile={isMobile}></HomeStart>
       </Box>
-      <FeaturedCollections unifty={unifty}></FeaturedCollections>
+      <FeaturedCollections changer={changer} unifty={unifty}></FeaturedCollections>
       <Box padding={5}></Box>
-      <RecentNfts unifty={unifty} itemsSize={15}></RecentNfts>
+      <RecentNfts changer={changer} unifty={unifty} itemsSize={15}></RecentNfts>
       <AboutNFTS></AboutNFTS>
       <BePartTacoCommunity></BePartTacoCommunity>
     </Flex>

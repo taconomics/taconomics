@@ -6,7 +6,7 @@ import React from 'react';
 import NextLink from "next/link"
 //import img from "./"
 
-export default function Menu({ unifty }) {
+export default function Menu({ unifty,changer }) {
 
     const [isMobile] = useMediaQuery("(max-width: 768px)")
 
@@ -14,7 +14,7 @@ export default function Menu({ unifty }) {
         {isMobile && <MenuItemsMobile></MenuItemsMobile>}
         <Logo></Logo>
         {!isMobile && <MenuItems></MenuItems>}
-        {<UserWallet unifty={unifty}></UserWallet>}
+        {<UserWallet changer={changer} unifty={unifty}></UserWallet>}
     </Flex>)
 }
 

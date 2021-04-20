@@ -10,15 +10,17 @@ import Carousel from 'react-elastic-carousel'
 import { BePartTacoCommunity } from "..";
 import GridContent from "../../src/components/GridContent";
 
-export default function Collections({ unifty }) {
+export default function Collections({ unifty,changer }) {
     return (<>
-            <AllCollections unifty={unifty}></AllCollections>
+            <AllCollections changer={changer} unifty={unifty}></AllCollections>
         <BePartTacoCommunity></BePartTacoCommunity>
     </>)
 }
 export async function getFeaturedCollections(unifty: Unifty) {
+    await unifty.isConnected();
     let network = await unifty.getNetwork();
     let featuredCollections;
+    console.log("Changer all collections",network)
     if (network === 1) {
         //On Mainet
         featuredCollections = ["0x5d57b91984e4e7d37772c621fc91377a28a7fb1f", "0x2B015207B5259B7fBb80Bb441726305382287674",
@@ -32,22 +34,21 @@ export async function getFeaturedCollections(unifty: Unifty) {
 
 }
 
-export function AllCollections(props: { unifty: Unifty }) {
+export function AllCollections(props: { unifty: Unifty ,changer}) {
     let featuredCollections = [];
     let [cards, setCards] = useState(undefined);
     useEffect(() => {
 
         const func = async () => {
-            let network = await props.unifty.getNetwork();
             featuredCollections = await getFeaturedCollections(props.unifty);
             let mCards = []
             for (let i of featuredCollections) {
-                mCards.push(<CollectionCard address={i} key={i} unifty={props.unifty}></CollectionCard>)
+                mCards.push(<CollectionCard changer={props.changer} address={i} key={i} unifty={props.unifty}></CollectionCard>)
             }
             setCards(mCards);
         }
         func();
-    }, [])
+    }, [props.changer])
 
     return (<GridContent>
         <Box fontWeight="bold" marginBottom={5} fontSize="x-large">All Collections</Box>
@@ -58,7 +59,7 @@ export function AllCollections(props: { unifty: Unifty }) {
     </GridContent>
     )
 }
-export function FeaturedCollections(props: { unifty: Unifty }) {
+export function FeaturedCollections(props: { unifty: Unifty,changer }) {
     let featuredCollections = [];
     let [cards, setCards] = useState(undefined);
     const [isTablet] = useMediaQuery("(max-width: 1124px)")
@@ -72,12 +73,12 @@ export function FeaturedCollections(props: { unifty: Unifty }) {
             featuredCollections = await getFeaturedCollections(props.unifty);
             let mCards = []
             for (let i of featuredCollections) {
-                mCards.push(<CollectionCard address={i} key={i} unifty={props.unifty}></CollectionCard>)
+                mCards.push(<CollectionCard changer={props.changer} address={i} key={i} unifty={props.unifty}></CollectionCard>)
             }
             setCards(mCards);
         }
         func();
-    }, [])
+    }, [props.changer])
 
     return (<Grid variant="content" templateColumns={columnTemplate}>
 
@@ -95,7 +96,7 @@ export function FeaturedCollections(props: { unifty: Unifty }) {
     </Grid>)
 }
 
-export function CollectionCard({ address, unifty }) {
+export function CollectionCard({ address, unifty,changer }) {
     let wSize = [260];
     let hSize = [330];
 
@@ -104,6 +105,7 @@ export function CollectionCard({ address, unifty }) {
     const router = useRouter();
     useEffect(() => {
         if (address != undefined) {
+            
             (unifty as Unifty).getErc1155Meta(address).then(metaUri => {
 
                 fetch(metaUri.contractURI).then(r => r.json()).then(e => {
@@ -114,7 +116,7 @@ export function CollectionCard({ address, unifty }) {
 
         }
 
-    }, [])
+    }, [changer,address])
 
     const goToAddress = () => {
         router.push("/collections/" + address)
