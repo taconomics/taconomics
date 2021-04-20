@@ -603,11 +603,19 @@ export default class Unifty {
     };
 
     async getErc1155Owner(address) {
-        await this.sleep(this.sleep_time);
-        let erc1155 = new this.web3.eth.Contract(erc1155ABI, address, { from: this.account });
-        let owner = await erc1155.methods.owner().call({ from: this.account })
 
-        return owner;
+        try {
+            await this.sleep(this.sleep_time);
+            let erc1155 = new this.web3.eth.Contract(erc1155ABI, address, { from: this.account });
+            let owner = await erc1155.methods.owner().call({ from: this.account })
+
+            return owner;
+        }catch(e){
+            console.error(e);
+        }
+            
+        
+
     }
 
     async getErc1155Meta(erc1155ContractAddress) {
