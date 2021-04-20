@@ -4,14 +4,21 @@ import React from "react";
 import GridContent from "../../src/components/GridContent";
 import Unifty from "../../src/uniftyLib/UniftyLib";
 import { BsSearch } from 'react-icons/bs'
+import { RecentNfts } from "../farms";
+import { useGetPieces } from "../../src/hooks/useGetPieces";
+import Card from "../../src/components/Card/Card";
 
-export default function AvailablePieces(props: { unifty: Unifty }) {
+export default function AvailablePieces(props: { unifty: Unifty,changer }) {
+    const pieces = useGetPieces({pageSize:4,unifty:props.unifty},props.changer)
     return (<GridContent marginBottom={10}>
         <HStack>
             <Box fontSize="xl" fontWeight="bold" marginRight={20}>Available pieces</Box>
             <SearchPieces></SearchPieces>
         </HStack>
         <SearchLabels></SearchLabels>
+        {pieces.results.nfts.map(val=>{
+            return (<Card nft={val.nft} changer={props.changer} unifty={props.unifty}></Card>)
+        })}
     </GridContent>)
 }
 

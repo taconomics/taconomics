@@ -5,7 +5,7 @@ import Card from '../../src/components/Card/Card'
 import styles from './Collections.module.scss'
 import { Box, Flex } from "@chakra-ui/react";
 
-export default function Farm(props: { unifty: Unifty }) {
+export default function Farm(props: { unifty: Unifty,changer }) {
     const router = useRouter();
     const farm = router.query.farm as string;
 
@@ -20,7 +20,7 @@ export default function Farm(props: { unifty: Unifty }) {
 
                 for (const nft of nfts) {
                     const name = Math.floor(Math.random() * 100);
-                    g.push(<Card unifty={props.unifty} key={name} nft={nft}></Card>)
+                    g.push(<Card changer={props.changer} unifty={props.unifty} key={name} nft={nft}></Card>)
                 }
                 console.log("nfts", nfts);
                 setNfts(g);

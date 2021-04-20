@@ -188,11 +188,16 @@ export default class Unifty {
     };
 
     async farmPointsEarned(farmAddress, account) {
-        await this.sleep(this.sleep_time);
+        try{
+           await this.sleep(this.sleep_time);
         let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
         let earned = await farm.methods.earned(account).call({ from: this.account });
         let decimals = await this.farmTokenDecimals(farmAddress);
-        return earned / Math.pow(10, decimals >= 0 ? decimals : 0);
+        return earned / Math.pow(10, decimals >= 0 ? decimals : 0); 
+        }catch(e){
+            console.error(e);
+        }
+        
     };
     async farmShopGetPrice(shopAddress, erc1155Address, id) {
         await this.sleep(this.sleep_time);
@@ -233,51 +238,59 @@ export default class Unifty {
 
     async getFarmNfts(farmAddress) {
 
-        await this.sleep(this.sleep_time);
+        return await this.getFarmNftsToBlock(farmAddress,this.min_block,"latest")
+    };
+    async getFarmNftsToBlock(farmAddress,minBlock,toBlock) {
+        try{
+            await this.sleep(this.sleep_time);
 
-        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
-
-        console.log("farm", farm, "Farm adddres", farmAddress);
-
-        let cards = await farm.getPastEvents('CardAdded', {
-            fromBlock: this.min_block,
-            toBlock: 'latest'
-        })
-
-
-
-        let check_entries = [];
-        cards = cards.reverse();
-        let card_data = [];
-
-        let decimals = await this.farmTokenDecimals(farmAddress);
-
-        for (let i = 0; i < cards.length; i++) {
-
-            if (check_entries.includes(cards[i].returnValues.erc1155 + cards[i].returnValues.card)) {
-                continue;
-            }
-
-            let data = await this.farmNftData(farmAddress, cards[i].returnValues.erc1155, cards[i].returnValues.card);
-
-            card_data.push(
-                {
-                    erc1155: cards[i].returnValues.erc1155,
-                    id: cards[i].returnValues.card,
-                    points: Number(data.points / Math.pow(10, decimals >= 0 ? decimals : 0)).toFixed(8),
-                    pointsRaw: data.points / Math.pow(10, decimals >= 0 ? decimals : 0),
-                    mintFee: this.web3.utils.toBN(data.controllerFee).add(this.web3.utils.toBN(data.mintFee)),
-                    artist: data.artist,
-                    releaseTime: data.releaseTime,
-                    nsfw: data.nsfw,
-                    shadowed: data.shadowed
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+    
+            let cards = await farm.getPastEvents('CardAdded', {
+                fromBlock: minBlock,
+                toBlock: toBlock
+            })
+    
+    
+    
+            let check_entries = [];
+            cards = cards.reverse();
+            let card_data = [];
+    
+            let decimals = await this.farmTokenDecimals(farmAddress);
+    
+            for (let i = 0; i < cards.length; i++) {
+    
+                if (check_entries.includes(cards[i].returnValues.erc1155 + cards[i].returnValues.card)) {
+                    continue;
                 }
-            );
-
-            check_entries.push(cards[i].returnValues.erc1155 + cards[i].returnValues.card);
+    
+                let data = await this.farmNftData(farmAddress, cards[i].returnValues.erc1155, cards[i].returnValues.card);
+    
+                card_data.push(
+                    {
+                        erc1155: cards[i].returnValues.erc1155,
+                        id: cards[i].returnValues.card,
+                        points: Number(data.points / Math.pow(10, decimals >= 0 ? decimals : 0)).toFixed(8),
+                        pointsRaw: data.points / Math.pow(10, decimals >= 0 ? decimals : 0),
+                        mintFee: this.web3.utils.toBN(data.controllerFee).add(this.web3.utils.toBN(data.mintFee)),
+                        artist: data.artist,
+                        releaseTime: data.releaseTime,
+                        nsfw: data.nsfw,
+                        shadowed: data.shadowed,
+                        farmAddress:farmAddress
+                    }
+                );
+    
+                check_entries.push(cards[i].returnValues.erc1155 + cards[i].returnValues.card);
+            }
+    
+            return card_data;
+        }catch(e){
+            console.log(e);
         }
 
-        return card_data;
+      
     };
 
     async farmBalanceOf(farmAddress, account) {
@@ -619,7 +632,6 @@ export default class Unifty {
     }
 
     async getErc1155Meta(erc1155ContractAddress) {
-        console.log("erccontac adress", erc1155ContractAddress)
         if (erc1155ContractAddress != undefined || erc1155ContractAddress != "") {
 
 
