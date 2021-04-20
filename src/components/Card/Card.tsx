@@ -25,6 +25,8 @@ export default function Card(props: { nft: any, unifty: Unifty, canEdit?,changer
                 let metaNft = await unifty.getNftMeta(nft.erc1155, nft.id);
                 let farmForSupply = unifty.tacoshiFarm;
 
+                console.log("realnft",realNft)
+                console.log("metanft",metaNft)
 
 
                 let farmNftData = await unifty.farmNftData(farmForSupply, nft.erc1155, nft.id);
@@ -33,6 +35,7 @@ export default function Card(props: { nft: any, unifty: Unifty, canEdit?,changer
                     farmForSupply = unifty.rabbitFarm;
                     farmNftData = await unifty.farmNftData(farmForSupply, nft.erc1155, nft.id);
                 }
+                console.log("farmnftdata",farmNftData)
 
                 let price = Number(farmNftData.points) / 1000000000000000000
 

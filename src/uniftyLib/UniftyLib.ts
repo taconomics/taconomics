@@ -602,11 +602,19 @@ export default class Unifty {
         return nfts;
     };
 
+    async getErc1155Owner(address) {
+        await this.sleep(this.sleep_time);
+        let erc1155 = new this.web3.eth.Contract(erc1155ABI, address, { from: this.account });
+        let owner = await erc1155.methods.owner().call({ from: this.account })
+
+        return owner;
+    }
+
     async getErc1155Meta(erc1155ContractAddress) {
-        console.log("erccontac adress",erc1155ContractAddress)
+        console.log("erccontac adress", erc1155ContractAddress)
         if (erc1155ContractAddress != undefined || erc1155ContractAddress != "") {
 
-          
+
             let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155ContractAddress, { from: this.account });
             let contractURI = '';
 

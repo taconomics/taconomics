@@ -7,19 +7,26 @@ import { columnTemplate } from "../../src/components/TacoLayout";
 import { createFakeCards } from "../farms";
 import { BePartTacoCommunity } from "..";
 
-export default function Collection(props: { unifty: Unifty }) {
+import * as Box3 from '3box';
+
+export default function Collection(props: { unifty: Unifty,changer }) {
     const router = useRouter();
     const [nfts, setNfts] = useState([createFakeCards(4)]);
+    const [owner,setOwner] = useState(undefined);
     const [erc1155Meta, setErc1155Meta] = useState({ name: <Center><Spinner /></Center>, description: <Center><Spinner /></Center> });
     const collection = router.query.collection as string;
 
     useEffect(() => {
         const func = async () => {
             if (collection != undefined) {
-               let col = await getCollectionCards(props.unifty,collection,false);
+               let col = await getCollectionCards(props.unifty,collection,false,props.changer);
                 setNfts(col);
             }
             let erc1155Meta = await props.unifty.getErc1155Meta(collection);
+
+            let owner = await props.unifty.getErc1155Owner(collection);
+            console.log("Owner",owner)
+            setOwner(owner);
 
             fetch(erc1155Meta.contractURI).then(r => r.json()).catch(e => { console.error(e) }).then(e => {
                 console.log(e);
@@ -34,7 +41,7 @@ export default function Collection(props: { unifty: Unifty }) {
     }, [collection])
     return (<><Grid templateColumns={columnTemplate}>
         <Box gridColumn="2/2">
-            <ArtistInfo unifty={props.unifty} info={erc1155Meta}></ArtistInfo>
+            <ArtistInfo owner={owner} changer={props.changer} unifty={props.unifty} info={erc1155Meta}></ArtistInfo>
             <CollectionCardInfo info={erc1155Meta}></CollectionCardInfo>
             <Flex flexWrap="wrap">{nfts}</Flex>
         </Box>
@@ -43,25 +50,37 @@ export default function Collection(props: { unifty: Unifty }) {
     </>)
 }
 
-export async function getCollectionCards(unifty:Unifty,collection:string,canEdit:boolean) {
+export async function getCollectionCards(unifty:Unifty,collection:string,canEdit:boolean,changer:number) {
     let nfts = await unifty.getNftsByUri(collection);
     let col = [];
     for (const nft of nfts) {
         
         const name = Math.floor(Math.random() * 100);
         let json = { erc1155: collection, id: nft };
-        col.push(<Card unifty={unifty} canEdit={canEdit} key={name} nft={json}></Card>);
+        col.push(<Card changer={changer} unifty={unifty} canEdit={canEdit} key={name} nft={json}></Card>);
     }
     return col;
 }
 
 
-export function ArtistInfo(props: { unifty: Unifty, info: any }) {
+export function ArtistInfo(props: { unifty: Unifty, info: any,changer:number,owner }) {
+    console.log("Info",props.info)
+    const [box3Profile,setProfile] = useState({name:undefined,description:undefined})
+   useEffect(()=>{
+       async function artistInfoFunc(){
+           const profile = await Box3.getProfile(props.owner)
+           console.log("Box3 profile",profile);
+           setProfile(profile);
+       }
+
+       artistInfoFunc();
+    
+   },[props.changer,props.owner])
     return (<Flex>
         <ArtistBadge info={props.info}></ArtistBadge>
         <Box maxWidth={["60%", "50%"]} paddingLeft={["100px"]} >
-            <Box fontSize="x-large" padding="20px" paddingLeft="0px" fontWeight="bold">Artist name</Box>
-            <Box fontSize="small">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nibh a faucibus porttitor odio at enim vitae, amet dignissim. Pellentesque nec pellentesque lectus id nulla quisque. Vitae amet, aliquam duis ornare vehicula suspendisse. Vulputate pellentesque pulvinar non tellus.</Box>
+            <Box fontSize="x-large" padding="20px" paddingLeft="0px" fontWeight="bold">{box3Profile.name?box3Profile.name:"Artist name"}</Box>
+            <Box fontSize="small">{box3Profile.description?box3Profile.description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nibh a faucibus porttitor odio at enim vitae, amet dignissim. Pellentesque nec pellentesque lectus id nulla quisque. Vitae amet, aliquam duis ornare vehicula suspendisse. Vulputate pellentesque pulvinar non tellus."}</Box>
         </Box>
 
     </Flex>)

@@ -26,7 +26,7 @@ export async function getFeaturedCollections(unifty: Unifty) {
         featuredCollections = ["0x5d57b91984e4e7d37772c621fc91377a28a7fb1f", "0x2B015207B5259B7fBb80Bb441726305382287674",
             "0xd5dfb159788856f9fd5f897509d5a68b7b571ea8", "0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb"]
     } else {
-        featuredCollections = ["0x9162E7bAA5239C2eaA1901132DAd5da08730fEd8", "0x18f42d699Fc56ddd92FFDD2a5EaDBec1a4082Bf5"]
+        featuredCollections = ["0x9162E7bAA5239C2eaA1901132DAd5da08730fEd8", "0x18f42d699Fc56ddd92FFDD2a5EaDBec1a4082Bf5","0x477aa01359B87D9c3B00AE6e2bd5670C000d7903"]
     }
 
     return featuredCollections;
