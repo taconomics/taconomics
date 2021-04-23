@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 
 export const cardWidth = 240;
 export const cardHeight = 300;
-export default function Card(props: { nft: any, unifty: Unifty, canEdit?,changer}) {
+export default function Card(props: { nft: any, unifty: Unifty, canEdit?, changer }) {
 
     const nft = props.nft;
     const unifty = props.unifty;
@@ -25,7 +25,7 @@ export default function Card(props: { nft: any, unifty: Unifty, canEdit?,changer
                 let metaNft = await unifty.getNftMeta(nft.erc1155, nft.id);
                 let farmForSupply = unifty.tacoshiFarm;
 
-            
+
 
                 let farmNftData = await unifty.farmNftData(farmForSupply, nft.erc1155, nft.id);
 
@@ -33,11 +33,12 @@ export default function Card(props: { nft: any, unifty: Unifty, canEdit?,changer
                     farmForSupply = unifty.rabbitFarm;
                     farmNftData = await unifty.farmNftData(farmForSupply, nft.erc1155, nft.id);
                 }
-               /* console.log("realnft",realNft)
-                console.log("metanft",metaNft)
+                /*  console.log("realnft",realNft)
+                 console.log("metanft",metaNft)
+                    console.log("farmnftdata",farmNftData)
+                 */
 
-                console.log("farmnftdata",farmNftData)*/
-
+                   
                 let price = Number(farmNftData.points) / 1000000000000000000
 
                 let balanceOf = await unifty.balanceOf(nft.erc1155, farmForSupply, nft.id);
@@ -54,13 +55,13 @@ export default function Card(props: { nft: any, unifty: Unifty, canEdit?,changer
 
             func();
 
-        }, [props.changer,props.nft])
+        }, [props.changer, props.nft])
     }
     return (<EmptyCard setHover={setHover} valid={valid}>
         {meta.image == "" || nft == undefined ?
             <Center><Spinner /></Center> :
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
-                <CardTypeBadge></CardTypeBadge>
+                <CardTypeBadge maxSupply={meta.maxSupply}></CardTypeBadge>
                 <Image maxHeight={cardHeight / 3.4 + "px"} src={meta.image}></Image>
                 <Box fontSize="large" textAlign="center" fontWeight="bold">
                     {meta.name}
@@ -87,12 +88,12 @@ export default function Card(props: { nft: any, unifty: Unifty, canEdit?,changer
         }
     </EmptyCard>)
 }
-export function EmptyCard(props:{ setHover, children ,valid?}) {
-    let { setHover, children ,valid} = props;
-    valid = valid==undefined?true:valid;
+export function EmptyCard(props: { setHover, children, valid?}) {
+    let { setHover, children, valid } = props;
+    valid = valid == undefined ? true : valid;
     setHover = setHover ? setHover : (hover) => { }
     return (
-        <Grid  overflow="hidden" position="relative" fontSize="sm" marginLeft={5} marginBottom="25px" templateRows="1fr 1fr" width={cardWidth + "px"}
+        <Grid overflow="hidden" position="relative" fontSize="sm" marginLeft={5} marginBottom="25px" templateRows="1fr 1fr" width={cardWidth + "px"}
             backgroundColor="white" height={cardHeight + "px"} borderRadius="15px" boxShadow="base"
             onPointerEnter={() => { setHover(true) }} onPointerLeave={() => { setHover(false) }}
         >
@@ -100,11 +101,11 @@ export function EmptyCard(props:{ setHover, children ,valid?}) {
         </Grid>
     )
 }
-function EditCard({ height, hover,id }) {
+function EditCard({ height, hover, id }) {
     const router = useRouter();
     return (
         <Center marginTop={hover ? "0px" : height} position="absolute" backgroundColor="blackAlpha.700" zIndex="10000" width="100%" height="100%">
-            <NextLink href={router.asPath+"/items/"+id}><Button variant="outline" colorScheme="figma.white">Edit item</Button></NextLink>
+            <NextLink href={router.asPath + "/items/" + id}><Button variant="outline" colorScheme="figma.white">Edit item</Button></NextLink>
         </Center>
     )
 }
@@ -120,9 +121,23 @@ function CardAvailable(props: { supply, maxSupply }) {
     }</HStack>
 }
 
-function CardTypeBadge(props) {
+function CardTypeBadge({ maxSupply }) {
     return (<Flex flexDirection="row" backgroundColor="white" borderRadius="md" padding="5px" color="#41b4e6" fontWeight="extrabold">
         <Image marginRight={1} src="/icons/Diamante_Icon.svg"></Image>
-        <Box fontSize="small">RARE</Box>
+        <Box fontSize="small">{getCardType(maxSupply).toUpperCase()}</Box>
     </Flex>)
+}
+
+export function getCardType(maxSupply) {
+    if (maxSupply === 1) {
+        return "legendary"
+    } else if (maxSupply == 10) {
+        return "rare"
+    } else if (maxSupply == 100) {
+        return "regular"
+    } else if (maxSupply >= 150) {
+        return "common"
+    } else {
+        return "unknown"
+    }
 }

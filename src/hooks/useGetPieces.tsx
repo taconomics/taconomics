@@ -15,71 +15,113 @@ export interface SearchResult {
     nfts: any[],
     artist: string[],
     collections: any[],
-    rarity:any[],
-    price:any[],
+    rarity: any[],
+    price: any[],
 
 }
 export const useGetPieces = (searchConfig: SearchConfig, changer: number) => {
 
-    const [results, setResult] = useState<SearchResult>( { nfts: [], artist: [], collections: [] ,rarity:[],price:[]});
+    
+    const [cachedResults,setCachedResults] = useState<SearchResult>({ nfts: [], artist: [], collections: [], rarity: [], price: [] });
+
+    const [results, setResult] = useState<SearchResult>(cachedResults);
+    const [loaded,setLoaded] = useState(false);
 
     useEffect(() => {
         async function func() {
-            await searchConfig.unifty.isConnected();
-            const res = await getResults(searchConfig);
-            setResult(res)
-            search(searchConfig, res);
+            if (searchConfig.unifty != undefined) {
+                await searchConfig.unifty.isConnected();
+                const res = await getResults(searchConfig);
+
+                setCachedResults(res);
+                setLoaded(true);
+            }
+
         }
 
         func();
     }, [changer])
 
-    return { results, }
+    useEffect(() => {
+        async function func() {
+            if (searchConfig.unifty != undefined) {
+                await searchConfig.unifty.isConnected();
+
+                let ser = await search(searchConfig, cachedResults);
+                setResult(ser);
+            }
+
+        }
+
+        func();
+    }, [changer,searchConfig,cachedResults])
+
+    console.log("Search config inside",searchConfig)
+
+    return { results,loaded }
 
 }
 async function getResults(config: SearchConfig) {
-    let result: SearchResult = { nfts: [], artist: [], collections: [] ,rarity:[],price:[]};
+    let result: SearchResult = { nfts: [], artist: [], collections: [], rarity: [], price: [] };
     let allNfts = await getAllNfts(config.unifty);
     for (const index in allNfts) {
         let nft = allNfts[index]
-        let metaNft = await config.unifty.getNftMeta(nft.erc1155,nft.id);
+        let metaNft = await config.unifty.getNftMeta(nft.erc1155, nft.id);
         let metaCollection = await config.unifty.getErc1155Meta(nft.erc1155);
 
-       
+
         if (!result.artist.includes(nft.artist))
             result.artist.push(nft.artist);
 
-        if(!result.nfts.includes(metaNft)){
-           // let real =await  config.unifty.readUri(metaNft)
-            result.nfts.push({nft:nft,meta:metaNft});
+        if (!result.nfts.includes(metaNft)) {
+            // let real =await  config.unifty.readUri(metaNft)
+            result.nfts.push({ nft: nft, meta: metaNft });
         }
 
         let hasCollection = true;
         result.collections.forEach(element => {
-            hasCollection = (element.address != nft.erc1155)            
+            hasCollection = (element.address != nft.erc1155)
         });
-        if(hasCollection){
+        if (hasCollection) {
             //let real =await  config.unifty.readUri(metaCollection.contractURI)
-            result.collections.push({address:nft.erc1155,meta:metaCollection});
+            result.collections.push({ address: nft.erc1155, meta: metaCollection });
         }
     }
     console.log(result);
     return result;
 }
-async function search(config: SearchConfig, results) {
+async function search(config: SearchConfig, results: SearchResult) {
     config.pageSize = config.pageSize ? config.pageSize : 10;
     console.log("page size", config.pageSize)
 
     await config.unifty.isConnected();
+    let newResults: SearchResult = { ...results, nfts: [] };
+
+
+    results.nfts.forEach((val) => {
+        //Check artist
+        console.log("new results", val);
+        if (isValidNft(val, config)) {
+            newResults.nfts.push(val);
+        }
+    })
 
     console.log("Search", results);
+
+    return newResults;
+}
+
+function isValidNft(nft, config: SearchConfig): boolean {
+    const artist = config.artist == nft.nft.artist || !config.artist
+    const collection  = config.collection == nft.nft.erc1155 || !config.collection
+    return artist && collection
 }
 
 async function getAllNfts(unifty: Unifty) {
     let logs = [];
     let queryTacoshi = await unifty.getFarmNfts(unifty.tacoshiFarm);
     let queryRabbit = await unifty.getFarmNfts(unifty.rabbitFarm);
-    
+
     if (queryRabbit && queryTacoshi)
         logs = [...queryTacoshi, ...queryRabbit]
 

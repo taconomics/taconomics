@@ -21,7 +21,7 @@ export default function TacoLayout(props) {
         console.log("Change tacolayout "+ changer)
     },[changer])
 
-    let clonedElement = React.cloneElement<TacoProps>(props.children, { unifty: unifty,changer })
+    let clonedElement = React.cloneElement(props.children, { unifty: unifty,changer })
     return (
             <Grid templateColumns={columnTemplate} minH={"100vh"} templateRows={rowTem}>
 
