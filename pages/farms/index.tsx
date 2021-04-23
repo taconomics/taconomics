@@ -1,7 +1,7 @@
 import { Box, Button, Center, Flex, Grid, HStack, Link, LinkBox, UseAccordionReturn } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Card from "../../src/components/Card/Card";
-import { columnTemplate } from "../../src/components/TacoLayout";
+import { columnTemplate, TacoProps } from "../../src/components/TacoLayout";
 import Unifty from "../../src/uniftyLib/UniftyLib";
 import { getNftsJson } from "./[farm]";
 
@@ -33,20 +33,20 @@ export default function FarmIndex(props) {
 export const createFakeCards = (cards:number)=>{
     let arr = [];
     for(let a=0;a<cards;a++){
-        arr.push(<Card changer={undefined} unifty={undefined} key={a} nft={undefined}></Card>)
+        arr.push(<Card tacoProps={undefined} key={a} nft={undefined}></Card>)
     }
     return arr;
 }
-export function RecentNfts(props: { unifty: Unifty, itemsSize,changer }) {
+export function RecentNfts(props: { taco: TacoProps, itemsSize }) {
     const [nfts, setNfts] = useState([]);
 
     useEffect(() => {
         setNfts([])
         async function func() {
            
-            let connected = await props.unifty.isConnected();
-            let tacoshi = await getNftsJson(props.unifty, props.unifty.tacoshiFarm);
-            let rabbit = await getNftsJson(props.unifty, props.unifty.rabbitFarm);
+            let connected = await props.taco.unifty.isConnected();
+            let tacoshi = await getNftsJson(props.taco.unifty, props.taco.unifty.tacoshiFarm);
+            let rabbit = await getNftsJson(props.taco.unifty, props.taco.unifty.rabbitFarm);
             let one = true;
 
             let tacoshiCount = 0;
@@ -57,7 +57,7 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize,changer }) {
 
                     const name = Math.floor(Math.random() * 1000000);
                     let nft = one?tacoshi[tacoshiCount]:rabbit[rabbitCount];
-                    let card = <Card changer={props.changer} unifty={props.unifty} key={name} nft={nft}></Card>;
+                    let card = <Card tacoProps={props.taco} key={name} nft={nft}></Card>;
                     finalArray.push(card)
                     if(one){
                         tacoshiCount++;
@@ -79,7 +79,7 @@ export function RecentNfts(props: { unifty: Unifty, itemsSize,changer }) {
             
         }
         func();
-    }, [props.changer])
+    }, [props.taco])
 
     return (<Grid templateColumns={columnTemplate}>
         <Box gridColumn="2/2" >

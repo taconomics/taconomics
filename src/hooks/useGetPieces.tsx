@@ -47,7 +47,7 @@ export const useGetPieces = (searchConfig: SearchConfig, changer: number) => {
         async function func() {
             if (searchConfig.unifty != undefined) {
                 await searchConfig.unifty.isConnected();
-
+                setResult({...cachedResults,nfts:[]})
                 let ser = await search(searchConfig, cachedResults);
                 setResult(ser);
             }
@@ -79,16 +79,17 @@ async function getResults(config: SearchConfig) {
             result.nfts.push({ nft: nft, meta: metaNft });
         }
 
-        let hasCollection = true;
+        let hasCollection = false;
         result.collections.forEach(element => {
-            hasCollection = (element.address != nft.erc1155)
+            if (element.address === nft.erc1155){
+                hasCollection = true;
+            }
         });
-        if (hasCollection) {
+        if (!hasCollection) {
             //let real =await  config.unifty.readUri(metaCollection.contractURI)
             result.collections.push({ address: nft.erc1155, meta: metaCollection });
         }
     }
-    console.log(result);
     return result;
 }
 async function search(config: SearchConfig, results: SearchResult) {
@@ -115,9 +116,9 @@ async function search(config: SearchConfig, results: SearchResult) {
 function isValidNft(nft, config: SearchConfig): boolean {
     const artist = config.artist == nft.nft.artist || !config.artist
     const collection  = config.collection == nft.nft.erc1155 || !config.collection
-    console.log("xddd",nft)
+    console.log("collection",config,"nft",nft)
     const rarity = config.rarity == nft.nft.supply || !config.rarity;
-    return artist && collection && rarity
+    return artist && collection
 }
 
 async function getAllNfts(unifty: Unifty) {

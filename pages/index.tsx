@@ -2,20 +2,20 @@ import { Box, Button, Center, color, Flex, Grid, useMediaQuery } from '@chakra-u
 import Head from 'next/head'
 import React from 'react'
 import Image from 'next/image'
-import { columnTemplate } from '../src/components/TacoLayout'
+import { columnTemplate, TacoProps } from '../src/components/TacoLayout'
 import Carousel from 'react-elastic-carousel'
 import { FeaturedCollections } from './collections'
 import { RecentNfts } from './farms'
-export default function Home({ unifty,changer}) {
+export default function Home(props:TacoProps) {
   const [isMobile] = useMediaQuery("(max-width: 768px)")
   return (
     <Flex flexDirection="column">
       <Box width="100%" >
         <HomeStart isMobile={isMobile}></HomeStart>
       </Box>
-      <FeaturedCollections changer={changer} unifty={unifty}></FeaturedCollections>
+      <FeaturedCollections changer={props.changer} unifty={props.unifty}></FeaturedCollections>
       <Box padding={5}></Box>
-      <RecentNfts changer={changer} unifty={unifty} itemsSize={15}></RecentNfts>
+      <RecentNfts taco={props} itemsSize={15}></RecentNfts>
       <AboutNFTS></AboutNFTS>
       <BePartTacoCommunity></BePartTacoCommunity>
     </Flex>

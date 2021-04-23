@@ -4,8 +4,9 @@ import Unifty from "../../src/uniftyLib/UniftyLib"
 import Card from '../../src/components/Card/Card'
 import styles from './Collections.module.scss'
 import { Box, Flex } from "@chakra-ui/react";
+import { TacoProps } from "../../src/components/TacoLayout";
 
-export default function Farm(props: { unifty: Unifty,changer }) {
+export default function Farm(props:TacoProps) {
     const router = useRouter();
     const farm = router.query.farm as string;
 
@@ -20,7 +21,7 @@ export default function Farm(props: { unifty: Unifty,changer }) {
 
                 for (const nft of nfts) {
                     const name = Math.floor(Math.random() * 100);
-                    g.push(<Card changer={props.changer} unifty={props.unifty} key={name} nft={nft}></Card>)
+                    g.push(<Card tacoProps={props} key={name} nft={nft}></Card>)
                 }
                 console.log("nfts", nfts);
                 setNfts(g);

@@ -22,11 +22,11 @@ export interface ICardInfo {
     farmData?: {
         artist: string, controllerFee: string, erc1155: string, mintFee: string, nsfw: boolean, points: string, releaseTime: string, shadowed: boolean, supply: boolean
     }
-    extras?: { price: string, balanceOf: string, coin: string }
+    extras?: { price: number, balanceOf: string, coin: string }
     farmAddress?: string
 }
 export function useCardInfo(tacoProps: TacoProps, erc1155: string, id: number, config?: ICardInfoConfig) {
-    const [cardInfo, setCardInfo] = useState<ICardInfo>({ nft: { maxSupply: 0, supply: 0, uri: "" }, meta: { name: "",description:"",image:"" } })
+    const [cardInfo, setCardInfo] = useState<ICardInfo>({ nft: { maxSupply: 0, supply: 0, uri: "" }, meta: { name: "", description: "", image: "" } })
     useEffect(() => {
         getCardInfo(tacoProps, erc1155, id, config, setCardInfo);
     }, [tacoProps.changer])
@@ -51,6 +51,15 @@ async function getCardInfo(tacoProps: TacoProps, erc1155: string, id: number, co
         }
         cardInfo.farmAddress = farmForSupply;
         cardInfo.farmData = farmNftData
+        if (config.useExtras) {
+            let price = Number(farmNftData.points) / 1000000000000000000
+    
+            let balanceOf = await unifty.balanceOf(erc1155, farmForSupply, id);
+    
+            let coin = unifty.getCoinName(farmForSupply);
+
+            cardInfo.extras={balanceOf:balanceOf,price:price,coin:coin}
+        }
     }
 
     if (config.useMeta) {

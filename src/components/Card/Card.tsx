@@ -13,7 +13,7 @@ export const cardWidth = 240;
 export const cardHeight = 300;
 export default function Card(props: { nft: any,  canEdit?, tacoProps:TacoProps}) {
 
-    const nft = props.nft;
+    const nft = props.nft?props.nft:{erc1155:undefined,id:undefined};
     const unifty = props.tacoProps.unifty;
     const [hover, setHover] = useState(false);
     let CardInfo:ICardInfo = useCardInfo(props.tacoProps,nft.erc1155,nft.id,{useExtras:true,useFarmData:true,useMeta:true});
@@ -30,7 +30,7 @@ export default function Card(props: { nft: any,  canEdit?, tacoProps:TacoProps})
                 {CardInfo.extras != undefined &&
                     <HStack>
                         <Box><Coin spacing={0} iconSize="20px" balance={CardInfo.extras.price} img={"/icons/" + CardInfo.extras.coin + "_Icon.svg"}></Coin></Box>
-                        <CardAvailable supply={CardInfo.farmData.supply} maxSupply={CardInfo.nft.maxSupply}></CardAvailable>
+                        <CardAvailable supply={CardInfo.extras.balanceOf} maxSupply={CardInfo.farmData.supply}></CardAvailable>
 
                     </HStack>
                 }
