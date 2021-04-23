@@ -11,13 +11,12 @@ import { TacoProps } from '../TacoLayout';
 
 export const cardWidth = 240;
 export const cardHeight = 300;
-export default function Card(props: { nft: any,  canEdit?, tacoProps:TacoProps}) {
+export default function Card(props: { nft: any,  canEdit?:boolean, tacoProps:TacoProps}) {
 
     const nft = props.nft?props.nft:{erc1155:undefined,id:undefined};
     const unifty = props.tacoProps.unifty;
     const [hover, setHover] = useState(false);
-    let CardInfo:ICardInfo = useCardInfo(props.tacoProps,nft.erc1155,nft.id,{useExtras:true,useFarmData:true,useMeta:true});
-    console.log("CardInfo",CardInfo)
+    let CardInfo:ICardInfo = useCardInfo(props.tacoProps,nft.erc1155,nft.id,{useExtras:true,useFarmData:true,useMeta:true})
     return (<EmptyCard setHover={setHover} valid={true}>
         {CardInfo.meta !=undefined &&  nft == undefined ?
             <Center><Spinner /></Center> :
