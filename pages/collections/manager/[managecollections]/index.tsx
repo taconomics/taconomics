@@ -9,6 +9,7 @@ import { getCollectionCards } from "../../[collection]";
 import NextLink from 'next/link'
 import UploadImage from "../../../../src/components/UploadImage";
 import { TacoProps } from "../../../../src/components/TacoLayout";
+import InputValidator from "../../../../src/components/InputValidator";
 
 export default function ManageCollection(props: TacoProps) {
     const router = useRouter();
@@ -28,8 +29,6 @@ export default function ManageCollection(props: TacoProps) {
                     setImage(realmeta.image);
                     setMeta({ erc: erc, meta: realmeta });
                 }
-                
-                
             }
 
         }
@@ -37,33 +36,34 @@ export default function ManageCollection(props: TacoProps) {
             func();
         }
 
-    }, [collection])
+    }, [collection,props.changer])
     return (<GridContent>
         <Box fontSize="x-large" fontWeight="bold" marginBottom={5}>Edit collection</Box>
         {data.meta != undefined && <Flex>
             <UploadImage unifty={props.unifty} setImage={setImage} image={image}></UploadImage>
             <Box flexGrow={2}>
-                {data.meta.name != undefined && <FormEdit image={image} id={collection} toast={toast} data={data} unifty={props.unifty}></FormEdit>}
+                {data.meta.name != undefined && <FormEdit changer={props.changer} image={image} id={collection} toast={toast} data={data} unifty={props.unifty}></FormEdit>}
             </Box>
         </Flex>}
         <CollectionItems unifty={props.unifty} changer={props.changer} collection={data.erc}></CollectionItems>
     </GridContent>)
 }
 
-function CollectionItems(props: { unifty: Unifty, collection: any ,changer}) {
+function CollectionItems(props: { unifty: Unifty, collection: any ,changer:number}) {
     const [items, set] = useState([]);
     useEffect(() => {
         async function name() {
+            set([])
             if (props.collection.erc1155 != undefined) {
 
-                let items = await getCollectionCards(props.unifty, props.collection.erc1155, true,props.changer);
+                let items = await getCollectionCards({unifty:props.unifty,changer:props.changer}, props.collection.erc1155, true);
                 items.push(<AddItemCard />)
                 set(items);
             }
 
         }
         name();
-    }, [props.collection])
+    }, [props.collection,props.changer])
     return (
         <Box>
             <Box fontSize="xl" fontWeight="bold">Items</Box>
@@ -93,9 +93,14 @@ function AddItemCard() {
 }
 
 
-function FormEdit({ toast, unifty, data, id, image }) {
+function FormEdit({ toast, unifty, data, id, image,changer }) {
     data["id"] = id;
     toast = useToast();
+    const [up,update] = useState(0);
+    useEffect(()=>{
+        update(up+1);
+        console.log("update",data)
+    },[changer,data])
 
     return (
         <Formik
@@ -106,9 +111,11 @@ function FormEdit({ toast, unifty, data, id, image }) {
         >
             {(props) => (
                 <Form>
-                    <DField w={"60%"} name="name" label={"Collection name"} placeholder="Collection name"></DField>
-                    <DField w={"60%"} name="ticker" label={"Ticker"} placeholder="Ticker"></DField>
-                    <DTextArea w={"100%"} name="description" label={"Description"} placeholder="Collection description." />
+                    <InputValidator w={"60%"} name="name" label={"Collection name"} placeholder="Collection name"></InputValidator>
+                    <InputValidator w={"60%"} name="ticker" label={"Ticker"} placeholder="Ticker"></InputValidator>
+                    <InputValidator w={"100%"} name="description" label={"Description"} placeholder="Collection description." >
+                        <Textarea backgroundColor="white" minH="300px"></Textarea>
+                    </InputValidator>
                     <Button
                         mt={4}
                         colorScheme="figma.orange"
@@ -122,42 +129,6 @@ function FormEdit({ toast, unifty, data, id, image }) {
         </Formik>
     )
 }
-
-function DField({ name, placeholder, label, w }) {
-    const m = <Field name={name} validate={validateName}>
-        {({ field, form }) => {
-            return (<FormControl isInvalid={form.errors[name] && form.touched[name]}>
-                <FormLabel htmlFor={name}>{label}</FormLabel>
-                <Input backgroundColor="white" {...field} id={name} placeholder={placeholder} />
-                <FormErrorMessage>{form.errors[name]}</FormErrorMessage>
-            </FormControl>)
-
-        }}
-    </Field>;
-    return <Box w={w}>{m}</Box>;
-}
-function DTextArea({ name, placeholder, label, w }) {
-    const m = <Field name={name} validate={validateName}>
-        {({ field, form }) => {
-            return (<FormControl isInvalid={form.errors[name] && form.touched[name]}>
-                <FormLabel htmlFor={name}>{label}</FormLabel>
-                <Textarea minH={"200px"} backgroundColor="white" {...field} id={name} placeholder={placeholder} />
-                <FormErrorMessage>{form.errors[name]}</FormErrorMessage>
-            </FormControl>)
-
-        }}
-    </Field>;
-    return <Box w={w}>{m}</Box>;
-}
-
-function validateName(value) {
-    let error
-    if (!value) {
-        error = "Field is required"
-    }
-    return error
-}
-
 
 async function onSubmit(values, actions, toast, unifty, data, image) {
     console.log("Values", values)

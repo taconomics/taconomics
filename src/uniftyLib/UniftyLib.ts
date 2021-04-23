@@ -8,6 +8,7 @@ const farmShopABI = require('../contracts/farmShopABI.json');
 import { createContext, useEffect } from "react";
 import ipfsClient from 'ipfs-http-client'
 import { ClientOptions } from "ipfs-http-client/src/lib/core";
+import { IFarmData } from "../hooks/useCardInfo";
 
 //const web3 = createContext(new Web3(Web3.givenProvider || "ws://localhost:8545"));
 
@@ -50,7 +51,7 @@ export default class Unifty {
                 let ac = await this.web3.eth.requestAccounts();
                 ab = ac[0];
             } else {
-                return this.sleep(this.sleep_time);
+                return false;
             }
 
 
@@ -63,6 +64,8 @@ export default class Unifty {
         } else {
             return true;
         }
+
+        return false;
 
     }
     async setParams() {
@@ -221,7 +224,7 @@ export default class Unifty {
         await this.sleep(this.sleep_time);
         return await erc20.methods.decimals().call({ from: this.account });
     };
-    async farmNftData(farmAddress, erc1155Address, id) {
+    async farmNftData(farmAddress, erc1155Address, id):Promise<IFarmData> {
         await this.sleep(this.sleep_time);
         let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
         return await farm.methods.cards(erc1155Address, id).call({ from: this.account });
@@ -244,11 +247,11 @@ export default class Unifty {
         return events.length > 0 ? events[events.length - 1].returnValues.uri : '';
     };
 
-    async getFarmNfts(farmAddress) {
+    async getFarmNfts(farmAddress):Promise<IFarmData[]> {
 
         return await this.getFarmNftsToBlock(farmAddress, this.min_block, "latest")
     };
-    async getFarmNftsToBlock(farmAddress, minBlock, toBlock) {
+    async getFarmNftsToBlock(farmAddress, minBlock, toBlock):Promise<IFarmData[]> {
         try {
             await this.sleep(this.sleep_time);
 
@@ -263,7 +266,7 @@ export default class Unifty {
 
             let check_entries = [];
             cards = cards.reverse();
-            let card_data = [];
+            let card_data:IFarmData[] = [];
 
             let decimals = await this.farmTokenDecimals(farmAddress);
 
@@ -274,6 +277,7 @@ export default class Unifty {
                 }
 
                 let data = await this.farmNftData(farmAddress, cards[i].returnValues.erc1155, cards[i].returnValues.card);
+                console.log("AAAAAAAA",data)
 
                 card_data.push(
                     {
@@ -281,7 +285,7 @@ export default class Unifty {
                         id: cards[i].returnValues.card,
                         points: Number(data.points / Math.pow(10, decimals >= 0 ? decimals : 0)).toFixed(8),
                         pointsRaw: data.points / Math.pow(10, decimals >= 0 ? decimals : 0),
-                        mintFee: this.web3.utils.toBN(data.controllerFee).add(this.web3.utils.toBN(data.mintFee)),
+                        mintFee: this.web3.utils.toBN(data.controllerFee).add(this.web3.utils.toBN(data.mintFee)).toString(),
                         artist: data.artist,
                         releaseTime: data.releaseTime,
                         nsfw: data.nsfw,

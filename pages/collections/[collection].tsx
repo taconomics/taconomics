@@ -3,23 +3,23 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Card from "../../src/components/Card/Card";
 import Unifty from "../../src/uniftyLib/UniftyLib";
-import { columnTemplate } from "../../src/components/TacoLayout";
+import { columnTemplate, TacoProps } from "../../src/components/TacoLayout";
 import { createFakeCards } from "../farms";
 import { BePartTacoCommunity } from "..";
 
 import * as Box3 from '3box';
 
-export default function Collection(props: { unifty: Unifty,changer }) {
+export default function Collection(props:TacoProps) {
     const router = useRouter();
-    const [nfts, setNfts] = useState([createFakeCards(4)]);
+    const [nfts, setNfts] = useState([]);
     const [owner,setOwner] = useState(undefined);
     const [erc1155Meta, setErc1155Meta] = useState({ name: <Center><Spinner /></Center>, description: <Center><Spinner /></Center> });
     const collection = router.query.collection as string;
 
     useEffect(() => {
-        const func = async () => {
+        async function func()  {
             if (collection != undefined) {
-               let col = await getCollectionCards(props.unifty,collection,false,props.changer);
+               let col = await getCollectionCards(props,collection,false);
                 setNfts(col);
             }
             let erc1155Meta = await props.unifty.getErc1155Meta(collection);
@@ -50,14 +50,16 @@ export default function Collection(props: { unifty: Unifty,changer }) {
     </>)
 }
 
-export async function getCollectionCards(unifty:Unifty,collection:string,canEdit:boolean,changer:number) {
-    let nfts = await unifty.getNftsByUri(collection);
+export async function getCollectionCards(tacoProps:TacoProps,collection:string,canEdit:boolean) {
+    let nfts = await tacoProps.unifty.getNftsByUri(collection);
     let col = [];
     for (const nft of nfts) {
         
         const name = Math.floor(Math.random() * 100);
         let json = { erc1155: collection, id: nft };
-        col.push(<Card changer={changer} unifty={unifty} canEdit={canEdit} key={name} nft={json}></Card>);
+
+        console.log("Collection card",json)
+        col.push(<Card tacoProps={tacoProps} canEdit={canEdit} key={name} nft={json}></Card>);
     }
     return col;
 }
@@ -103,7 +105,7 @@ function CollectionCardInfo(props: { info }) {
                     <Box fontSize="sm">{props.info.description}</Box>
                 </Flex>
                 <Center>
-                    <Box backgroundImage={"url(" + props.info.image + ")"} backgroundPosition="center" backgroundSize={imgSizeX} borderRadius="lg" width={imgSizeX} height={imgSizeY}></Box>
+                    <Box backgroundImage={"url(" + props.info.image?props.info.image:"" + ")"} backgroundPosition="center" backgroundSize={imgSizeX} borderRadius="lg" width={imgSizeX} height={imgSizeY}></Box>
                 </Center>
 
             </Flex>)

@@ -16,7 +16,7 @@ export default function AvailablePieces(props: TacoProps) {
 
     console.log("Taco props", props);
 
-    const [config, setConfig] = useState<SearchConfig>({ unifty: props.unifty, pageSize: 4 });
+    const [config, setConfig] = useState<SearchConfig>({ tacoProps: props, pageSize: 4 });
     const pieces = useGetPieces(config, props.changer)
 
     const cards = pieces.results.nfts.map(val => {
@@ -25,7 +25,7 @@ export default function AvailablePieces(props: TacoProps) {
     return (<GridContent marginBottom={10}>
         <HStack>
             <Box fontSize="xl" fontWeight="bold" marginRight={20}>Available pieces</Box>
-            <SearchPieces results={pieces.results}></SearchPieces>
+            <SearchPieces config={config} setConfig={setConfig} tacoProps={props} results={undefined}></SearchPieces>
         </HStack>
         <SearchLabels config={config} setConfig={setConfig} tacoProps={props} results={pieces.results}></SearchLabels>
         <HStack flexWrap="wrap">
@@ -36,10 +36,14 @@ export default function AvailablePieces(props: TacoProps) {
     </GridContent>)
 }
 
-function SearchPieces({ results: SearchResult }) {
+function SearchPieces(props:ISearchLabel) {
     return (<Box>
         <InputGroup size="lg" backgroundColor="white">
-            <Input placeholder="Search..." />
+            <Input placeholder="Search..." onChange={(e)=>{
+                console.log("Search by name",e.target.value)
+                let search = e.target.value!=""?e.target.value:undefined
+                props.setConfig({ ...props.config, name: search })
+            }}/>
             <InputRightElement children={<IconButton colorScheme="figma.orange" aria-label="Search available pieces" icon={<BsSearch />} ></IconButton>} />
         </InputGroup>
     </Box>)

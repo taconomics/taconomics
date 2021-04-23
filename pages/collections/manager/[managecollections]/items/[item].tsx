@@ -41,7 +41,7 @@ export default function ItemManager(props: { unifty: Unifty }) {
         func()
 
     }, [setErc, collection, item,setMeta,isNew])
-    return (<GridContent  >
+    return (<GridContent marginBottom={5} >
         <Box fontSize="xl" fontWeight="bold">{isNew ? "New Item" : "Edit Item"}</Box>
         {meta!=undefined?<Formik initialValues={{ name: meta.name, rarity: "", lemons: 1, eth: 10, instant: 10, url: "", description: meta.description }} onSubmit={(values, actions) => {
             console.log(erc)

@@ -8,17 +8,18 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router';
 import { ICardInfo, useCardInfo } from '../../hooks/useCardInfo';
 import { TacoProps } from '../TacoLayout';
+import {FaRegSadTear} from 'react-icons/fa'
 
 export const cardWidth = 240;
 export const cardHeight = 300;
-export default function Card(props: { nft: any,  canEdit?:boolean, tacoProps:TacoProps}) {
+export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: TacoProps }) {
 
-    const nft = props.nft?props.nft:{erc1155:undefined,id:undefined};
+    const nft = props.nft ? props.nft : { erc1155: undefined, id: undefined };
     const unifty = props.tacoProps.unifty;
     const [hover, setHover] = useState(false);
-    let CardInfo:ICardInfo = useCardInfo(props.tacoProps,nft.erc1155,nft.id,{useExtras:true,useFarmData:true,useMeta:true})
+    let CardInfo: ICardInfo = useCardInfo(props.tacoProps, nft.erc1155, nft.id, { useExtras: true, useFarmData: true, useMeta: true })
     return (<EmptyCard setHover={setHover} valid={true}>
-        {CardInfo.meta !=undefined &&  nft == undefined ?
+        {CardInfo.meta != undefined && nft == undefined ?
             <Center><Spinner /></Center> :
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
                 <CardTypeBadge maxSupply={CardInfo.nft.maxSupply}></CardTypeBadge>
@@ -26,19 +27,13 @@ export default function Card(props: { nft: any,  canEdit?:boolean, tacoProps:Tac
                 <Box fontSize="large" textAlign="center" fontWeight="bold">
                     {CardInfo.meta.name}
                 </Box>
-                {CardInfo.extras != undefined &&
-                    <HStack>
-                        <Box><Coin spacing={0} iconSize="20px" balance={CardInfo.extras.price} img={"/icons/" + CardInfo.extras.coin + "_Icon.svg"}></Coin></Box>
-                        <CardAvailable supply={CardInfo.extras.balanceOf} maxSupply={CardInfo.farmData.supply}></CardAvailable>
+                <FarmInfo CardInfo={CardInfo}></FarmInfo>
 
-                    </HStack>
-                }
-                <Box><b>0.1</b> to mint</Box>
                 <CardButton unifty={props.tacoProps.unifty}></CardButton>
 
             </Flex>
         }
-        {CardInfo !=undefined && nft == undefined ?
+        {CardInfo != undefined && nft == undefined ?
             <Center><Spinner /></Center> :
             <Box gridRow="1/1" margin="20px" gridColumn="1/1" zIndex="100" overflow="hidden" filter="blur(4px)" height={cardHeight / 2.3 + "px"}>
                 <Image src={CardInfo.meta.image}></Image>
@@ -79,6 +74,19 @@ function CardAvailable(props: { supply, maxSupply }) {
         </HStack> :
         <Box color="figma.orange.500">Sold out</Box>
     }</HStack>
+}
+function FarmInfo(props: { CardInfo: ICardInfo }) {
+    const { CardInfo } = props;
+    return (CardInfo.extras != undefined ?
+        <Box><HStack>
+            <Box><Coin spacing={0} iconSize="20px" balance={CardInfo.extras.price} img={"/icons/" + CardInfo.extras.coin + "_Icon.svg"}></Coin></Box>
+            <CardAvailable supply={CardInfo.extras.balanceOf} maxSupply={CardInfo.farmData.supply}></CardAvailable>
+        </HStack>
+            <Box><b>0.1</b> to mint</Box>
+        </Box>
+        :
+        <HStack><FaRegSadTear/> <Box> Not available in any farm</Box></HStack>
+    )
 }
 
 function CardTypeBadge({ maxSupply }) {

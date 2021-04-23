@@ -3,16 +3,17 @@ import { useRouter } from "next/router";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { columnTemplate } from "../../../src/components/TacoLayout";
+import { columnTemplate, TacoProps } from "../../../src/components/TacoLayout";
 import Unifty from "../../../src/uniftyLib/UniftyLib";
 
-export default function Manager(props: { unifty: Unifty }) {
+export default function Manager(props: TacoProps) {
     const [myCol, setCol] = useState([]);
     const unifty = props.unifty;
     if (unifty != undefined) {
         useEffect(() => {
             async function func() {
 
+                setCol([])
 
                 let connected = await props.unifty.isConnected();
                 let length = await props.unifty.getMyErc1155Length();
@@ -22,13 +23,11 @@ export default function Manager(props: { unifty: Unifty }) {
                     let erc = await props.unifty.getMyErc1155(a);
                     myCollections.push(<CollectionCard id={a} erc={erc} unifty={props.unifty}></CollectionCard>)
                 }
-                //let myCollections = await props.unifty.getMyErc1155(1);*/
-
                 setCol(myCollections);
             }
 
             func()
-        }, [])
+        }, [props.changer])
     }
 
     return (<Grid templateColumns={columnTemplate}>

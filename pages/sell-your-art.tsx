@@ -5,10 +5,13 @@ import React from "react";
 import GridContent from "../src/components/GridContent";
 import InputValidator from "../src/components/InputValidator";
 import Unifty from "../src/uniftyLib/UniftyLib";
+import emailjs, { init } from 'emailjs-com';
+import { useRef } from "react";
+import { SocialIcons } from "../src/components/SocialIcons";
 
 export default function SellYourArtPage(props: { unifty: Unifty }) {
     return (<GridContent marginBottom={20}>
-        <Flex flexDirection={["column","column","row"]} alignItems={["center","center","start"]}>
+        <Flex flexDirection={["column", "column", "row"]} alignItems={["center", "center", "start"]}>
             <BePart></BePart>
             <ContactUs></ContactUs>
         </Flex>
@@ -24,13 +27,15 @@ function BePart(props) {
 }
 
 function ContactUs() {
-    return (<Box flexGrow={6}  backgroundColor="white" shadow="xl" padding={5} width={["100%","100%","60%"]} borderRadius="lg">
-        <Box fontWeight="extrabold" fontSize="lg" marginBottom={10}>Contact us on social media or leave a message.</Box>
+    const formref = useRef<HTMLFormElement>();
+    return (<Box flexGrow={6} backgroundColor="white" shadow="xl" padding={5} width={["100%", "100%", "60%"]} borderRadius="lg">
+        <Box fontWeight="extrabold" fontSize="lg" marginBottom={5}>Contact us on social media or leave a message.</Box>
+        <SellSocialIcons></SellSocialIcons>
         <Formik initialValues={{ name: "" }} onSubmit={(values, actions) => { }}>
             {
                 (props) => {
                     return (
-                        <Form>
+                        <Form ref={formref}>
                             <VStack spacing={"5"}>
                                 <InputValidator name="name" placeholder="Your full name." label="Full name">
                                 </InputValidator>
@@ -39,7 +44,9 @@ function ContactUs() {
                                 <InputValidator name="message" placeholder="Your message." label="Message">
                                     <Textarea></Textarea>
                                 </InputValidator>
-                                <Button alignSelf="start" colorScheme="figma.orange" paddingLeft={10} paddingRight={10}>Submit</Button>
+                                <Button alignSelf="start" colorScheme="figma.orange" paddingLeft={10} onClick={() => {
+                                    sendEmail(formref.current)
+                                }} paddingRight={10}>Submit</Button>
                             </VStack>
 
                         </Form>
@@ -51,4 +58,21 @@ function ContactUs() {
         </Formik>
 
     </Box>)
+}
+
+function SellSocialIcons() {
+    return <SocialIcons size={20} Container={SellSocialContainer} marginBottom={2} iconColor="black" alignItems="center" justifyContent="center"></SocialIcons>
+
+}
+function SellSocialContainer(props) {
+    return (<Box padding={1} marginX={1} borderRadius="full" border="1px solid black">{props.children}</Box>)
+}
+
+async function sendEmail(form: HTMLFormElement) {
+    let i = init("user_JkJBZ6GPc0fnHDkELaHFs");
+
+    let response = await emailjs.sendForm("service_1lgrnn9", "template_tj7r92o", form);
+
+    console.log("email response", response);
+
 }

@@ -1,17 +1,21 @@
-import { Box, chakra, Flex } from "@chakra-ui/react";
+import { Box, chakra, Flex, LinkBox } from "@chakra-ui/react";
 import React from "react";
-import { AiOutlineInstagram,AiOutlineTwitter,AiOutlineGithub } from 'react-icons/ai'
+import { AiOutlineInstagram, AiOutlineTwitter, AiOutlineGithub } from 'react-icons/ai'
+import NextLink from 'next/link'
 
-function SocialIconsSX(props:{color?,size?,Container?}) {
-    let {color,size,Container} = props;
-    color=color?color:"white"
-    size=size?size:"20px"
-    Container=Container?Container:<Box></Box>
+function SocialIconsSX(props: { iconColor?, size?, Container?}) {
+    let { iconColor, size, Container } = props;
+
+    console.log("Color",iconColor)
+    iconColor = iconColor ? iconColor : "white"
+    size = size ? size : "20px"
+    Container = Container ? Container : <Box></Box>
     return (<Flex {...props}>
-        <Container><AiOutlineInstagram color={color} size={size}></AiOutlineInstagram></Container>
-        <Container><AiOutlineTwitter color={color} size={size}></AiOutlineTwitter></Container>
-        <Container><AiOutlineGithub color={color} size={size}></AiOutlineGithub></Container>
+        <a target="_blank" href="https://instagram.com/" rel="noopener noreferrer"><LinkBox><Container><AiOutlineInstagram color={iconColor} size={size}></AiOutlineInstagram></Container></LinkBox></a>
+        <a target="_blank" href="https://twitter.com/" rel="noopener noreferrer"><LinkBox><Container><AiOutlineTwitter color={iconColor} size={size}></AiOutlineTwitter></Container></LinkBox></a>
+        <a target="_blank" href="https://github.com/" rel="noopener noreferrer"><LinkBox><Container><AiOutlineGithub color={iconColor} size={size}></AiOutlineGithub></Container></LinkBox></a>
     </Flex>)
 }
 
-export  const SocialIcons= chakra(SocialIconsSX);
+export const SocialIcons = chakra(SocialIconsSX);
+
