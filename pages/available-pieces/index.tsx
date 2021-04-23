@@ -6,7 +6,7 @@ import Unifty from "../../src/uniftyLib/UniftyLib";
 import { BsSearch } from 'react-icons/bs'
 import { RecentNfts } from "../farms";
 import { SearchConfig, SearchResult, useGetPieces } from "../../src/hooks/useGetPieces";
-import Card from "../../src/components/Card/Card";
+import Card, { CardTypes } from "../../src/components/Card/Card";
 import { useArtistInfo } from "../../src/hooks/useArtistInfo";
 import { TacoProps } from "../../src/components/TacoLayout";
 import { useState } from "react";
@@ -20,7 +20,7 @@ export default function AvailablePieces(props: TacoProps) {
     const pieces = useGetPieces(config, props.changer)
 
     const cards = pieces.results.nfts.map(val => {
-        return (<Card nft={val.nft} changer={props.changer} unifty={props.unifty}></Card>)
+        return (<Card nft={val.nft} tacoProps={props}></Card>)
     })
     return (<GridContent marginBottom={10}>
         <HStack>
@@ -53,7 +53,7 @@ function SearchLabels(props: ISearchLabel) {
     return (<HStack marginY={5}>
         <SelectArtists {...props}></SelectArtists>
         <SelectCollections {...props}></SelectCollections>
-        <SelectInput results={props.results.rarity} placeholder="Rarity"></SelectInput>
+        <SelectRarity {...props}/>
         <SelectInput results={props.results.price} placeholder="Price"></SelectInput>
     </HStack>)
 }
@@ -66,7 +66,7 @@ interface ISelectInput {
 }
 
 function SelectInput(props: ISelectInput) {
-    return (<Select placeholder={props.placeholder} backgroundColor="white" onChange={props.onChange}>
+    return (<Select placeholder={props.placeholder} textTransform="capitalize" backgroundColor="white" onChange={props.onChange}>
         {props.results.map((value) => {
             if (props.creator) {
                 return props.creator(value)
@@ -101,5 +101,19 @@ function SelectCollections(props: ISearchLabel) {
             console.log("SerchLabels collection", val);
 
             return (<Box border="1px" as="option" id={val.address}>{val.meta.name}</Box>)
+        }}></SelectInput>)
+}
+
+function SelectRarity(props: ISearchLabel) {
+    return (<SelectInput results={props.results.rarity}  placeholder="Rarity"
+        onChange={(val) => {
+            const index = val.target.selectedIndex;
+            const rarity = val.target.options[index].id;
+            props.setConfig({ ...props.config, rarity: rarity })
+        }}
+        creator={(val) => {
+            console.log("SerchLabels rarity", val);
+
+            return (<Box border="1px" as="option" id={CardTypes[val.toLowerCase()]}>{val}</Box>)
         }}></SelectInput>)
 }

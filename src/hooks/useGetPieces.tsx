@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
+import { CardTypes } from "../components/Card/Card";
 import Unifty from "../uniftyLib/UniftyLib";
 
 export interface SearchConfig {
@@ -22,7 +23,7 @@ export interface SearchResult {
 export const useGetPieces = (searchConfig: SearchConfig, changer: number) => {
 
     
-    const [cachedResults,setCachedResults] = useState<SearchResult>({ nfts: [], artist: [], collections: [], rarity: [], price: [] });
+    const [cachedResults,setCachedResults] = useState<SearchResult>({ nfts: [], artist: [], collections: [], rarity: Object.keys(CardTypes), price: [] });
 
     const [results, setResult] = useState<SearchResult>(cachedResults);
     const [loaded,setLoaded] = useState(false);
@@ -62,7 +63,7 @@ export const useGetPieces = (searchConfig: SearchConfig, changer: number) => {
 
 }
 async function getResults(config: SearchConfig) {
-    let result: SearchResult = { nfts: [], artist: [], collections: [], rarity: [], price: [] };
+    let result: SearchResult = { nfts: [], artist: [], collections: [], rarity: Object.keys(CardTypes), price: [] };
     let allNfts = await getAllNfts(config.unifty);
     for (const index in allNfts) {
         let nft = allNfts[index]
@@ -114,7 +115,9 @@ async function search(config: SearchConfig, results: SearchResult) {
 function isValidNft(nft, config: SearchConfig): boolean {
     const artist = config.artist == nft.nft.artist || !config.artist
     const collection  = config.collection == nft.nft.erc1155 || !config.collection
-    return artist && collection
+    console.log("xddd",nft)
+    const rarity = config.rarity == nft.nft.supply || !config.rarity;
+    return artist && collection && rarity
 }
 
 async function getAllNfts(unifty: Unifty) {

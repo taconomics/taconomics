@@ -6,82 +6,43 @@ import { Coin } from '../UserWallet';
 import styles from './Card.module.scss';
 import NextLink from 'next/link'
 import { useRouter } from 'next/router';
+import { ICardInfo, useCardInfo } from '../../hooks/useCardInfo';
+import { TacoProps } from '../TacoLayout';
 
 export const cardWidth = 240;
 export const cardHeight = 300;
-export default function Card(props: { nft: any, unifty: Unifty, canEdit?, changer }) {
+export default function Card(props: { nft: any,  canEdit?, tacoProps:TacoProps}) {
 
     const nft = props.nft;
-    const unifty = props.unifty;
-
-    const [meta, setMeta] = useState({ image: "", name: "", supply: 0, maxSupply: 0, coin: "", price: 0 });
+    const unifty = props.tacoProps.unifty;
     const [hover, setHover] = useState(false);
-    const [valid, setValid] = useState(true);
-    if (unifty != undefined && nft != undefined && meta != undefined) {
-        useEffect(() => {
-            async function func() {
-
-                let realNft = await unifty.getNft(nft.erc1155, nft.id);
-                let metaNft = await unifty.getNftMeta(nft.erc1155, nft.id);
-                let farmForSupply = unifty.tacoshiFarm;
-
-
-
-                let farmNftData = await unifty.farmNftData(farmForSupply, nft.erc1155, nft.id);
-
-                if (farmNftData.supply == 0) {
-                    farmForSupply = unifty.rabbitFarm;
-                    farmNftData = await unifty.farmNftData(farmForSupply, nft.erc1155, nft.id);
-                }
-                /*  console.log("realnft",realNft)
-                 console.log("metanft",metaNft)
-                    console.log("farmnftdata",farmNftData)
-                 */
-
-                   
-                let price = Number(farmNftData.points) / 1000000000000000000
-
-                let balanceOf = await unifty.balanceOf(nft.erc1155, farmForSupply, nft.id);
-
-                let jsonMeta = await fetch(metaNft).then(r => r.json()).catch(e => { console.error(e) })
-                let coin = unifty.getCoinName(farmForSupply);
-                if (!jsonMeta) {
-                    setValid(false);
-                } else {
-                    setMeta({ image: jsonMeta.image, name: jsonMeta.name, supply: balanceOf, maxSupply: farmNftData.supply, coin: coin, price: price });
-                }
-
-            }
-
-            func();
-
-        }, [props.changer, props.nft])
-    }
-    return (<EmptyCard setHover={setHover} valid={valid}>
-        {meta.image == "" || nft == undefined ?
+    let CardInfo:ICardInfo = useCardInfo(props.tacoProps,nft.erc1155,nft.id,{useExtras:true,useFarmData:true,useMeta:true});
+    console.log("CardInfo",CardInfo)
+    return (<EmptyCard setHover={setHover} valid={true}>
+        {CardInfo.meta !=undefined &&  nft == undefined ?
             <Center><Spinner /></Center> :
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
-                <CardTypeBadge maxSupply={meta.maxSupply}></CardTypeBadge>
-                <Image maxHeight={cardHeight / 3.4 + "px"} src={meta.image}></Image>
+                <CardTypeBadge maxSupply={CardInfo.nft.maxSupply}></CardTypeBadge>
+                <Image maxHeight={cardHeight / 3.4 + "px"} src={CardInfo.meta.image}></Image>
                 <Box fontSize="large" textAlign="center" fontWeight="bold">
-                    {meta.name}
+                    {CardInfo.meta.name}
                 </Box>
-                {meta.coin != "" &&
+                {CardInfo.extras != undefined &&
                     <HStack>
-                        <Box><Coin spacing={0} iconSize="20px" balance={meta.price} img={"/icons/" + meta.coin + "_Icon.svg"}></Coin></Box>
-                        <CardAvailable supply={meta.supply} maxSupply={meta.maxSupply}></CardAvailable>
+                        <Box><Coin spacing={0} iconSize="20px" balance={CardInfo.extras.price} img={"/icons/" + CardInfo.extras.coin + "_Icon.svg"}></Coin></Box>
+                        <CardAvailable supply={CardInfo.farmData.supply} maxSupply={CardInfo.nft.maxSupply}></CardAvailable>
 
                     </HStack>
                 }
                 <Box><b>0.1</b> to mint</Box>
-                <CardButton unifty={props.unifty}></CardButton>
+                <CardButton unifty={props.tacoProps.unifty}></CardButton>
 
             </Flex>
         }
-        {nft == undefined ?
+        {CardInfo !=undefined && nft == undefined ?
             <Center><Spinner /></Center> :
             <Box gridRow="1/1" margin="20px" gridColumn="1/1" zIndex="100" overflow="hidden" filter="blur(4px)" height={cardHeight / 2.3 + "px"}>
-                <Image src={meta.image}></Image>
+                <Image src={CardInfo.meta.image}></Image>
             </Box>}
         {props.canEdit &&
             <EditCard id={nft.id} height={cardHeight} hover={hover}></EditCard>
@@ -128,14 +89,21 @@ function CardTypeBadge({ maxSupply }) {
     </Flex>)
 }
 
+export const CardTypes = {
+    legendary: 1,
+    rare: 10,
+    regular: 100,
+    common: 150
+}
+
 export function getCardType(maxSupply) {
-    if (maxSupply === 1) {
+    if (maxSupply === CardTypes.legendary) {
         return "legendary"
-    } else if (maxSupply == 10) {
+    } else if (maxSupply == CardTypes.rare) {
         return "rare"
-    } else if (maxSupply == 100) {
+    } else if (maxSupply == CardTypes.regular) {
         return "regular"
-    } else if (maxSupply >= 150) {
+    } else if (maxSupply >= CardTypes.common) {
         return "common"
     } else {
         return "unknown"
