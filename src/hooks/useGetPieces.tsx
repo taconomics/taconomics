@@ -14,11 +14,14 @@ export interface SearchConfig {
 export interface SearchResult {
     nfts: any[],
     artist: string[],
-    collections: any[]
+    collections: any[],
+    rarity:any[],
+    price:any[],
+
 }
 export const useGetPieces = (searchConfig: SearchConfig, changer: number) => {
 
-    const [results, setResult] = useState<SearchResult>( { nfts: [], artist: [], collections: [] });
+    const [results, setResult] = useState<SearchResult>( { nfts: [], artist: [], collections: [] ,rarity:[],price:[]});
 
     useEffect(() => {
         async function func() {
@@ -35,7 +38,7 @@ export const useGetPieces = (searchConfig: SearchConfig, changer: number) => {
 
 }
 async function getResults(config: SearchConfig) {
-    let result: SearchResult = { nfts: [], artist: [], collections: [] };
+    let result: SearchResult = { nfts: [], artist: [], collections: [] ,rarity:[],price:[]};
     let allNfts = await getAllNfts(config.unifty);
     for (const index in allNfts) {
         let nft = allNfts[index]
@@ -47,8 +50,8 @@ async function getResults(config: SearchConfig) {
             result.artist.push(nft.artist);
 
         if(!result.nfts.includes(metaNft)){
-            let real =await  config.unifty.readUri(metaNft)
-            result.nfts.push({nft:nft,meta:real});
+           // let real =await  config.unifty.readUri(metaNft)
+            result.nfts.push({nft:nft,meta:metaNft});
         }
 
         let hasCollection = true;
@@ -56,8 +59,8 @@ async function getResults(config: SearchConfig) {
             hasCollection = (element.address != nft.erc1155)            
         });
         if(hasCollection){
-            let real =await  config.unifty.readUri(metaCollection.contractURI)
-            result.collections.push({address:nft.erc1155,meta:real});
+            //let real =await  config.unifty.readUri(metaCollection.contractURI)
+            result.collections.push({address:nft.erc1155,meta:metaCollection});
         }
     }
     console.log(result);

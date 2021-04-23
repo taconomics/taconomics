@@ -5,24 +5,29 @@ import GridContent from "../../src/components/GridContent";
 import Unifty from "../../src/uniftyLib/UniftyLib";
 import { BsSearch } from 'react-icons/bs'
 import { RecentNfts } from "../farms";
-import { useGetPieces } from "../../src/hooks/useGetPieces";
+import { SearchResult, useGetPieces } from "../../src/hooks/useGetPieces";
 import Card from "../../src/components/Card/Card";
+import { useArtistInfo } from "../../src/hooks/useArtistInfo";
+import { TacoProps } from "../../src/components/TacoLayout";
 
-export default function AvailablePieces(props: { unifty: Unifty,changer }) {
-    const pieces = useGetPieces({pageSize:4,unifty:props.unifty},props.changer)
+export default function AvailablePieces(props: TacoProps) {
+    const pieces = useGetPieces({ pageSize: 4, unifty: props.unifty }, props.changer)
     return (<GridContent marginBottom={10}>
         <HStack>
             <Box fontSize="xl" fontWeight="bold" marginRight={20}>Available pieces</Box>
-            <SearchPieces></SearchPieces>
+            <SearchPieces results={pieces.results}></SearchPieces>
         </HStack>
-        <SearchLabels></SearchLabels>
-        {pieces.results.nfts.map(val=>{
-            return (<Card nft={val.nft} changer={props.changer} unifty={props.unifty}></Card>)
-        })}
+        <SearchLabels tacoProps={props} results={pieces.results}></SearchLabels>
+        <HStack flexWrap="wrap">
+            {pieces.results.nfts.map(val => {
+                return (<Card nft={val.nft} changer={props.changer} unifty={props.unifty}></Card>)
+            })}
+        </HStack>
+
     </GridContent>)
 }
 
-function SearchPieces() {
+function SearchPieces({results:SearchResult}) {
     return (<Box>
         <InputGroup size="lg" backgroundColor="white">
             <Input placeholder="Search..." />
@@ -31,19 +36,26 @@ function SearchPieces() {
     </Box>)
 }
 
-function SearchLabels(){
-return( <HStack marginTop={5}>
-    <SelectInput placeholder="All artists"></SelectInput>
-    <SelectInput placeholder="All collections"></SelectInput>
-    <SelectInput placeholder="Rarity"></SelectInput>
-    <SelectInput placeholder="Price"></SelectInput>
-</HStack>)
+function SearchLabels(props:{results:SearchResult,tacoProps:TacoProps}) {
+    return (<HStack marginY={5}>
+        <SelectInput results={props.results.artist} placeholder="All artists" creator={(val)=>{
+            console.log("SerchLabels",val);
+            const artist = useArtistInfo(props.tacoProps,val);
+            return (<Box border="1px" as="option">{artist.name}</Box>)
+        }}></SelectInput>
+        <SelectInput results={props.results.collections} placeholder="All collections"></SelectInput>
+        <SelectInput results={props.results.rarity} placeholder="Rarity"></SelectInput>
+        <SelectInput results={props.results.price} placeholder="Price"></SelectInput>
+    </HStack>)
 }
 
-function SelectInput({placeholder}){
-    return (<Select placeholder={placeholder} backgroundColor="white">
-    <option value="option1">Option 1</option>
-    <option value="option2">Option 2</option>
-    <option value="option3">Option 3</option>
-  </Select>)
+function SelectInput(props:{ placeholder,results:any[],creator?:(val)=>any }) {
+    return (<Select placeholder={props.placeholder} backgroundColor="white">
+        {props.results.map((value)=>{
+            if(props.creator){
+               return props.creator(value)
+            }
+            
+        })}
+    </Select>)
 }

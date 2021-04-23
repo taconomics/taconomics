@@ -8,8 +8,9 @@ import Unifty from "../../../../src/uniftyLib/UniftyLib";
 import { getCollectionCards } from "../../[collection]";
 import NextLink from 'next/link'
 import UploadImage from "../../../../src/components/UploadImage";
+import { TacoProps } from "../../../../src/components/TacoLayout";
 
-export default function ManageCollection(props: { unifty: Unifty }) {
+export default function ManageCollection(props: TacoProps) {
     const router = useRouter();
     const collection = router.query.managecollections as string;
     const toast = useToast();
@@ -45,17 +46,17 @@ export default function ManageCollection(props: { unifty: Unifty }) {
                 {data.meta.name != undefined && <FormEdit image={image} id={collection} toast={toast} data={data} unifty={props.unifty}></FormEdit>}
             </Box>
         </Flex>}
-        <CollectionItems unifty={props.unifty} collection={data.erc}></CollectionItems>
+        <CollectionItems unifty={props.unifty} changer={props.changer} collection={data.erc}></CollectionItems>
     </GridContent>)
 }
 
-function CollectionItems(props: { unifty: Unifty, collection: any }) {
+function CollectionItems(props: { unifty: Unifty, collection: any ,changer}) {
     const [items, set] = useState([]);
     useEffect(() => {
         async function name() {
             if (props.collection.erc1155 != undefined) {
 
-                let items = await getCollectionCards(props.unifty, props.collection.erc1155, true);
+                let items = await getCollectionCards(props.unifty, props.collection.erc1155, true,props.changer);
                 items.push(<AddItemCard />)
                 set(items);
             }

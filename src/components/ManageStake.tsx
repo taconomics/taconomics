@@ -55,9 +55,9 @@ export default function ManageStake(props: { unifty: Unifty, isOpen, onOpen, onC
         setStaked(s);
 
         let farmToken = await props.unifty.farmToken(address);
-        let balanceOfErc20 = props.unifty.web3.utils.toBN( await props.unifty.balanceOfErc20Raw(farmToken, props.unifty.account) );
+        let balanceOfErc20 = props.unifty.web3.utils.toBN(await props.unifty.balanceOfErc20Raw(farmToken, props.unifty.account));
         let decimals = await props.unifty.farmTokenDecimals(address);
-        let format  = props.unifty.formatNumberString(balanceOfErc20.toString(),decimals)
+        let format = props.unifty.formatNumberString(balanceOfErc20.toString(), decimals)
         setDecimals(decimals);
         setFarmLeft(format);
     }
@@ -105,9 +105,9 @@ export default function ManageStake(props: { unifty: Unifty, isOpen, onOpen, onC
                                 />
                                 <InputRightElement width="4.5rem">
                                     <Button onClick={() => {
-                                        console.log("Staked",staked)
-                                        setAmount(isStaking?""+farmLeft:""+staked) 
-                                        }} h="1.75rem" size="sm" variant="outline" colorScheme="figma.orange">
+                                        console.log("Staked", staked)
+                                        setAmount(isStaking ? "" + farmLeft : "" + staked)
+                                    }} h="1.75rem" size="sm" variant="outline" colorScheme="figma.orange">
                                         MAX
                                     </Button>
                                 </InputRightElement>
@@ -150,7 +150,7 @@ function StakeButton(props: { stake_amount, unifty: Unifty, isTaco, balance, min
         },
         {
             title: "Failed to stake", description: "Some error ocurred...", handler: () => {
-                setButtonStatus({ ...buttonStatus,disabled:false, isLoading: false })
+                setButtonStatus({ ...buttonStatus, disabled: false, isLoading: false })
             }
         }, { showError: true })
 
@@ -177,15 +177,15 @@ function StakeButton(props: { stake_amount, unifty: Unifty, isTaco, balance, min
     }
     const onClickStake = async () => {
         const address = unifty.getFarmAddress(isTaco);
-         let decimals = await unifty.farmTokenDecimals(address);
+        let decimals = await unifty.farmTokenDecimals(address);
 
-            stake_amount = unifty.resolveNumberString(stake_amount, decimals);
-            let balance = await unifty.farmBalanceOfRaw(address, unifty.account);
+        stake_amount = unifty.resolveNumberString(stake_amount, decimals);
+        let balance = await unifty.farmBalanceOfRaw(address, unifty.account);
 
-            console.log(stake_amount);
+        console.log(stake_amount);
 
-            let added = parseInt(balance) + parseInt(stake_amount);
-        if (added == 0 || added < props.minmax.min || added > props.minmax.max  ) {
+        let added = parseInt(balance) + parseInt(stake_amount);
+        if (added == 0 || added < props.minmax.min || added > props.minmax.max) {
             let maxStakesLeft = props.unifty.web3.utils.toBN(await unifty.farmMaxStakeRaw(unifty.getFarmAddress(isTaco))).sub(unifty.web3.utils.toBN(balance));
 
             let format = unifty.formatNumberString(maxStakesLeft.toString(), decimals)
@@ -250,7 +250,7 @@ function StakeDescription({ isTaco }) {
         </VStack>)
 }
 
-function AmountStaked(props: { isTaco, unifty: Unifty, minmax, staked,farmLeft }) {
+function AmountStaked(props: { isTaco, unifty: Unifty, minmax, staked, farmLeft }) {
     const coin = props.isTaco ? "$TACO" : "$Salsa";
 
     return (<Box marginTop={5}>

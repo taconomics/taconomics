@@ -26,12 +26,15 @@ export default class Unifty {
     tacoshiFarm: string;
     rabbitFarm: string;
     chain_id: string;
+    hasWallet: boolean;
+
     constructor() {
         this.init();
 
     }
     init() {
-        this.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+        this.web3 = new Web3(Web3.givenProvider || "wss://mainnet.infura.io/ws/v3/1d43a65747d946959cbf2c8cb67553b8");
+        this.hasWallet = this.web3.givenProvider != undefined ? true : false;
         this.setAccount();
         this.setParams();
         this.createIpfsServer();
@@ -43,8 +46,13 @@ export default class Unifty {
     async isConnected() {
         var ab;
         try {
-            let ac = await this.web3.eth.requestAccounts();
-            ab = ac[0];
+            if (this.hasWallet) {
+                let ac = await this.web3.eth.requestAccounts();
+                ab = ac[0];
+            } else {
+                return this.sleep(this.sleep_time);
+            }
+
 
             //return true;
         } catch (e) {
@@ -188,16 +196,16 @@ export default class Unifty {
     };
 
     async farmPointsEarned(farmAddress, account) {
-        try{
-           await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
-        let earned = await farm.methods.earned(account).call({ from: this.account });
-        let decimals = await this.farmTokenDecimals(farmAddress);
-        return earned / Math.pow(10, decimals >= 0 ? decimals : 0); 
-        }catch(e){
+        try {
+            await this.sleep(this.sleep_time);
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+            let earned = await farm.methods.earned(account).call({ from: this.account });
+            let decimals = await this.farmTokenDecimals(farmAddress);
+            return earned / Math.pow(10, decimals >= 0 ? decimals : 0);
+        } catch (e) {
             console.error(e);
         }
-        
+
     };
     async farmShopGetPrice(shopAddress, erc1155Address, id) {
         await this.sleep(this.sleep_time);
@@ -238,35 +246,35 @@ export default class Unifty {
 
     async getFarmNfts(farmAddress) {
 
-        return await this.getFarmNftsToBlock(farmAddress,this.min_block,"latest")
+        return await this.getFarmNftsToBlock(farmAddress, this.min_block, "latest")
     };
-    async getFarmNftsToBlock(farmAddress,minBlock,toBlock) {
-        try{
+    async getFarmNftsToBlock(farmAddress, minBlock, toBlock) {
+        try {
             await this.sleep(this.sleep_time);
 
             let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
-    
+
             let cards = await farm.getPastEvents('CardAdded', {
                 fromBlock: minBlock,
                 toBlock: toBlock
             })
-    
-    
-    
+
+
+
             let check_entries = [];
             cards = cards.reverse();
             let card_data = [];
-    
+
             let decimals = await this.farmTokenDecimals(farmAddress);
-    
+
             for (let i = 0; i < cards.length; i++) {
-    
+
                 if (check_entries.includes(cards[i].returnValues.erc1155 + cards[i].returnValues.card)) {
                     continue;
                 }
-    
+
                 let data = await this.farmNftData(farmAddress, cards[i].returnValues.erc1155, cards[i].returnValues.card);
-    
+
                 card_data.push(
                     {
                         erc1155: cards[i].returnValues.erc1155,
@@ -278,19 +286,19 @@ export default class Unifty {
                         releaseTime: data.releaseTime,
                         nsfw: data.nsfw,
                         shadowed: data.shadowed,
-                        farmAddress:farmAddress
+                        farmAddress: farmAddress
                     }
                 );
-    
+
                 check_entries.push(cards[i].returnValues.erc1155 + cards[i].returnValues.card);
             }
-    
+
             return card_data;
-        }catch(e){
+        } catch (e) {
             console.log(e);
         }
 
-      
+
     };
 
     async farmBalanceOf(farmAddress, account) {
@@ -623,11 +631,11 @@ export default class Unifty {
             let owner = await erc1155.methods.owner().call({ from: this.account })
 
             return owner;
-        }catch(e){
+        } catch (e) {
             console.error(e);
         }
-            
-        
+
+
 
     }
 
