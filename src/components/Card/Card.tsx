@@ -22,7 +22,7 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
         {CardInfo.meta != undefined && nft == undefined ?
             <Center><Spinner /></Center> :
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
-                <CardTypeBadge maxSupply={CardInfo.nft.maxSupply}></CardTypeBadge>
+                <CardTypeBadge maxSupply={CardInfo.nft.supply}></CardTypeBadge>
                 <Image maxHeight={cardHeight / 3.4 + "px"} src={CardInfo.meta.image}></Image>
                 <Box fontSize="large" textAlign="center" fontWeight="bold">
                     {CardInfo.meta.name}
@@ -104,7 +104,7 @@ export const CardTypes = {
 }
 
 export function getCardType(maxSupply) {
-    if (maxSupply === CardTypes.legendary) {
+    if (maxSupply == CardTypes.legendary) {
         return "legendary"
     } else if (maxSupply == CardTypes.rare) {
         return "rare"
