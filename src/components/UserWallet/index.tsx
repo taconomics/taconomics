@@ -139,8 +139,6 @@ function TacoButtonBox({ lemonBalance, chilesBalance, children }) {
     
     useOutsideAlerter(wrapperRef,setOpen);
 
-    console.log("Is open",isOpen)
-
     return <Box position="relative" ref={wrapperRef}>
         <Button as={Button} colorScheme="transparent" onClick={()=>{setOpen(!isOpen)}} margin={0}>
             <HStack>

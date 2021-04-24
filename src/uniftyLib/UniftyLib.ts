@@ -277,7 +277,6 @@ export default class Unifty {
                 }
 
                 let data = await this.farmNftData(farmAddress, cards[i].returnValues.erc1155, cards[i].returnValues.card);
-                console.log("AAAAAAAA",data)
 
                 card_data.push(
                     {

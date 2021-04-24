@@ -13,13 +13,11 @@ import { useState } from "react";
 import {VscSearchStop} from  'react-icons/vsc'
 
 export default function AvailablePieces(props: TacoProps) {
+    const [config, setConfig] = useState<SearchConfig>({ tacoProps: props, pageSize: 10 });
+    const pieces = useGetPieces(config)
 
-    console.log("Taco props", props);
 
-    const [config, setConfig] = useState<SearchConfig>({ tacoProps: props, pageSize: 4 });
-    const pieces = useGetPieces(config, props.changer)
-
-    const cards = pieces.results.nfts.map(val => {
+    const cards = pieces.nfts.map(val => {
         return (<Card nft={val.nft} tacoProps={props}></Card>)
     })
     return (<GridContent marginBottom={10}>
@@ -28,9 +26,10 @@ export default function AvailablePieces(props: TacoProps) {
             <SearchPieces config={config} setConfig={setConfig} tacoProps={props} results={undefined}></SearchPieces>
         </HStack>
         <SearchLabels config={config} setConfig={setConfig} tacoProps={props} results={pieces.results}></SearchLabels>
-        <HStack flexWrap="wrap">
-            {!pieces.loaded && <Spinner></Spinner>}
-            {cards.length>0?cards:pieces.loaded&&<Center fontSize="xx-large" color="gray.500" fontWeight="bold"><VscSearchStop></VscSearchStop> Could't find anything...</Center>}
+        {!pieces.loaded && <Spinner marginX={2}></Spinner>}
+        <HStack flexWrap="wrap" justifyContent="center">
+            
+            {cards.length>0?cards:pieces.loaded&&<Center fontSize="xx-large" color="gray.500" fontWeight="bold"><VscSearchStop></VscSearchStop>Could't find anything...</Center>}
         </HStack>
 
     </GridContent>)
@@ -88,7 +87,7 @@ function SelectArtists(props: ISearchLabel) {
             props.setConfig({ ...props.config, artist: artist })
         }}
         creator={(val) => {
-            console.log("SerchLabels", val);
+
             const artist = useArtistInfo(props.tacoProps, val);
             return (<Box border="1px" as="option" id={val}>{artist.name}</Box>)
         }}></SelectInput>)
@@ -102,7 +101,7 @@ function SelectCollections(props: ISearchLabel) {
             props.setConfig({ ...props.config, collection: collection })
         }}
         creator={(val) => {
-            console.log("SerchLabels collection", val);
+
 
             return (<Box border="1px" as="option" id={val.address}>{val.meta.name}</Box>)
         }}></SelectInput>)
@@ -116,7 +115,7 @@ function SelectRarity(props: ISearchLabel) {
             props.setConfig({ ...props.config, rarity: rarity })
         }}
         creator={(val) => {
-            console.log("SerchLabels rarity", val);
+
 
             return (<Box border="1px" as="option" id={CardTypes[val.toLowerCase()]}>{val}</Box>)
         }}></SelectInput>)

@@ -64,7 +64,7 @@ export async function getCardInfo(tacoProps: TacoProps,
     let nft = await unifty.getNft(erc1155, id);
     let farmForSupply = unifty.tacoshiFarm;
 
-    const cardInfo: ICardInfo = { ...cardInfoCached }
+    const cardInfo: ICardInfo = { ...cardInfoCached,nft:nft }
 
     if (config.useFarmData) {
         let farmNftData = await unifty.farmNftData(farmForSupply, erc1155, id);
