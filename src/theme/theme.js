@@ -25,6 +25,7 @@ const colors = {
     blue: "#00AEE0",
     lightblue: "#B3EEFF",
     footer: "#2D3539",
+    darkgray:"#28363E",
     orange: {
       50:"#FFF3F0",
       400:"#FFC9C6",

@@ -27,6 +27,7 @@ export interface IFarmData {
     supply?: number,
     mintFee?: string
     farmAddress?: string
+    shopPrice?:number
 }
 export interface IMetaNft {
     name: string,
@@ -35,22 +36,31 @@ export interface IMetaNft {
     animation_url?: string,
     audio_url?: string,
     external_link?: string,
-    attributes?: { trait_type: string, value: any }[]
+    attributes?: IAttribute[]
+}
+export interface IAttribute {
+    trait_type: string, value: any
 }
 export interface ICardInfo {
     nft: INft
     meta?: IMetaNft,
     farmData?: IFarmData
-    extras?: { price: number, balanceOf: string, coin: string }
+    extras?: { pointsPrice: number, balanceOf: string, coin: string,shopPrice:number }
     farmAddress?: string
+    erc1155: string,
+    id: number
+    loaded: boolean
 }
 export function useCardInfo(tacoProps: TacoProps, erc1155: string, id: number, config?: ICardInfoConfig) {
-    const [cardInfo, setCardInfo] = useState<ICardInfo>({ nft: { maxSupply: 0, supply: 0, uri: "" }, meta: { name: "", description: "", image: "" } })
+    const [cardInfo, setCardInfo] = useState<ICardInfo>({ nft: { maxSupply: 0, supply: 0, uri: "" }, meta: { name: "", description: "", image: "" }, id: id, erc1155: erc1155, loaded: false })
     useEffect(() => {
-        getCardInfo(tacoProps, erc1155, id, config, cardInfo).then(e => {
+        async function func(){
+            const e =await getCardInfo(tacoProps, erc1155, id, config, cardInfo)
             setCardInfo(e);
-        });
-    }, [tacoProps.changer])
+        }
+        func()
+        
+    }, [tacoProps.changer,erc1155,id])
 
     return cardInfo;
 
@@ -60,39 +70,54 @@ export async function getCardInfo(tacoProps: TacoProps,
     erc1155: string,
     id: number, config?: ICardInfoConfig,
     cardInfoCached?: ICardInfo): Promise<ICardInfo> {
+
     const unifty = tacoProps.unifty;
-    let nft = await unifty.getNft(erc1155, id);
-    let farmForSupply = unifty.tacoshiFarm;
+    if (await unifty.isConnected() && erc1155 && id) {
+        let nft = await unifty.getNft(erc1155, id);
+        let farmForSupply = unifty.tacoshiFarm;
 
-    const cardInfo: ICardInfo = { ...cardInfoCached,nft:nft }
+        const cardInfo: ICardInfo = { ...cardInfoCached, nft: nft }
+        cardInfo.id = id;
+        cardInfo.erc1155 = erc1155;
 
-    if (config.useFarmData) {
-        let farmNftData = await unifty.farmNftData(farmForSupply, erc1155, id);
+        if (config.useFarmData) {
+            let farmNftData = await unifty.farmNftData(farmForSupply, erc1155, id);
+            if (farmNftData) {
+                if (farmNftData.supply == 0) {
+                    farmForSupply = unifty.rabbitFarm;
+                    farmNftData = await unifty.farmNftData(farmForSupply, erc1155, id);
 
-        if (farmNftData.supply == 0) {
-            farmForSupply = unifty.rabbitFarm;
-            farmNftData = await unifty.farmNftData(farmForSupply, erc1155, id);
-            if (farmNftData.supply == 0) {
-                /**Not contained in any farm */
-                farmForSupply = undefined;
+                    if (farmNftData.supply == 0) {
+                        /**Not contained in any farm */
+                        farmForSupply = undefined;
+                    }
+                }
+
+                cardInfo.farmAddress = farmForSupply;
+                cardInfo.farmData = farmNftData
+                if (config.useExtras && farmForSupply) {
+                    let pointsPrice = Number(farmNftData.points) / 1000000000000000000
+
+                    let balanceOf = await unifty.balanceOf(erc1155, farmForSupply, id);
+
+                    let coin = unifty.getCoinName(farmForSupply);
+
+                    let addonAddress = await unifty.farmAddonAddress(farmForSupply)
+                    console.log("Farm addon address",addonAddress,"Farm address",farmForSupply)
+
+                    let shopPrice = await unifty.farmShopGetPrice(addonAddress,erc1155,id)
+                    cardInfo.extras = { balanceOf: balanceOf, pointsPrice: pointsPrice, coin: coin,shopPrice:shopPrice }
+                }
             }
+
         }
-        cardInfo.farmAddress = farmForSupply;
-        cardInfo.farmData = farmNftData
-        if (config.useExtras && farmForSupply) {
-            let price = Number(farmNftData.points) / 1000000000000000000
 
-            let balanceOf = await unifty.balanceOf(erc1155, farmForSupply, id);
-
-            let coin = unifty.getCoinName(farmForSupply);
-
-            cardInfo.extras = { balanceOf: balanceOf, price: price, coin: coin }
+        if (config.useMeta) {
+            let metaNft = await unifty.readUri(nft.uri);
+            cardInfo.meta = metaNft ? metaNft : cardInfo.meta;
         }
+        cardInfo.loaded = true;
+        return cardInfo;
     }
-
-    if (config.useMeta) {
-        let metaNft = await unifty.readUri(nft.uri);
-        cardInfo.meta = metaNft ? metaNft : cardInfo.meta;
-    }
-    return cardInfo;
+    return { ...cardInfoCached,loaded:false }
 }

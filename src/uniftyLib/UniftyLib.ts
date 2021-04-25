@@ -33,6 +33,9 @@ export default class Unifty {
         this.init();
 
     }
+    error(data:any){
+        console.error(data)
+    }
     init() {
         this.web3 = new Web3(Web3.givenProvider || "wss://mainnet.infura.io/ws/v3/1d43a65747d946959cbf2c8cb67553b8");
         this.hasWallet = this.web3.givenProvider != undefined ? true : false;
@@ -193,9 +196,14 @@ export default class Unifty {
 
 
     async farmToken(farmAddress) {
-        await this.sleep(this.sleep_time);
+        try{
+          await this.sleep(this.sleep_time);
         let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
-        return await farm.methods.token().call({ from: this.account });
+        return await farm.methods.token().call({ from: this.account });  
+        }catch(e){
+            this.error(e);
+        }
+        
     };
 
     async farmPointsEarned(farmAddress, account) {
@@ -206,16 +214,31 @@ export default class Unifty {
             let decimals = await this.farmTokenDecimals(farmAddress);
             return earned / Math.pow(10, decimals >= 0 ? decimals : 0);
         } catch (e) {
-            console.error(e);
+            this.error(e);
+        }
+
+    };
+    async farmAddonAddress(farmAddress) {
+        try {
+            await this.sleep(this.sleep_time);
+            let ret = await this.farmShop.methods.addon(farmAddress).call({ from: this.account });
+            return ret;
+        } catch (e) {
+            this.error(e)
         }
 
     };
     async farmShopGetPrice(shopAddress, erc1155Address, id) {
-        await this.sleep(this.sleep_time);
-        let shop = new this.web3.eth.Contract(farmShopABI, shopAddress, { from: this.account });
+        try {
+            await this.sleep(this.sleep_time);
+            let shop = new this.web3.eth.Contract(farmShopABI, shopAddress, { from: this.account });
 
-        let ret = await shop.methods.getPrice(erc1155Address, id).call({ from: this.account });
-        return ret;
+            let ret = await shop.methods.getPrice(erc1155Address, id).call({ from: this.account });
+            return ret;
+        } catch (e) {
+            this.error(e)
+        }
+
     };
 
     async farmTokenDecimals(farmAddress) {
@@ -224,10 +247,15 @@ export default class Unifty {
         await this.sleep(this.sleep_time);
         return await erc20.methods.decimals().call({ from: this.account });
     };
-    async farmNftData(farmAddress, erc1155Address, id):Promise<IFarmData> {
-        await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
-        return await farm.methods.cards(erc1155Address, id).call({ from: this.account });
+    async farmNftData(farmAddress, erc1155Address, id): Promise<IFarmData> {
+        try {
+            await this.sleep(this.sleep_time);
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+            return await farm.methods.cards(erc1155Address, id).call({ from: this.account });
+        } catch (e) {
+            this.error(e)
+        }
+
     };
     async farmJsonUrl(farmAddress) {
 
@@ -247,11 +275,11 @@ export default class Unifty {
         return events.length > 0 ? events[events.length - 1].returnValues.uri : '';
     };
 
-    async getFarmNfts(farmAddress):Promise<IFarmData[]> {
+    async getFarmNfts(farmAddress): Promise<IFarmData[]> {
 
         return await this.getFarmNftsToBlock(farmAddress, this.min_block, "latest")
     };
-    async getFarmNftsToBlock(farmAddress, minBlock, toBlock):Promise<IFarmData[]> {
+    async getFarmNftsToBlock(farmAddress, minBlock, toBlock): Promise<IFarmData[]> {
         try {
             await this.sleep(this.sleep_time);
 
@@ -266,7 +294,7 @@ export default class Unifty {
 
             let check_entries = [];
             cards = cards.reverse();
-            let card_data:IFarmData[] = [];
+            let card_data: IFarmData[] = [];
 
             let decimals = await this.farmTokenDecimals(farmAddress);
 
@@ -298,7 +326,7 @@ export default class Unifty {
 
             return card_data;
         } catch (e) {
-            console.log(e);
+            this.error(e);
         }
 
 

@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack, Textarea, VStack } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, useDisclosure, VStack } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import Image from 'next/image';
 import React from "react";
@@ -27,13 +27,20 @@ function BePart(props) {
 }
 
 function ContactUs() {
+    const { isOpen, onOpen, onClose } = useDisclosure()
     const formref = useRef<HTMLFormElement>();
+
     return (<Box flexGrow={6} backgroundColor="white" shadow="xl" padding={5} width={["100%", "100%", "60%"]} borderRadius="lg">
+        <ThanksModal isOpen={isOpen} onClose={onClose}></ThanksModal>
         <Box fontWeight="extrabold" fontSize="lg" marginBottom={5}>Contact us on social media or leave a message.</Box>
         <SellSocialIcons></SellSocialIcons>
-        <Formik initialValues={{ name: "" }} onSubmit={(values, actions) => { }}>
+        <Formik initialValues={{ name: "" }} onSubmit={(values, actions) => {
+            onOpen()
+            sendEmail(formref.current);
+         }}>
             {
                 (props) => {
+                    console.log("errors", props)
                     return (
                         <Form ref={formref}>
                             <VStack spacing={"5"}>
@@ -44,9 +51,7 @@ function ContactUs() {
                                 <InputValidator name="message" placeholder="Your message." label="Message">
                                     <Textarea></Textarea>
                                 </InputValidator>
-                                <Button alignSelf="start" colorScheme="figma.orange" paddingLeft={10} onClick={() => {
-                                    sendEmail(formref.current)
-                                }} paddingRight={10}>Submit</Button>
+                                <Button type="submit" alignSelf="start" colorScheme="figma.orange" paddingLeft={10} paddingRight={10}>Submit</Button>
                             </VStack>
 
                         </Form>
@@ -58,6 +63,26 @@ function ContactUs() {
         </Formik>
 
     </Box>)
+}
+
+function ThanksModal({isOpen,onClose}){
+    return (<Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            xd
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>)
 }
 
 function SellSocialIcons() {

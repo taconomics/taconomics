@@ -122,8 +122,8 @@ function SelectArtists(props: ISearchLabel) {
         }}
         creator={(val) => {
 
-            const artist = useArtistInfo(props.tacoProps, val);
-            return (<Box border="1px" as="option" id={val}>{artist.name}</Box>)
+           // const artist = useArtistInfo(props.tacoProps, val);
+            return (<Box border="1px" as="option" id={val}>{val}</Box>)
         }}></SelectInput>)
 }
 

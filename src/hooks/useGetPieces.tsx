@@ -34,11 +34,21 @@ export const useGetPieces = (searchConfig: SearchConfig) => {
     const emptyResult = { artist: [], collections: [], rarity: Object.keys(CardTypes), price: [] }
 
     const [results, setResult] = useState<SearchResult>(emptyResult);
-
+    const {nfts,loaded} = useAsyncNfts(searchConfig);
 
     //const [nfts, setNfts] = useState<PieceNFT[]>([])
+    useEffect(()=>{
+        let newResult = results?{...results}:{...emptyResult};
+        nfts.forEach(nft => {
+            if(!results.artist.includes(nft.nft.artist)){
+                newResult.artist.push(nft.nft.artist);
+            }
+        });
 
-    const {nfts,loaded} = useAsyncNfts(searchConfig);
+        setResult(newResult);
+    },[loaded])
+
+
 
     return { results, loaded, nfts }
 
@@ -137,14 +147,14 @@ async function isValidNft(nft: PieceNFT, config: SearchConfig): Promise<boolean>
                 console.log("Contains name", name);
             }
             if (config.rarity) {
-                rarity = config.rarity == cardInfo.nft.maxSupply || !config.rarity;
+                rarity = config.rarity == cardInfo.nft.supply || !config.rarity;
             }
         }
 
     }
 
 
-    return name && rarity
+    return name && rarity && artist
 }
 
 async function getAllNfts(unifty: Unifty) {

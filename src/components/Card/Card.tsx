@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, Grid, HStack, Image, Spinner, VStack } from '@chakra-ui/react';
+import { Box, Button, Center, chakra, Flex, Grid, HStack, Image, Spinner, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { defaultFarms } from '../../../pages/farms';
 import Unifty from '../../uniftyLib/UniftyLib';
@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { ICardInfo, useCardInfo } from '../../hooks/useCardInfo';
 import { TacoProps } from '../TacoLayout';
 import {FaRegSadTear} from 'react-icons/fa'
+import { CardButton } from './CardButton';
 
 export const cardWidth = 240;
 export const cardHeight = 300;
@@ -18,18 +19,22 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
     const unifty = props.tacoProps.unifty;
     const [hover, setHover] = useState(false);
     let CardInfo: ICardInfo = useCardInfo(props.tacoProps, nft.erc1155, nft.id, { useExtras: true, useFarmData: true, useMeta: true })
+    const router = useRouter();
+
     return (<EmptyCard setHover={setHover} valid={true}>
         {CardInfo.meta != undefined && nft == undefined ?
             <Center><Spinner /></Center> :
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
                 <CardTypeBadge maxSupply={CardInfo.nft.supply}></CardTypeBadge>
                 <Image maxHeight={cardHeight / 3.4 + "px"} src={CardInfo.meta.image}></Image>
-                <Box fontSize="large" textAlign="center" fontWeight="bold">
+                <Box fontSize="large" textAlign="center" fontWeight="bold" onClick={()=>{
+                     router.push("/items/"+CardInfo.erc1155+"/"+CardInfo.id)
+                }}>
                     {CardInfo.meta.name}
                 </Box>
                 <FarmInfo CardInfo={CardInfo}></FarmInfo>
 
-                <CardButton unifty={props.tacoProps.unifty}></CardButton>
+                <CardButton taco={props.tacoProps} CardInfo={CardInfo}></CardButton>
 
             </Flex>
         }
@@ -64,9 +69,7 @@ function EditCard({ height, hover, id }) {
         </Center>
     )
 }
-function CardButton(props: { unifty: Unifty }) {
-    return (<Button variant="outline" colorScheme="figma.orange">Connect to wallet</Button>)
-}
+
 function CardAvailable(props: { supply, maxSupply }) {
     return <HStack>{props.supply > 0 ?
         <HStack>
@@ -79,7 +82,7 @@ function FarmInfo(props: { CardInfo: ICardInfo }) {
     const { CardInfo } = props;
     return (CardInfo.extras != undefined ?
         <Box><HStack>
-            <Box><Coin spacing={0} iconSize="20px" balance={CardInfo.extras.price} img={"/icons/" + CardInfo.extras.coin + "_Icon.svg"}></Coin></Box>
+            <Box><Coin spacing={0} iconSize="20px" balance={CardInfo.extras.pointsPrice} img={"/icons/" + CardInfo.extras.coin + "_Icon.svg"}></Coin></Box>
             <CardAvailable supply={CardInfo.extras.balanceOf} maxSupply={CardInfo.farmData.supply}></CardAvailable>
         </HStack>
             <Box><b>0.1</b> to mint</Box>
