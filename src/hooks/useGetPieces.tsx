@@ -39,9 +39,15 @@ export const useGetPieces = (searchConfig: SearchConfig) => {
     //const [nfts, setNfts] = useState<PieceNFT[]>([])
     useEffect(()=>{
         let newResult = results?{...results}:{...emptyResult};
-        nfts.forEach(nft => {
+        nfts.forEach(async nft => {
+           // const CardInfo =await getCardInfo(searchConfig.tacoProps,nft.nft.erc1155,nft.nft.id,{useMeta:true})
             if(!results.artist.includes(nft.nft.artist)){
                 newResult.artist.push(nft.nft.artist);
+            } 
+            let erc1155Meta = await searchConfig.tacoProps.unifty.getErc1155Meta(nft.nft.erc1155);
+            if(!results.collections.includes({nft:nft.nft,meta:erc1155Meta})){
+               
+                newResult.collections.push({nft:nft.nft,meta:erc1155Meta});
             }
         });
 
@@ -154,7 +160,8 @@ async function isValidNft(nft: PieceNFT, config: SearchConfig): Promise<boolean>
     }
 
 
-    return name && rarity && artist
+
+    return name && rarity && artist && collection
 }
 
 async function getAllNfts(unifty: Unifty) {

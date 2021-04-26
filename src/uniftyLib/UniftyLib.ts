@@ -8,7 +8,7 @@ const farmShopABI = require('../contracts/farmShopABI.json');
 import { createContext, useEffect } from "react";
 import ipfsClient from 'ipfs-http-client'
 import { ClientOptions } from "ipfs-http-client/src/lib/core";
-import { IFarmData } from "../hooks/useCardInfo";
+import { IFarmData, INft } from "../hooks/useCardInfo";
 
 //const web3 = createContext(new Web3(Web3.givenProvider || "ws://localhost:8545"));
 
@@ -32,9 +32,6 @@ export default class Unifty {
     constructor() {
         this.init();
 
-    }
-    error(data:any){
-        console.error(data)
     }
     init() {
         this.web3 = new Web3(Web3.givenProvider || "wss://mainnet.infura.io/ws/v3/1d43a65747d946959cbf2c8cb67553b8");
@@ -196,14 +193,14 @@ export default class Unifty {
 
 
     async farmToken(farmAddress) {
-        try{
-          await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
-        return await farm.methods.token().call({ from: this.account });  
-        }catch(e){
-            this.error(e);
+        try {
+            await this.sleep(this.sleep_time);
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+            return await farm.methods.token().call({ from: this.account });
+        } catch (e) {
+            console.error(e);
         }
-        
+
     };
 
     async farmPointsEarned(farmAddress, account) {
@@ -214,7 +211,7 @@ export default class Unifty {
             let decimals = await this.farmTokenDecimals(farmAddress);
             return earned / Math.pow(10, decimals >= 0 ? decimals : 0);
         } catch (e) {
-            this.error(e);
+            console.error(e);
         }
 
     };
@@ -224,13 +221,13 @@ export default class Unifty {
             let ret = await this.farmShop.methods.addon(farmAddress).call({ from: this.account });
             return ret;
         } catch (e) {
-            this.error(e)
+            console.error(e)
         }
 
     };
-    async farmShopBuy(erc1155Address, id, amount, value, shopAddress, preCallback, postCallback, errCallback){
+    async farmShopBuy(erc1155Address, id, amount, value, shopAddress, preCallback, postCallback, errCallback) {
 
-        let shop = new this.web3.eth.Contract( farmShopABI, shopAddress, {from:this.account} );
+        let shop = new this.web3.eth.Contract(farmShopABI, shopAddress, { from: this.account });
 
         let gas = 0;
 
@@ -240,8 +237,8 @@ export default class Unifty {
                 from: this.account,
                 value: value
             });
-        }catch(e){
-            console.log(e.message);
+        } catch (e) {
+            console.error(e.message);
             errCallback("");
             return;
         }
@@ -250,15 +247,15 @@ export default class Unifty {
 
         shop.methods.obtain(erc1155Address, id, amount)
             .send({
-                from:this.account,
-                gas: gas + Math.floor( gas * 0.1 ),
-                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 ),
+                from: this.account,
+                gas: gas + Math.floor(gas * 0.1),
+                gasPrice: Number(price) + Math.floor(Number(price) * 0.1),
                 value: value
             })
-            .on('error', async function(e){
+            .on('error', async function (e) {
                 errCallback('');
             })
-            .on('transactionHash', async function(transactionHash){
+            .on('transactionHash', async function (transactionHash) {
                 preCallback();
             })
             .on("receipt", function (receipt) {
@@ -273,7 +270,7 @@ export default class Unifty {
             let ret = await shop.methods.getPrice(erc1155Address, id).call({ from: this.account });
             return ret;
         } catch (e) {
-            this.error(e)
+            console.error(e)
         }
 
     };
@@ -290,7 +287,7 @@ export default class Unifty {
             let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
             return await farm.methods.cards(erc1155Address, id).call({ from: this.account });
         } catch (e) {
-            this.error(e)
+            console.error(e)
         }
 
     };
@@ -357,14 +354,14 @@ export default class Unifty {
                         farmAddress: farmAddress
                     }
                 );
-                console.log("Card data in unifty",card_data)
+                console.log("Card data in unifty", card_data)
 
                 check_entries.push(cards[i].returnValues.erc1155 + cards[i].returnValues.card);
             }
 
             return card_data;
         } catch (e) {
-            this.error(e);
+            console.error(e);
         }
 
 
@@ -530,18 +527,18 @@ export default class Unifty {
         return balance;
     };
 
-    async farmRedeem(farmAddress, erc1155Address, id, fee, preCallback, postCallback, errCallback){
+    async farmRedeem(farmAddress, erc1155Address, id, fee, preCallback, postCallback, errCallback) {
 
-        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
         let gas = 0;
 
         try {
             await this.sleep(this.sleep_time);
             gas = await farm.methods.redeem(erc1155Address, id).estimateGas({
-                from:this.account,
-                value: ""+fee
+                from: this.account,
+                value: "" + fee
             });
-        }catch(e){
+        } catch (e) {
             errCallback("");
             return;
         }
@@ -550,15 +547,15 @@ export default class Unifty {
 
         farm.methods.redeem(erc1155Address, id)
             .send({
-                from:this.account,
-                gas: gas + Math.floor( gas * 0.1 ),
-                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 ),
-                value: ""+fee
+                from: this.account,
+                gas: gas + Math.floor(gas * 0.1),
+                gasPrice: Number(price) + Math.floor(Number(price) * 0.1),
+                value: "" + fee
             })
-            .on('error', async function(e){
+            .on('error', async function (e) {
                 errCallback('');
             })
-            .on('transactionHash', async function(transactionHash){
+            .on('transactionHash', async function (transactionHash) {
                 preCallback();
             })
             .on("receipt", function (receipt) {
@@ -695,37 +692,40 @@ export default class Unifty {
         return await this.genesis.methods.getPoolsLength(this.account).call({ from: this.account });
     };
 
-    async getNftsByUri(erc1155Address) {
+    async getNftsByUri(erc1155Address):Promise<INft[]> {
+        try {
+            await this.sleep(this.sleep_time);
 
-        await this.sleep(this.sleep_time);
+            let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
 
-        let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
-
-        let events = await erc1155.getPastEvents('URI', {
-            filter: {
-            },
-            fromBlock: this.min_block,
-            toBlock: 'latest'
-        });
+            let events = await erc1155.getPastEvents('URI', {
+                filter: {
+                },
+                fromBlock: this.min_block,
+                toBlock: 'latest'
+            });
 
 
-        let nfts = [];
+            let nfts = [];
 
-        if (Array.isArray(events)) {
+            if (Array.isArray(events)) {
 
-            events = events.reverse();
+                events = events.reverse();
 
-            for (let i = 0; i < events.length; i++) {
+                for (let i = 0; i < events.length; i++) {
 
-                if (typeof events[i] == 'object') {
-                    if (!nfts.includes(events[i].returnValues._id)) {
-                        nfts.push(events[i].returnValues._id);
+                    if (typeof events[i] == 'object') {
+                        if (!nfts.includes(events[i].returnValues._id)) {
+                            nfts.push(events[i].returnValues._id);
+                        }
                     }
                 }
             }
-        }
 
-        return nfts;
+            return nfts;
+        } catch (e) {
+            this.error(e)
+        }
     };
 
     async getErc1155Owner(address) {

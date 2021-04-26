@@ -1,9 +1,10 @@
-import { Box, Flex, VStack, Image, Button } from "@chakra-ui/react";
+import { Box, Flex, VStack, Image, Button, LinkBox } from "@chakra-ui/react";
 import React, { useState } from "react";
 import GridContent from "../src/components/GridContent";
 import { HiPlus, HiMinus } from 'react-icons/hi'
+import NextLink from 'next/link'
 
-export default function About () {
+export default function About() {
     return (<GridContent>
         <WhatIsTaconomics></WhatIsTaconomics>
         <WhatsSpecial></WhatsSpecial>
@@ -66,7 +67,7 @@ function FAQuestion({ title, description }) {
     const click = () => {
         setOpen(!open);
     }
-    return (<Flex borderBottom="1px solid gray"  cursor="pointer" w="100%" marginY={5} flexDir="column" onClick={click}>
+    return (<Flex borderBottom="1px solid gray" cursor="pointer" w="100%" marginY={5} flexDir="column" onClick={click}>
         <Flex alignItems="center" justifyContent="space-between" w="100%">
             <Box fontWeight="bold" color="gray.600">{title}</Box>
             <Button borderRadius="full" onClick={click} colorScheme={!open ? "white" : "figma.orange"}>{!open ? <HiPlus color="gray" size={iconsSize} /> : <HiMinus size={iconsSize} />}</Button>
@@ -89,9 +90,12 @@ function SmartContracts() {
 
     </Flex>)
 }
-function Contract({name,dir}){
-    return (<Flex marginY={5} flexDir={["column","column","row"]} color="gray.600">
+function Contract({ name, dir }) {
+    return (<NextLink href={"https://etherscan.io/address/" + dir} passHref>
+        <LinkBox cursor="pointer"><Flex marginY={5} flexDir={["column", "column", "row"]} color="gray.600">
         <Box fontWeight="bold" marginRight={1}>{name}</Box>
         <Box fontSize={"sm"}>{dir}</Box>
-    </Flex>)
+    </Flex>
+    </LinkBox>
+    </NextLink>)
 }

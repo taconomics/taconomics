@@ -45,20 +45,19 @@ export function MenuItemsMobile() {
                 <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader>
-                        <HStack>
+                        <HStack alignItems="center" justifyContent="center" width="100%">
                             <Logo></Logo>
                         </HStack>
                     </DrawerHeader>
 
                     <DrawerBody>
-                        <MenuItems></MenuItems>
+                        <MenuItems variant="drawer"></MenuItems>
                     </DrawerBody>
 
                     <DrawerFooter>
-                        <Button variant="outline" mr={3} onClick={onClose}>
-                            Cancel
-                        </Button>
-                        <Button colorScheme="blue">Save</Button>
+                        <HStack>
+                            <Box fontWeight="bold" color="gray.400">Taconomics 1.0</Box>
+                        </HStack>
                     </DrawerFooter>
                 </DrawerContent>
             </DrawerOverlay>
@@ -74,7 +73,7 @@ export function MenuItems(props: { variant?}) {
     return (<Flex fontFamily="Nunito, sans-serif;" flexGrow={4} textAlign="center"
         flexDir={["column", "column", "row"]}
         justifyContent="space-around" variant={props.variant}
-        alignItems="center" sx={styles} fontSize="md"
+        alignItems={variant == "drawer" ? "start" : "center"} sx={styles} fontSize="md"
     >
 
         <MenuItem><NextLink href="/collections">Collections</NextLink></MenuItem>

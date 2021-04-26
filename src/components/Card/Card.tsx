@@ -22,7 +22,7 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
     const router = useRouter();
 
     return (<EmptyCard setHover={setHover} valid={true}>
-        {CardInfo.meta != undefined && nft == undefined ?
+        {CardInfo.loaded && nft == undefined ?
             <Center><Spinner /></Center> :
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
                 <CardTypeBadge maxSupply={CardInfo.nft.supply}></CardTypeBadge>
@@ -75,12 +75,12 @@ function CardAvailable(props: { supply, maxSupply }) {
         <HStack>
             <Box fontWeight="bold">{props.supply + "/" + props.maxSupply}</Box> <Box fontSize="sm" color="gray">Available</Box>
         </HStack> :
-        <Box color="figma.orange.500">Sold out</Box>
+        <Box color="figma.orange.500" fontWeight="bold">Sold out</Box>
     }</HStack>
 }
 function FarmInfo(props: { CardInfo: ICardInfo }) {
     const { CardInfo } = props;
-    return (CardInfo.extras != undefined ?
+    return (CardInfo.extras && CardInfo.farmAddress?
         <Box><HStack>
             <Box><Coin spacing={0} iconSize="20px" balance={CardInfo.extras.pointsPrice} img={"/icons/" + CardInfo.extras.coin + "_Icon.svg"}></Coin></Box>
             <CardAvailable supply={CardInfo.extras.balanceOf} maxSupply={CardInfo.farmData.supply}></CardAvailable>

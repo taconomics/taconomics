@@ -1,16 +1,9 @@
 ## TO DO:
 - Check when user doesn't have wallet provider. -> Show modal
-- Available pieces - ALMOST DONE
-    1. Dynamic card load
-    2. Search by rarity
-    3. Search by price
-    4. Search by name
 - Do My items 
 - Add traits to collection/card manager
-- Add page to buy items
 - Update boxshadows to look like on figma
 - Social icons links
-- Modal Thanks for reaching out in sell-your-art
 - My earnings
 
 ## NOT INCLUDED IN FIGMA
@@ -25,7 +18,13 @@
     5. User doesn't have wallet provider modal
 
 ## BUGS
-- Manage stake doesn't show at first the staked amount
+- Available pieces:
+    1. Search doesn't work well
 
 - Mobile:
     1. Sliders images to big.
+
+
+## SHOULD DO
+- Add a cache system for cards so page loads faster. It also will help to the search engine
+- System to change web title according page

@@ -51,9 +51,10 @@ export default function Collection(props:TacoProps) {
 }
 
 export async function getCollectionCards(tacoProps:TacoProps,collection:string,canEdit:boolean) {
+    await tacoProps.unifty.isConnected();
     let nfts = await tacoProps.unifty.getNftsByUri(collection);
     let col = [];
-    for (const nft of nfts) {
+    for (const nft in nfts) {
         
         const name = Math.floor(Math.random() * 100);
         let json = { erc1155: collection, id: nft };

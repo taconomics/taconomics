@@ -30,9 +30,9 @@ export function CardButtonSX(props: { taco: TacoProps, CardInfo: ICardInfo }) {
     }, [props.taco.changer,props.CardInfo])
     return (<>
         <Button variant="outline" onClick={onClick} colorScheme="figma.orange" {...props}>
-            {connected ? Number(props.CardInfo.extras.balanceOf) > 0 ? "Buy now" : "Check on OpenSea" : "Connect to wallet"}
+            {connected ? Number(props.CardInfo.extras?props.CardInfo.extras.balanceOf:0) > 0 ? "Buy now" : "Check on OpenSea" : "Connect to wallet"}
         </Button>
-        <BuyModal buyToast={buyToast} taco={props.taco} isOpen={isOpen} onClose={onClose} CardInfo={props.CardInfo} ></BuyModal>
+        {props.CardInfo.farmAddress&&<BuyModal buyToast={buyToast} taco={props.taco} isOpen={isOpen} onClose={onClose} CardInfo={props.CardInfo} ></BuyModal>}
     </>)
 }
 export const CardButton = chakra(CardButtonSX);
