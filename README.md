@@ -20,6 +20,7 @@
 ## BUGS
 - Available pieces:
     1. Search doesn't work well
+- Card rarity z-index to high
 
 - Mobile:
     1. Sliders images to big.

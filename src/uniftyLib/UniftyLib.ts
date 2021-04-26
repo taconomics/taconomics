@@ -567,6 +567,39 @@ export default class Unifty {
      * Nfts
      */
 
+     async getMyNfts(erc1155Address){
+
+        await this.sleep(this.sleep_time);
+
+        let erc1155 = new this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
+
+        let events = await erc1155.getPastEvents('TransferSingle', {
+            filter: {
+                _to: this.account
+            },
+            fromBlock: 0,
+            toBlock: 'latest'
+        });
+
+        let nfts = [];
+
+        if(Array.isArray(events)){
+
+            events = events.reverse();
+
+            for(let i = 0; i < events.length; i++){
+
+                if(typeof events[i] == 'object') {
+                    if(!nfts.includes(events[i].returnValues._id)) {
+                        nfts.push(events[i].returnValues._id);
+                    }
+                }
+            }
+        }
+
+        return nfts;
+    };
+
     async balanceOf(erc1155Address, account, nftId) {
 
         let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
@@ -724,7 +757,7 @@ export default class Unifty {
 
             return nfts;
         } catch (e) {
-            this.error(e)
+            console.error(e)
         }
     };
 

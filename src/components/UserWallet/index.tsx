@@ -57,7 +57,7 @@ function WalletContainer(props: { unifty: Unifty, isMobile,changer }) {
                     <Button>Wallet</Button> :
                     <>
                         <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>
-                        <Box fontFamily="Nunito" fontWeight="extrabold">My items</Box>
+                        <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/my-items">My items</NextLink></Box>
                         <Coins changer={props.changer} unifty={props.unifty}></Coins>
                     </>
 
