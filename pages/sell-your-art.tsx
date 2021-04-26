@@ -1,6 +1,5 @@
-import { Box, Button, Flex, HStack, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, useDisclosure, VStack } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, HStack, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, useDisclosure, VStack } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import Image from 'next/image';
 import React from "react";
 import GridContent from "../src/components/GridContent";
 import InputValidator from "../src/components/InputValidator";
@@ -22,7 +21,7 @@ export default function SellYourArtPage(props: { unifty: Unifty }) {
 function BePart(props) {
     return (<VStack flexGrow={1} padding={5}>
         <Box fontSize="xx-large" fontWeight="extrabold" paddingRight={5}>Be part of Taconomics community and get yourself know as an artist.</Box>
-        <Box width="300px"><Image src="/img/taco-artist.svg" layout="responsive" width="200px" height="200px"></Image></Box>
+        <Box width="300px"><Image src="/img/taco-artist.svg" width="500px" height="500px"></Image></Box>
     </VStack>)
 }
 
@@ -36,8 +35,8 @@ function ContactUs() {
         <SellSocialIcons></SellSocialIcons>
         <Formik initialValues={{ name: "" }} onSubmit={(values, actions) => {
             onOpen()
-            sendEmail(formref.current);
-         }}>
+            // sendEmail(formref.current);
+        }}>
             {
                 (props) => {
                     console.log("errors", props)
@@ -65,24 +64,25 @@ function ContactUs() {
     </Box>)
 }
 
-function ThanksModal({isOpen,onClose}){
-    return (<Modal isOpen={isOpen} onClose={onClose}>
+function ThanksModal({ isOpen, onClose }) {
+    const size="150px"
+    return (<Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            xd
-          </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
+            <ModalCloseButton />
+            <ModalBody>
+                <VStack textAlign="center">
+                    <Image src="/icons/taco_icon.svg" width={size} height={size}></Image>
+                    <Box fontWeight="bold" fontSize="lg">Thanks for reaching out!</Box>
+                    <Box>Our team will get in contact with you as soon as possible.</Box>
+                </VStack>
+            </ModalBody>
+            <ModalFooter w="100%">
+                <Center  w="100%"><Button onClick={onClose} colorScheme="figma.orange" paddingX={7}>Go back</Button></Center>
+            </ModalFooter>
         </ModalContent>
-      </Modal>)
+    </Modal>)
 }
 
 function SellSocialIcons() {

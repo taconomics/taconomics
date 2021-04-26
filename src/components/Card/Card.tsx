@@ -85,7 +85,7 @@ function FarmInfo(props: { CardInfo: ICardInfo }) {
             <Box><Coin spacing={0} iconSize="20px" balance={CardInfo.extras.pointsPrice} img={"/icons/" + CardInfo.extras.coin + "_Icon.svg"}></Coin></Box>
             <CardAvailable supply={CardInfo.extras.balanceOf} maxSupply={CardInfo.farmData.supply}></CardAvailable>
         </HStack>
-            <Box><b>0.1</b> to mint</Box>
+            <HStack alignItems="center" justifyContent="center"><Image src="/icons/eth_icon.svg" h={5} color="gray.700"></Image> <Box fontWeight="semibold">{props.CardInfo.farmData.prices.totalFeeDecimals}</Box><Box>to mint</Box></HStack>
         </Box>
         :
         <HStack><FaRegSadTear/> <Box> Not available in any farm</Box></HStack>

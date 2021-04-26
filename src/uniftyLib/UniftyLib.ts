@@ -228,6 +228,43 @@ export default class Unifty {
         }
 
     };
+    async farmShopBuy(erc1155Address, id, amount, value, shopAddress, preCallback, postCallback, errCallback){
+
+        let shop = new this.web3.eth.Contract( farmShopABI, shopAddress, {from:this.account} );
+
+        let gas = 0;
+
+        try {
+            await this.sleep(this.sleep_time);
+            gas = await shop.methods.obtain(erc1155Address, id, amount).estimateGas({
+                from: this.account,
+                value: value
+            });
+        }catch(e){
+            console.log(e.message);
+            errCallback("");
+            return;
+        }
+
+        const price = await this.web3.eth.getGasPrice();
+
+        shop.methods.obtain(erc1155Address, id, amount)
+            .send({
+                from:this.account,
+                gas: gas + Math.floor( gas * 0.1 ),
+                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 ),
+                value: value
+            })
+            .on('error', async function(e){
+                errCallback('');
+            })
+            .on('transactionHash', async function(transactionHash){
+                preCallback();
+            })
+            .on("receipt", function (receipt) {
+                postCallback(receipt);
+            });
+    };
     async farmShopGetPrice(shopAddress, erc1155Address, id) {
         try {
             await this.sleep(this.sleep_time);
@@ -320,6 +357,7 @@ export default class Unifty {
                         farmAddress: farmAddress
                     }
                 );
+                console.log("Card data in unifty",card_data)
 
                 check_entries.push(cards[i].returnValues.erc1155 + cards[i].returnValues.card);
             }
@@ -490,6 +528,42 @@ export default class Unifty {
         let erc20 = new this.web3.eth.Contract(erc20ABI, erc20Address, { from: this.account });
         let balance = await erc20.methods.balanceOf(owner).call({ from: this.account });
         return balance;
+    };
+
+    async farmRedeem(farmAddress, erc1155Address, id, fee, preCallback, postCallback, errCallback){
+
+        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        let gas = 0;
+
+        try {
+            await this.sleep(this.sleep_time);
+            gas = await farm.methods.redeem(erc1155Address, id).estimateGas({
+                from:this.account,
+                value: ""+fee
+            });
+        }catch(e){
+            errCallback("");
+            return;
+        }
+
+        const price = await this.web3.eth.getGasPrice();
+
+        farm.methods.redeem(erc1155Address, id)
+            .send({
+                from:this.account,
+                gas: gas + Math.floor( gas * 0.1 ),
+                gasPrice: Number(price) + Math.floor( Number(price) * 0.1 ),
+                value: ""+fee
+            })
+            .on('error', async function(e){
+                errCallback('');
+            })
+            .on('transactionHash', async function(transactionHash){
+                preCallback();
+            })
+            .on("receipt", function (receipt) {
+                postCallback(receipt);
+            });
     };
 
     /**
