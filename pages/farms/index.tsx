@@ -84,7 +84,7 @@ export function RecentNfts(props: { taco: TacoProps, itemsSize }) {
     return (<Grid templateColumns={columnTemplate}>
         <Box gridColumn="2/2" >
           <Box fontSize="x-large" marginBottom={5} fontWeight="bold">Recently added pieces</Box> 
-        <Flex flexWrap="wrap" justifyContent={["center","center","left"]}>{nfts?nfts:createFakeCards(0)}</Flex> 
+        <HStack flexWrap="wrap" justifyContent={["center","center","left"]} spacing={3}>{nfts?nfts:createFakeCards(0)}</HStack> 
         </Box>
         
         </Grid>)

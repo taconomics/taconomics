@@ -35,7 +35,7 @@ export default function UserWallet(props: { unifty: Unifty,changer }) {
     }, [props.changer])
 
 
-    return (<Box flexGrow={{ md: 1, lg: 1.3 }}>
+    return (<Box flexGrow={{ md: 1, lg: 1.3 }} zIndex={1000} >
         {
             !isConnected ?
 
@@ -51,7 +51,7 @@ export default function UserWallet(props: { unifty: Unifty,changer }) {
 function WalletContainer(props: { unifty: Unifty, isMobile,changer }) {
 
     return (
-        <Flex width={["auto", "auto", "100%"]} flexDir="row" alignItems="center" justifyContent={["end", "end", "space-between"]}>
+        <Flex width={["auto", "auto", "100%"]} flexDir="row"alignItems="center" justifyContent={["end", "end", "space-between"]}>
             {
                 props.isMobile ?
                     <Button>Wallet</Button> :
@@ -121,7 +121,7 @@ function ManageStakeMenu(props: { unifty: Unifty,changer }) {
     }, [isOpen,props.changer])
     let iconSize = "20px"
     let marginTop = "20px"
-    return (<Flex flexDir="column" alignItems="center">
+    return (<Flex flexDir="column"  alignItems="center">
         <Flex marginTop={marginTop}><Coin balance={taco} iconSize={iconSize} img={Taco_Icon} spacing={0} >Stacked</Coin></Flex>
         <Flex marginTop={marginTop}><Coin balance={salsa} iconSize={iconSize} img={Molcajete_Icon} spacing={0} >Stacked</Coin></Flex>
         <Button marginTop="20px" onClick={onOpen} colorScheme="blackButton"><Image paddingRight={2} height={5} src={Cubiertos_Icon}></Image>Manage Stake</Button>
