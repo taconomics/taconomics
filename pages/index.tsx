@@ -6,6 +6,7 @@ import { columnTemplate, TacoProps } from '../src/components/TacoLayout'
 import Carousel from 'react-elastic-carousel'
 import { FeaturedCollections } from './collections'
 import { RecentNfts } from './farms'
+import { useRouter } from 'next/router'
 export default function Home(props:TacoProps) {
   const [isMobile] = useMediaQuery("(max-width: 768px)")
   return (
@@ -122,6 +123,11 @@ export function Blob(props) {
   )
 }
 export function SellYourArtButton() {
-  return (<Button colorScheme="figma.orange" margin={10}>Sell your art</Button>)
+  const router = useRouter();
+
+ const onClick = ()=>{
+    router.push("/sell-your-art")
+  }
+  return (<Button colorScheme="figma.orange" margin={10} onClick={onClick}>Sell your art</Button>)
 }
 

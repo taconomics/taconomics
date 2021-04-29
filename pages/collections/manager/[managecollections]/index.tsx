@@ -67,7 +67,7 @@ function CollectionItems(props: { unifty: Unifty, collection: any ,changer:numbe
     return (
         <Box>
             <Box fontSize="xl" fontWeight="bold">Items</Box>
-            <HStack flexWrap="wrap">{items}</HStack>
+            <HStack flexWrap="wrap" spacing={5}>{items}</HStack>
         </Box>)
 }
 function AddItemCard() {

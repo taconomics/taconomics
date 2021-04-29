@@ -26,7 +26,7 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
             <Center><Spinner /></Center> :
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
                 <CardTypeBadge maxSupply={CardInfo.nft.supply}></CardTypeBadge>
-                <Image maxHeight={cardHeight / 3.4 + "px"} src={CardInfo.meta.image}></Image>
+                <Image marginTop={10} maxHeight={cardHeight / 3.4 + "px"} src={CardInfo.meta.image}></Image>
                 <Box fontSize="large" textAlign="center" fontWeight="bold" onClick={()=>{
                      router.push("/items/"+CardInfo.erc1155+"/"+CardInfo.id)
                 }}>
@@ -54,7 +54,7 @@ export function EmptyCard(props: { setHover, children, valid?}) {
     setHover = setHover ? setHover : (hover) => { }
     return (
         <Grid overflow="hidden" position="relative" fontSize="sm" marginBottom="25px" templateRows="1fr 1fr" width={cardWidth + "px"}
-            backgroundColor="white" height={cardHeight + "px"} borderRadius="15px" boxShadow="base"
+            backgroundColor="white" height={cardHeight + "px"} borderRadius="15px" boxShadow="figma"
             onPointerEnter={() => { setHover(true) }} onPointerLeave={() => { setHover(false) }}
         >
             {children}

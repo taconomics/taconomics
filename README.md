@@ -1,9 +1,9 @@
 ## TO DO:
 - Check when user doesn't have wallet provider. -> Show modal
 - Add traits to collection/card manager
-- Update boxshadows to look like on figma
 - Social icons links
 - My earnings
+- UploadImage component needs default picture
 
 ## NOT INCLUDED IN FIGMA
 - Mobile:

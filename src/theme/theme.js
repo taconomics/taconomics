@@ -89,12 +89,17 @@ const components = {
     }
   }
 };
+const shadows={
+    figma:"3px 6px 3px #00000030"
+}
 
 export const theme = extendTheme({
   layerStyles,
   colors,
   components,
   styles,
+  shadows
+
 });
 
 export default theme;

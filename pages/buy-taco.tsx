@@ -15,7 +15,7 @@ export default function BuyTacoPage() {
         }
     }
     return (<Center flexDir="column">
-        <Flex padding={5} backgroundColor="white" shadow="lg" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5}>
+        <Flex padding={5} backgroundColor="white" shadow="figma" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5}>
             <TacoSwitch onChange={onChange}>
                 <TacoOption key="taco" name="taco">Buy TACO</TacoOption>
                 <TacoOption key="salsa" name="salsa">Make Salsa</TacoOption>
@@ -32,7 +32,7 @@ export default function BuyTacoPage() {
 }
 
 function BuyTaco() {
-    return (<Flex padding={5} flexDir="column" backgroundColor="white" shadow="lg" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5} alignItems="center" justifyContent="center">
+    return (<Flex padding={5} flexDir="column" backgroundColor="white" shadow="figma" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5} alignItems="center" justifyContent="center">
         <ValueBox></ValueBox>
         <BsArrowDown/>
         <ValueBox></ValueBox>
@@ -40,7 +40,7 @@ function BuyTaco() {
     </Flex>)
 }
 function MakeSalsa() {
-    return (<Flex padding={5} flexDir="column" backgroundColor="white" shadow="lg" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5} alignItems="center" justifyContent="center">
+    return (<Flex padding={5} flexDir="column" backgroundColor="white" shadow="figma" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5} alignItems="center" justifyContent="center">
         MakeSalsa
     </Flex>)
 }

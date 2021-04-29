@@ -1,4 +1,4 @@
-import { Avatar, Box, Center, ExpandedIndex, Flex, Grid, Image, Spinner } from "@chakra-ui/react";
+import { Avatar, Box, Center, ExpandedIndex, Flex, Grid, HStack, Image, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Card from "../../src/components/Card/Card";
@@ -43,7 +43,7 @@ export default function Collection(props:TacoProps) {
         <Box gridColumn="2/2">
             <ArtistInfo owner={owner} changer={props.changer} unifty={props.unifty} info={erc1155Meta}></ArtistInfo>
             <CollectionCardInfo info={erc1155Meta}></CollectionCardInfo>
-            <Flex flexWrap="wrap">{nfts}</Flex>
+            <HStack flexWrap="wrap">{nfts}</HStack>
         </Box>
     </Grid>
         <BePartTacoCommunity></BePartTacoCommunity>
@@ -98,7 +98,7 @@ function CollectionCardInfo(props: { info }) {
     const imgSizeY = ["150px"]
     if (props.info != undefined) {
         return (
-            <Flex backgroundColor="white" overflow="hidden" flexDirection="row" justifyContent="space-between" marginBottom={5} marginTop="30px" padding={"20px"} boxShadow="base" borderRadius="sm">
+            <Flex backgroundColor="white" overflow="hidden" flexDirection="row" justifyContent="space-between" marginBottom={5} marginTop="30px" padding={"20px"} boxShadow="figma" borderRadius="sm">
                 <Flex flexDirection="column" paddingRight="30px">
                     <Box color="orange" fontSize="x-small">Featured collection</Box>
 

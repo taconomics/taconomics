@@ -230,7 +230,7 @@ function StakeButton(props: { stake_amount, unifty: Unifty, isTaco, balance, min
 function Switch({ c }) {
     return (
         <Center width="100%">
-            <Flex padding={5} backgroundColor="white" alignItems="center" justifyContent="center" shadow="lg" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5}>
+            <Flex padding={5} backgroundColor="white" alignItems="center" justifyContent="center" shadow="figma" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5}>
                 <TacoSwitch onChange={c}>
                     <TacoOption key="taco" name="taco">Stake TACO</TacoOption>
                     <TacoOption key="salsa" name="salsa">Stake Salsa</TacoOption>

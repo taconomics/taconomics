@@ -29,7 +29,7 @@ export function WeirdBackground(element: HTMLElement) {
 }
 function FullImage(props: { cardInfo: ICardInfo }) {
     return (<VStack flexGrow={3} spacing={6} w={"10%"}>
-        <HStack boxShadow="lg"
+        <HStack boxShadow="figma"
             border="1px solid"
             borderColor="gray.300"
             backgroundColor="white"
@@ -84,5 +84,5 @@ function Traits(props: { cardInfo: ICardInfo }) {
     </HStack>
 }
 const Trait = (props: { att: IAttribute }) => {
-    return (<Box backgroundColor="white" boxShadow="md" fontWeight="semibold" paddingX={3} paddingY={1} marginY={2} borderRadius="lg" color="gray.600">{props.att.trait_type}: {props.att.value}</Box>)
+    return (<Box backgroundColor="white" boxShadow="figma" fontWeight="semibold" paddingX={3} paddingY={1} marginY={2} borderRadius="lg" color="gray.600">{props.att.trait_type}: {props.att.value}</Box>)
 };

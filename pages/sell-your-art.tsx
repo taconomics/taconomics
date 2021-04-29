@@ -29,7 +29,7 @@ function ContactUs() {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const formref = useRef<HTMLFormElement>();
 
-    return (<Box flexGrow={6} backgroundColor="white" shadow="xl" padding={5} width={["100%", "100%", "60%"]} borderRadius="lg">
+    return (<Box flexGrow={6} backgroundColor="white" shadow="figma" padding={5} width={["100%", "100%", "60%"]} borderRadius="lg">
         <ThanksModal isOpen={isOpen} onClose={onClose}></ThanksModal>
         <Box fontWeight="extrabold" fontSize="lg" marginBottom={5}>Contact us on social media or leave a message.</Box>
         <SellSocialIcons></SellSocialIcons>
