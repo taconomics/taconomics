@@ -33,7 +33,8 @@ export default function Manager(props: TacoProps) {
     return (<Grid templateColumns={columnTemplate}>
         <Box gridColumn="2/2">
             <Box fontSize="x-large" fontWeight="bold">Collection manager</Box>
-            <Flex flexDir="column">{myCol.length > 0 ? myCol : <Center padding={5}><Spinner></Spinner></Center>}</Flex>
+            <Flex flexDir="column">{myCol.length > 0 ? myCol : 
+            <Center padding={5}><Spinner></Spinner></Center>}</Flex>
         </Box>
 
     </Grid>)
@@ -56,7 +57,7 @@ function CollectionCard(props: { erc: any, unifty: Unifty, id: number }) {
         }
         func();
     }, [])
-    return (<Flex flexDir="row" key={props.id} alignItems="center" justifyContent="space-between" backgroundColor="white" borderRadius="lg" margin={5} boxShadow="lg" padding={5}>
+    return (<Flex flexDir="row" key={props.id} alignItems="center" justifyContent="space-between" backgroundColor="white" borderRadius="lg" margin={5} boxShadow="figma" padding={5}>
         <Box>
             <Box color="figma.orange.600" fontWeight="bold" fontSize={"x-small"}>My collection</Box>
             <Flex>
