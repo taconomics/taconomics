@@ -1,6 +1,5 @@
 ## TO DO:
 - Check when user doesn't have wallet provider. -> Show modal
-- Add traits to collection/card manager
 - Social icons links
 - My earnings
 - UploadImage component needs default picture

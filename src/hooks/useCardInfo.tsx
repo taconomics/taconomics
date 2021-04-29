@@ -42,9 +42,9 @@ export interface IMetaNft {
     animation_url?: string,
     audio_url?: string,
     external_link?: string,
-    attributes?: IAttribute[]
+    attributes?: ITrait[]
 }
-export interface IAttribute {
+export interface ITrait {
     trait_type: string, value: any
 }
 export interface ICardInfo {

@@ -5,7 +5,7 @@ import GridContent from "../../../src/components/GridContent";
 import { TacoProps } from "../../../src/components/TacoLayout";
 import { BsArrowLeft } from 'react-icons/bs'
 import { useCallback } from "react";
-import { IAttribute, ICardInfo, useCardInfo } from "../../../src/hooks/useCardInfo";
+import { ITrait, ICardInfo, useCardInfo } from "../../../src/hooks/useCardInfo";
 import { useRouter } from "next/router";
 import { CardButton } from "../../../src/components/Card/CardButton";
 
@@ -83,6 +83,6 @@ function Traits(props: { cardInfo: ICardInfo }) {
         }) : <Trait att={{ trait_type: "No traits", value: "" }}></Trait>}
     </HStack>
 }
-const Trait = (props: { att: IAttribute }) => {
+const Trait = (props: { att: ITrait }) => {
     return (<Box backgroundColor="white" boxShadow="figma" fontWeight="semibold" paddingX={3} paddingY={1} marginY={2} borderRadius="lg" color="gray.600">{props.att.trait_type}: {props.att.value}</Box>)
 };
