@@ -81,7 +81,7 @@ export const useGetPieces = (searchConfig: SearchConfig) => {
             for (let piece of nfts) {
                 if (await isValidNft(piece, searchConfig)) {
                     newNfts.push(piece);
-                    console.log("Pushing", piece);
+                   
                 }
             }
             setQueryNfts(newNfts);

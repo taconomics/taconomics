@@ -114,9 +114,6 @@ export async function getCardInfo(tacoProps: TacoProps,
                         let balanceOf = await unifty.balanceOf(erc1155, farmForSupply, id);
 
                         let coin = unifty.getCoinName(farmForSupply);
-
-
-                        console.log("Farm addon address", addonAddress, "Farm address", farmForSupply)
                         let prices = await unifty.farmShopGetPrice(addonAddress, erc1155, id)
                         let shopPrice = undefined;
                         if (prices) {
