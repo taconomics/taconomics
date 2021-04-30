@@ -1,16 +1,17 @@
 
 import { useCallback, useEffect } from "react";
 import { useState } from "react";
-import { CardTypes } from "../components/Card/Card";
+import { CardTypes, getCardType } from "../components/Card/Card";
 import { TacoProps } from "../components/TacoLayout";
 import Unifty from "../uniftyLib/UniftyLib";
 import { getCardInfo, ICardInfo, IFarmData, IMetaNft, INft, useCardInfo } from "./useCardInfo";
 import useInterval from "./useInterval";
+import { useWalletChanger } from "./useWalletChange";
 
 export interface SearchConfig {
     artist?: string,
     collection?: string,
-    rarity?: number,
+    rarity?: string,
     price?: number,
     name?: string
     page?: number,
@@ -34,51 +35,107 @@ export const useGetPieces = (searchConfig: SearchConfig) => {
     const emptyResult = { artist: [], collections: [], rarity: Object.keys(CardTypes), price: [] }
 
     const [results, setResult] = useState<SearchResult>(emptyResult);
-    const {nfts,loaded} = useAsyncNfts(searchConfig);
+   
+
+    const changer = useWalletChanger(searchConfig.tacoProps.unifty);
+
+    const [queryNfts, setQueryNfts] = useState<PieceNFT[]>([])
+    const isLooking = searchConfig.artist||searchConfig.collection||searchConfig.name||searchConfig.price||searchConfig.rarity
+    const { nfts, loaded } = useAsyncNfts(searchConfig,()=>!isLooking?false:true);
+    const [queryLoaded, setQueryLoaded] = useState(true);
+
 
     //const [nfts, setNfts] = useState<PieceNFT[]>([])
-    useEffect(()=>{
-        let newResult = results?{...results}:{...emptyResult};
-        nfts.forEach(async nft => {
-           // const CardInfo =await getCardInfo(searchConfig.tacoProps,nft.nft.erc1155,nft.nft.id,{useMeta:true})
-            if(!results.artist.includes(nft.nft.artist)){
-                newResult.artist.push(nft.nft.artist);
-            } 
-            let erc1155Meta = await searchConfig.tacoProps.unifty.getErc1155Meta(nft.nft.erc1155);
-            if(!results.collections.includes({nft:nft.nft,meta:erc1155Meta})){
-               
-                newResult.collections.push({nft:nft.nft,meta:erc1155Meta});
+
+  /*  useEffect(() => {
+        setResult(emptyResult)
+    }, [changer])*/
+    useEffect(() => {
+        async function n(){
+            let newResult = {...emptyResult}/*results ? { ...results } : { ...emptyResult }*/;
+            for (let nft of nfts){
+                // const CardInfo =await getCardInfo(searchConfig.tacoProps,nft.nft.erc1155,nft.nft.id,{useMeta:true})
+                if (!newResult.artist.includes(nft.nft.artist)) {
+                    newResult.artist.push(nft.nft.artist);
+                }
+                //let addCollection = true;
+                let erc1155Meta = await searchConfig.tacoProps.unifty.getErc1155Meta(nft.nft.erc1155);
+                var exists = Object.keys(newResult.collections).some(function(k) {
+                    return newResult.collections[k].meta.name === erc1155Meta.name;
+                })
+                if(!exists){
+                    newResult.collections.push({ nft: nft.nft, meta: erc1155Meta });
+                }
+           
             }
-        });
+    
+            setResult(newResult);
+        }
+        n();
+    }, [loaded])
 
-        setResult(newResult);
-    },[loaded])
+    const querySearch = () => {
+        async function n() {
+            setQueryLoaded(false);
+            let newNfts = [];
+            for (let piece of nfts) {
+                if (await isValidNft(piece, searchConfig)) {
+                    newNfts.push(piece);
+                    console.log("Pushing", piece);
+                }
+            }
+            setQueryNfts(newNfts);
+            setQueryLoaded(true);
+        }
+        n()
+    }
 
+    useEffect(() => {
+        if (loaded) {
+            querySearch();
+        }
+    }, [searchConfig.artist, searchConfig.collection, searchConfig.name, searchConfig.price, searchConfig.rarity, loaded])
 
+    useEffect(() => {
+        querySearch();
+    }, [])
 
-    return { results, loaded, nfts }
+    return { results, loaded, nfts: queryNfts, queryLoaded }
 
 }
 
-function useAsyncNfts(config: SearchConfig ){
+function useAsyncNfts(config: SearchConfig,shouldContinue?:()=>boolean) {
     const [nfts, setNfts] = useState<PieceNFT[]>([])
     const [currentBlock, setBlock] = useState(0);
     const [canRun, setRun] = useState(true);
-    const [loaded,setLoaded] = useState(false)
+    const [loaded, setLoaded] = useState(false)
     //const [runTick, setRunTick] = useState(0);
     //const [time, setTime] = useState(100);
-    const startRange = 150000;
-    const [range,setRange] = useState(startRange);
-    /**
-     * This effects reloads when any change in config except for pagesize
-     */
-    useEffect(() => {
+    const startRange = 30000;
+    const [range, setRange] = useState(startRange);
+
+    shouldContinue = shouldContinue?shouldContinue:()=>false;
+
+    const _shouldContinue = shouldContinue();
+
+
+    const changer = useWalletChanger(config.tacoProps.unifty);
+    const reloadAll = () => {
         setNfts([])
         setRun(true);
         setLoaded(false)
         setRange(startRange);
         setMaxBlock();
-    }, [config.tacoProps.changer, config.artist, config.collection, config.name, config.rarity])
+    }
+    /**
+     * This effects reloads when any change in config except for pagesize
+     */
+    useEffect(() => {
+        reloadAll();
+    }, [changer])
+    useEffect(() => {
+        reloadAll();
+    }, [])
 
     const setMaxBlock = useCallback(async () => {
         setBlock(await config.tacoProps.unifty.web3.eth.getBlockNumber())
@@ -90,9 +147,9 @@ function useAsyncNfts(config: SearchConfig ){
         //setRunTick(runTick + 1)
         setRun(true);
         setLoaded(false)
-    }, [config.nextCount])
+    }, [config.nextCount,_shouldContinue])
 
-    const interval = useCallback(async () => {
+    const interval = async () => {
         setRun(false);
         //console.log("Current block",currentBlock);
         const newNfts: PieceNFT[] = []
@@ -111,49 +168,52 @@ function useAsyncNfts(config: SearchConfig ){
         for (let nft of queryRabbit) {
             let metaNftUri = await config.tacoProps.unifty.getNftMeta(nft.erc1155, nft.id);
             const newF = { nft: nft, metaUri: metaNftUri }
-            if (await isValidNft(newF, config)) {
+            //  if (await isValidNft(newF, config)) {
 
-                newNfts.push(newF);
-            }
+            newNfts.push(newF);
+            //}
         }
         setBlock(newBlock - range >= 0 ? newBlock : 0);
         setNfts([...nfts, ...newNfts])
 
-        if (nfts.length + newNfts.length < config.minimumNfts) {
+        if (nfts.length + newNfts.length < config.minimumNfts || (shouldContinue()&&newBlock - range <= 0)) {
             setRun(true);
-            setRange(range+(startRange/2))
+            setRange(range + (startRange / 2))
 
-        } else { setLoaded(true) }
-        if(newBlock - range <=0){
+        } else { 
+            setLoaded(true) 
+        }
+        if (newBlock - range <= 0) {
             setLoaded(true);
         }
 
-    }, [config, nfts, currentBlock, canRun, config.nextCount])
+    }
 
 
     useInterval(interval, canRun ? time : null);
 
 
-    return {nfts,loaded};
+    return { nfts, loaded };
 
 }
 
 async function isValidNft(nft: PieceNFT, config: SearchConfig): Promise<boolean> {
 
     const artist = config.artist == nft.nft.artist || !config.artist
-    const collection = config.collection == nft.nft.erc1155 || !config.collection
+    let  collection =  nft.nft.erc1155 == config.collection|| !config.collection
     let name = true;
     let rarity = true;
-    if (config.name || config.rarity) {
-        const cardInfo = await getCardInfo(config.tacoProps, nft.nft.erc1155, nft.nft.id, { useMeta: true, useFarmData: true, useExtras: true })
-        console.log("CardInfo", cardInfo);
+
+    if (config.name || config.rarity || config.collection) {
+        const cardInfo = await getCardInfo(config.tacoProps, nft.nft.erc1155, nft.nft.id, { useMeta: true, useFarmData: false, useExtras: true })
+
         if (cardInfo.meta) {
             if (config.name) {
                 name = cardInfo.meta.name.toLowerCase().includes(config.name.toLowerCase())
-                console.log("Contains name", name);
             }
             if (config.rarity) {
-                rarity = config.rarity == cardInfo.nft.supply || !config.rarity;
+                const type = getCardType(cardInfo.nft.supply)
+                rarity = config.rarity == type || !config.rarity;
             }
         }
 

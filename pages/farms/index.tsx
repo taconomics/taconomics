@@ -30,9 +30,9 @@ export default function FarmIndex(props) {
     </Center>)
 }
 
-export const createFakeCards = (cards:number)=>{
+export const createFakeCards = (cards: number) => {
     let arr = [];
-    for(let a=0;a<cards;a++){
+    for (let a = 0; a < cards; a++) {
         arr.push(<Card tacoProps={undefined} key={a} nft={undefined}></Card>)
     }
     return arr;
@@ -43,7 +43,7 @@ export function RecentNfts(props: { taco: TacoProps, itemsSize }) {
     useEffect(() => {
         setNfts([])
         async function func() {
-           
+
             let connected = await props.taco.unifty.isConnected();
             let tacoshi = await getNftsJson(props.taco.unifty, props.taco.unifty.tacoshiFarm);
             let rabbit = await getNftsJson(props.taco.unifty, props.taco.unifty.rabbitFarm);
@@ -53,41 +53,44 @@ export function RecentNfts(props: { taco: TacoProps, itemsSize }) {
             let rabbitCount = 0;
 
             let finalArray = [];
-            for(let a =0;a<props.itemsSize;a++){
+            if (tacoshi && rabbit) {
+
+                for (let a = 0; a < props.itemsSize; a++) {
 
                     const name = Math.floor(Math.random() * 1000000);
-                    let nft = one?tacoshi[tacoshiCount]:rabbit[rabbitCount];
+                    let nft = one ? tacoshi[tacoshiCount] : rabbit[rabbitCount];
                     let card = <Card tacoProps={props.taco} key={name} nft={nft}></Card>;
                     finalArray.push(card)
-                    if(one){
+                    if (one) {
                         tacoshiCount++;
-                    }else{
+                    } else {
                         rabbitCount++;
                     }
-                    one=!one;
+                    one = !one;
 
-                
-            }
-            if(finalArray.length == props.itemsSize){
-                try{
-                    setNfts(finalArray); 
-                }catch(e){
-                    console.log("Error in RecentNtfs",e)
+
                 }
-               
+                if (finalArray.length == props.itemsSize) {
+                    try {
+                        setNfts(finalArray);
+                    } catch (e) {
+                        console.log("Error in RecentNtfs", e)
+                    }
+
+                }
             }
-            
+
         }
         func();
     }, [props.taco])
 
     return (<Grid templateColumns={columnTemplate}>
         <Box gridColumn="2/2" >
-          <Box fontSize="x-large" marginBottom={5} fontWeight="bold">Recently added pieces</Box> 
-        <HStack flexWrap="wrap" justifyContent={["center","center","left"]} spacing={3}>{nfts?nfts:createFakeCards(0)}</HStack> 
+            <Box fontSize="x-large" marginBottom={5} fontWeight="bold">Recently added pieces</Box>
+            <HStack flexWrap="wrap" justifyContent={["center", "center", "left"]} spacing={3}>{nfts ? nfts : createFakeCards(0)}</HStack>
         </Box>
-        
-        </Grid>)
+
+    </Grid>)
 }
 
 const LinkToFarm = ({ children, address }) => {

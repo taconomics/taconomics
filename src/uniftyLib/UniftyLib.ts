@@ -64,8 +64,12 @@ export default class Unifty {
         } else {
             return true;
         }
-
-        return false;
+        /*await this.sleep(3000);
+        if(this.account != ""){
+            return true;
+        }else{
+            return false;
+        }*/
 
     }
     async setParams() {
@@ -116,16 +120,29 @@ export default class Unifty {
 
     async getAccount() {
         let ac;
-        if (this.account == "") {
-            ac = this.web3.eth.accounts.create().address;
-            console.log("Created account cuz is undefined")
-        }
-        let reqac = await this.web3.eth.requestAccounts();
+        let reqac;
+        if (this.account == "" || this.account == undefined) {
 
-        if (reqac != undefined) {
-            ac = reqac[0];
+
+            try {
+                reqac = await this.web3.eth.requestAccounts();
+            } catch (e) {
+
+            }
+
+
+            if (reqac != undefined) {
+                ac = reqac[0];
+            } else {
+                ac = this.web3.eth.accounts.create().address;
+                console.log("Created account cuz is undefined")
+            }
+            console.log("getAccount", ac);
+            return ac;
+        }else{
+            console.log("AAAAA",this.account)
+            return this.account;
         }
-        return ac;
     }
     getFarmAddress(isTaco) {
         return isTaco ? this.rabbitFarm : this.tacoshiFarm;
@@ -211,7 +228,7 @@ export default class Unifty {
             let decimals = await this.farmTokenDecimals(farmAddress);
             return earned / Math.pow(10, decimals >= 0 ? decimals : 0);
         } catch (e) {
-            console.error(e);
+            console.error("No points earned");
         }
 
     };
@@ -270,7 +287,7 @@ export default class Unifty {
             let ret = await shop.methods.getPrice(erc1155Address, id).call({ from: this.account });
             return ret;
         } catch (e) {
-            console.error(e)
+            console.error("Not in this farm")
         }
 
     };
@@ -567,11 +584,11 @@ export default class Unifty {
      * Nfts
      */
 
-     async getMyNfts(erc1155Address){
+    async getMyNfts(erc1155Address) {
 
         await this.sleep(this.sleep_time);
 
-        let erc1155 = new this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
+        let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
 
         let events = await erc1155.getPastEvents('TransferSingle', {
             filter: {
@@ -583,14 +600,14 @@ export default class Unifty {
 
         let nfts = [];
 
-        if(Array.isArray(events)){
+        if (Array.isArray(events)) {
 
             events = events.reverse();
 
-            for(let i = 0; i < events.length; i++){
+            for (let i = 0; i < events.length; i++) {
 
-                if(typeof events[i] == 'object') {
-                    if(!nfts.includes(events[i].returnValues._id)) {
+                if (typeof events[i] == 'object') {
+                    if (!nfts.includes(events[i].returnValues._id)) {
                         nfts.push(events[i].returnValues._id);
                     }
                 }
@@ -725,7 +742,7 @@ export default class Unifty {
         return await this.genesis.methods.getPoolsLength(this.account).call({ from: this.account });
     };
 
-    async getNftsByUri(erc1155Address):Promise<INft[]> {
+    async getNftsByUri(erc1155Address): Promise<INft[]> {
         try {
             await this.sleep(this.sleep_time);
 

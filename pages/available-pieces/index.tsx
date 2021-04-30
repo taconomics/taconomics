@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import { BiCool } from 'react-icons/bi'
 
 export default function AvailablePieces(props: TacoProps) {
-    const [config, setConfig] = useState<SearchConfig>({ tacoProps: props, nextCount: 0, minimumNfts: 10 });
+    const [config, setConfig] = useState<SearchConfig>({ tacoProps: props, nextCount: 0, minimumNfts: 7 });
     const pieces = useGetPieces(config)
 
     useEventListener("scroll", () => {
@@ -34,14 +34,16 @@ export default function AvailablePieces(props: TacoProps) {
 
 
     const cards = pieces.nfts.map(val => {
-        return (<Card nft={val.nft} tacoProps={props}></Card>)
+        return (<Card nft={val.nft} key={val.nft.erc1155+"/"+val.nft.id} tacoProps={props}></Card>)
     })
     return (<GridContent marginBottom={10}>
         <HStack>
             <Box fontSize="xl" fontWeight="bold" marginRight={20}>Available pieces</Box>
             <SearchPieces config={config} setConfig={setConfig} tacoProps={props} results={undefined}></SearchPieces>
         </HStack>
+       
         <SearchLabels config={config} setConfig={setConfig} tacoProps={props} results={pieces.results}></SearchLabels>
+        <MessageQueryLoading queryLoaded={pieces.queryLoaded}></MessageQueryLoading>
         <HStack flexWrap="wrap" justifyContent="center">
 
             {cards.length > 0 ? cards : pieces.loaded && <Center fontSize="xx-large" color="gray.500" fontWeight="bold"><VscSearchStop></VscSearchStop>Could't find anything...</Center>}
@@ -80,6 +82,11 @@ function MessageLoadingMore(props: { loaded: boolean,addOne }) {
 
 
     </Center>)
+}
+function MessageQueryLoading(props:{queryLoaded:boolean}){
+    return (<>
+            {!props.queryLoaded&&<Center marginBottom={3} color="gray.500"><Spinner></Spinner><Box marginLeft={1} fontSize="x-large">Searching, please be patient...</Box></Center>}
+        </>)
 }
 
 interface ISearchLabel {
@@ -137,7 +144,7 @@ function SelectCollections(props: ISearchLabel) {
         creator={(val) => {
 
 
-            return (<Box border="1px" as="option" id={val.address}>{val.meta.name}</Box>)
+            return (<Box border="1px" as="option" id={val.nft.erc1155}>{val.meta.name}</Box>)
         }}></SelectInput>)
 }
 
@@ -145,7 +152,7 @@ function SelectRarity(props: ISearchLabel) {
     return (<SelectInput results={props.results.rarity} placeholder="Rarity"
         onChange={(val) => {
             const index = val.target.selectedIndex;
-            const rarity = val.target.options[index].id;
+            const rarity = val.target.options[index].value;
             props.setConfig({ ...props.config, rarity: rarity })
         }}
         creator={(val) => {
