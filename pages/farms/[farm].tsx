@@ -23,7 +23,6 @@ export default function Farm(props:TacoProps) {
                     const name = Math.floor(Math.random() * 100);
                     g.push(<Card tacoProps={props} key={name} nft={nft}></Card>)
                 }
-                console.log("nfts", nfts);
                 setNfts(g);
             }
 
@@ -48,7 +47,6 @@ export default function Farm(props:TacoProps) {
  */
 export async function getNftsJson(unifty: Unifty, farmAddress: string) {
     let farmNfts = await unifty.getFarmNfts(farmAddress);
-    console.log("GetNftsJson",farmNfts)
     return farmNfts;
 
 

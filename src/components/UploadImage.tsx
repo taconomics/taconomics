@@ -10,9 +10,10 @@ export default function UploadImage({ image, setImage, unifty }) {
     const onExit = () => {
         setHover(false);
     }
+    console.log("UploadImage",image)
     return (<Box minWidth="300px" height="180px" overflow="hidden" marginRight={10} onPointerEnter={onEnter} onPointerLeave={onExit}
 
-        backgroundImage={image != undefined ? "url(" + image + ")" : "none"} backgroundPosition="center"
+        backgroundImage={(image != undefined && image!="") ? "url(" + image + ")" : "url(/img/default-photo.jpg)"} backgroundPosition="center"
         backgroundSize="500px" borderRadius="lg">
         {<Center backgroundColor="blackAlpha.700" height="100%" marginTop={hover ? "0%" : "100%"} transition="margin-top .5s">
             <FileUpload unifty={unifty} setImage={setImage}></FileUpload>

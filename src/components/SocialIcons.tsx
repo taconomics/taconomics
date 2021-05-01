@@ -5,8 +5,6 @@ import NextLink from 'next/link'
 
 function SocialIconsSX(props: { iconColor?, size?, Container?}) {
     let { iconColor, size, Container } = props;
-
-    console.log("Color",iconColor)
     iconColor = iconColor ? iconColor : "white"
     size = size ? size : "20px"
     Container = Container ? Container : <Box></Box>
