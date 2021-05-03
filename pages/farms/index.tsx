@@ -2,6 +2,7 @@ import { Box, Button, Center, Flex, Grid, HStack, Link, LinkBox, UseAccordionRet
 import React, { useEffect, useState } from "react";
 import Card from "../../src/components/Card/Card";
 import { columnTemplate, TacoProps } from "../../src/components/TacoLayout";
+import { useGetPieces } from "../../src/hooks/useGetPieces";
 import Unifty from "../../src/uniftyLib/UniftyLib";
 import { getNftsJson } from "./[farm]";
 
@@ -38,9 +39,11 @@ export const createFakeCards = (cards: number) => {
     return arr;
 }
 export function RecentNfts(props: { taco: TacoProps, itemsSize }) {
-    const [nfts, setNfts] = useState([]);
+  
+    const {nfts} = useGetPieces({tacoProps:props.taco,minimumNfts:10,nextCount:1});
 
-    useEffect(() => {
+
+   /* useEffect(() => {
         setNfts([])
         async function func() {
 
@@ -82,12 +85,14 @@ export function RecentNfts(props: { taco: TacoProps, itemsSize }) {
 
         }
         func();
-    }, [props.taco])
+    }, [props.taco])*/
 
     return (<Grid templateColumns={columnTemplate}>
         <Box gridColumn="2/2" >
             <Box fontSize="x-large" marginBottom={5} fontWeight="bold">Recently added pieces</Box>
-            <HStack flexWrap="wrap" justifyContent={["center", "center", "left"]} spacing={3}>{nfts ? nfts : createFakeCards(0)}</HStack>
+            <HStack flexWrap="wrap" justifyContent={["center", "center", "left"]} spacing={3}>{nfts ? nfts.map((val,index)=>{
+                return <Card nft={val.nft} tacoProps={props.taco}></Card>
+            }) : <Box>Loading cards</Box>}</HStack>
         </Box>
 
     </Grid>)

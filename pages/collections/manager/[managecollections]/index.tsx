@@ -43,7 +43,7 @@ export default function ManageCollection(props: TacoProps) {
 
     }, [collection, props.changer])
     return (<GridContent>
-        <Box fontSize="x-large" fontWeight="bold" marginBottom={5}>Edit collection</Box>
+        <Box fontSize="x-large" fontWeight="bold" marginBottom={5}>{isNew?"Create":"Edit"} collection</Box>
         {data.meta != undefined && <Flex>
             <UploadImage unifty={props.unifty} setImage={setImage} image={image}></UploadImage>
             <Box flexGrow={2}>

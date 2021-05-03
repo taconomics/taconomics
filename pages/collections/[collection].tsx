@@ -51,6 +51,7 @@ export default function Collection(props:TacoProps) {
 }
 
 export async function getCollectionCards(tacoProps:TacoProps,collection:string,canEdit:boolean) {
+    await tacoProps.unifty.sleep(1000)
     await tacoProps.unifty.isConnected();
     let nfts = await tacoProps.unifty.getNftsByUri(collection);
     let col = [];

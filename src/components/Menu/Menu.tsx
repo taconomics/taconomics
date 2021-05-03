@@ -1,20 +1,21 @@
 import styles from './Menu.module.scss'
 import UserWallet from '../UserWallet';
-import { Box, Button, Center, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Flex, HStack, Input, Link, LinkBox, LinkOverlay, useDisclosure, useMediaQuery, useStyleConfig } from '@chakra-ui/react'
+import { Box, Button, Center, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Flex, HStack, Input, Link, LinkBox, LinkOverlay, propNames, useDisclosure, useMediaQuery, useStyleConfig } from '@chakra-ui/react'
 import Image from 'next/image';
 import React from 'react';
 import NextLink from "next/link"
+import { TacoProps } from '../TacoLayout';
 //import img from "./"
 
-export default function Menu({ unifty, changer }) {
+export default function Menu(props:TacoProps) {
 
     const [isMobile] = useMediaQuery("(max-width: 768px)")
 
     return (<Flex flexDir="row" w="100%" alignItems="center" justifyContent="space-between" fontFamily="Nunito">
-        {isMobile && <MenuItemsMobile></MenuItemsMobile>}
+        {isMobile && <MenuItemsMobile taco={props}></MenuItemsMobile>}
         <Logo></Logo>
         {!isMobile && <MenuItems></MenuItems>}
-        {<UserWallet changer={changer} unifty={unifty}></UserWallet>}
+        {!isMobile&&<UserWallet changer={props.changer} unifty={props.unifty}></UserWallet>}
     </Flex>)
 }
 
@@ -31,7 +32,7 @@ export function Logo(props: { variant?: LogoVariants }) {
         </NextLink></LinkBox>)
 }
 
-export function MenuItemsMobile() {
+export function MenuItemsMobile(props:{taco:TacoProps}) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef()
     return <><Button onClick={onOpen}><Image src="/icons/Burger.svg" layout="intrinsic" width={20} height={20} /></Button>
@@ -51,7 +52,10 @@ export function MenuItemsMobile() {
                     </DrawerHeader>
 
                     <DrawerBody>
+                    <Box fontSize="xl" color="gray.700">Menu</Box>
                         <MenuItems variant="drawer"></MenuItems>
+                        <Box fontSize="xl" color="gray.700" marginTop={5}>User wallet</Box>
+                        <UserWallet unifty={props.taco.unifty} changer={props.taco.changer}></UserWallet>
                     </DrawerBody>
 
                     <DrawerFooter>

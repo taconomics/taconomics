@@ -17,10 +17,8 @@ const Cubiertos_Icon = "/icons/Cubiertos_Icon.svg";
 
 
 
-export default function UserWallet(props: { unifty: Unifty,changer }) {
+export default function UserWallet(props: { unifty: Unifty, changer: number, variant?: string }) {
     const [isConnected, setIsConnected] = useState(false);
-
-    const [isMobile] = useMediaQuery("(max-width: 1024px)")
     let onClickConnect = () => {
         console.log("Requested account");
         props.unifty.getAccount();
@@ -29,6 +27,7 @@ export default function UserWallet(props: { unifty: Unifty,changer }) {
     useEffect(() => {
         async function con() {
             let connected = await props.unifty.isConnected();
+            console.log("Is connected", connected)
             setIsConnected(connected);
         }
         con();
@@ -42,33 +41,26 @@ export default function UserWallet(props: { unifty: Unifty,changer }) {
                 <ButtonConnect onClickConnect={onClickConnect}></ButtonConnect>
                 :
 
-                <WalletContainer changer={props.changer} unifty={props.unifty} isMobile={isMobile}></WalletContainer>
+                <WalletContainer changer={props.changer} variant={props.variant} unifty={props.unifty}></WalletContainer>
 
         }
     </Box>)
 }
 
-function WalletContainer(props: { unifty: Unifty, isMobile,changer }) {
+function WalletContainer(props: { unifty: Unifty, changer,variant? }) {
 
     return (
-        <Flex width={["auto", "auto", "100%"]} flexDir="row"alignItems="center" justifyContent={["end", "end", "space-between"]}>
-            {
-                props.isMobile ?
-                    <Button>Wallet</Button> :
-                    <>
-                        <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>
-                        <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/my-items">My items</NextLink></Box>
-                        <Coins changer={props.changer} unifty={props.unifty}></Coins>
-                    </>
+        <Flex width={["auto", "auto", "100%"]} flexDir={["column","column","row"]} alignItems={["start","start","center"]} justifyContent={"space-between"}>
 
-            }
-
+            <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>
+            <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/my-items">My items</NextLink></Box>
+            <Coins changer={props.changer} unifty={props.unifty}></Coins>
         </Flex>)
 
 
 }
 
-function Coins(props: { unifty: Unifty,changer}) {
+function Coins(props: { unifty: Unifty, changer }) {
     const [chilesBalance, setChiles] = useState(0);
     const [lemonBalance, setLemons] = useState(0);
     async function func() {
@@ -78,9 +70,9 @@ function Coins(props: { unifty: Unifty,changer}) {
         setChiles(Math.ceil(chilesPoints));
         setLemons(Math.ceil(lemonPoints));
     }
-    useEffect(()=>{
+    useEffect(() => {
         func();
-    },[props.changer])
+    }, [props.changer])
     useInterval(func, 1000);
 
     let iconSize = 6;
@@ -103,7 +95,7 @@ function ButtonConnect({ onClickConnect }) {
     return (<Button onClick={onClickConnect} colorScheme="blackButton" leftIcon={<Image width="20px" src={Wallet_Icon} />}>Connect wallet</Button>)
 }
 
-function ManageStakeMenu(props: { unifty: Unifty,changer }) {
+function ManageStakeMenu(props: { unifty: Unifty, changer }) {
     const [taco, setTaco] = useState(0);
     const [salsa, setSalsa] = useState(0);
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -118,10 +110,10 @@ function ManageStakeMenu(props: { unifty: Unifty,changer }) {
 
         }
         name();
-    }, [isOpen,props.changer])
+    }, [isOpen, props.changer])
     let iconSize = "20px"
     let marginTop = "20px"
-    return (<Flex flexDir="column"  alignItems="center">
+    return (<Flex flexDir="column" alignItems="center">
         <Flex marginTop={marginTop}><Coin balance={taco} iconSize={iconSize} img={Taco_Icon} spacing={0} >Stacked</Coin></Flex>
         <Flex marginTop={marginTop}><Coin balance={salsa} iconSize={iconSize} img={Molcajete_Icon} spacing={0} >Stacked</Coin></Flex>
         <Button marginTop="20px" onClick={onOpen} colorScheme="blackButton"><Image paddingRight={2} height={5} src={Cubiertos_Icon}></Image>Manage Stake</Button>
@@ -134,13 +126,13 @@ function ManageStakeMenu(props: { unifty: Unifty,changer }) {
 function TacoButtonBox({ lemonBalance, chilesBalance, children }) {
     let iconSize = 6;
     let padding = 10;
-    const [isOpen,setOpen] = useState(false);
+    const [isOpen, setOpen] = useState(false);
     const wrapperRef = useRef(null);
-    
-    useOutsideAlerter(wrapperRef,setOpen);
+
+    useOutsideAlerter(wrapperRef, setOpen);
 
     return <Box position="relative" ref={wrapperRef}>
-        <Button as={Button} colorScheme="transparent" onClick={()=>{setOpen(!isOpen)}} margin={0}>
+        <Button as={Button} colorScheme="transparent" onClick={() => { setOpen(!isOpen) }} margin={0}>
             <HStack>
                 <Coin spacing={padding} iconSize={iconSize} balance={lemonBalance} img={Lemon_Icon}></Coin>
                 <Coin spacing={padding} iconSize={iconSize} balance={chilesBalance} img={Chile_Icon}></Coin>
@@ -152,8 +144,8 @@ function TacoButtonBox({ lemonBalance, chilesBalance, children }) {
     </Box>
 }
 
-function TacoButtonBoxItem({ children,setOpen,isOpen }) {
-    return (<Flex display={isOpen?"flex":"none"} position="absolute" onfo justifyContent="center" width="100%" padding={2} borderRadius="lg" right={0} marginTop={2}
+function TacoButtonBoxItem({ children, setOpen, isOpen }) {
+    return (<Flex display={isOpen ? "flex" : "none"} position="absolute" onfo justifyContent="center" width="100%" padding={2} borderRadius="lg" right={0} marginTop={2}
         zIndex={100} backgroundColor="white" border="2px solid" borderColor="gray.200">
         {children}
     </Flex>)

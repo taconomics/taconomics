@@ -8,7 +8,7 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router';
 import { ICardInfo, useCardInfo } from '../../hooks/useCardInfo';
 import { TacoProps } from '../TacoLayout';
-import {FaRegSadTear} from 'react-icons/fa'
+import { FaRegSadTear } from 'react-icons/fa'
 import { CardButton } from './CardButton';
 
 export const cardWidth = 240;
@@ -20,16 +20,17 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
     const [hover, setHover] = useState(false);
     let CardInfo: ICardInfo = useCardInfo(props.tacoProps, nft.erc1155, nft.id, { useExtras: true, useFarmData: true, useMeta: true })
     const router = useRouter();
+    const goToItem = () => {
+        router.push("/items/" + CardInfo.erc1155 + "/" + CardInfo.id)
+    }
 
     return (<EmptyCard setHover={setHover} valid={true}>
         {CardInfo.loaded && nft == undefined ?
             <Center><Spinner /></Center> :
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
                 <CardTypeBadge maxSupply={CardInfo.nft.supply}></CardTypeBadge>
-                <Image marginTop={10} maxHeight={cardHeight / 3.4 + "px"} src={CardInfo.meta.image}></Image>
-                <Box fontSize="large" textAlign="center" fontWeight="bold" onClick={()=>{
-                     router.push("/items/"+CardInfo.erc1155+"/"+CardInfo.id)
-                }}>
+                <Image marginTop={10} maxHeight={cardHeight / 3.4 + "px"} cursor="pointer" onClick={goToItem} src={CardInfo.meta.image}></Image>
+                <Box cursor="pointer" fontSize="large" textAlign="center" fontWeight="bold" onClick={goToItem}>
                     {CardInfo.meta.name}
                 </Box>
                 <FarmInfo CardInfo={CardInfo}></FarmInfo>
@@ -65,7 +66,7 @@ function EditCard({ height, hover, id }) {
     const router = useRouter();
     return (
         <Center marginTop={hover ? "0px" : height} position="absolute" backgroundColor="blackAlpha.700" zIndex="10000" width="100%" height="100%">
-            <NextLink href={router.asPath + "/items/" + id}><Button variant="outline" colorScheme="figma.white">Edit item</Button></NextLink>
+            <NextLink href={router.asPath + "/items/" + id}><Button cursor="pointer" variant="outline" colorScheme="figma.white">Edit item</Button></NextLink>
         </Center>
     )
 }
@@ -80,7 +81,7 @@ function CardAvailable(props: { supply, maxSupply }) {
 }
 function FarmInfo(props: { CardInfo: ICardInfo }) {
     const { CardInfo } = props;
-    return (CardInfo.extras && CardInfo.farmAddress?
+    return (CardInfo.extras && CardInfo.farmAddress ?
         <Box><HStack>
             <Box><Coin spacing={0} iconSize="20px" balance={CardInfo.extras.pointsPrice} img={"/icons/" + CardInfo.extras.coin + "_Icon.svg"}></Coin></Box>
             <CardAvailable supply={CardInfo.extras.balanceOf} maxSupply={CardInfo.farmData.supply}></CardAvailable>
@@ -88,7 +89,7 @@ function FarmInfo(props: { CardInfo: ICardInfo }) {
             <HStack alignItems="center" justifyContent="center"><Image src="/icons/Eth_Icon.svg" h={5} color="gray.700"></Image> <Box fontWeight="semibold">{props.CardInfo.farmData.prices.totalFeeDecimals}</Box><Box>to mint</Box></HStack>
         </Box>
         :
-        <HStack><FaRegSadTear/> <Box> Not available in any farm</Box></HStack>
+        <HStack><FaRegSadTear /> <Box> Not available in any farm</Box></HStack>
     )
 }
 

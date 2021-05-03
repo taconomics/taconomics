@@ -10,6 +10,7 @@ export function CardButtonSX(props: { taco: TacoProps, CardInfo: ICardInfo }) {
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure()
     const buyToast = useTrasactionToaster({ title: "Buying card", description: "Please wait..." }, { title: "Transaction complete", description: "Thank you!" }, { title: "Error", description: "Some error has ocurred" })
+   
     const onClick = async () => {
 
         if (Number(props.CardInfo.extras.balanceOf) > 0) {
@@ -19,6 +20,8 @@ export function CardButtonSX(props: { taco: TacoProps, CardInfo: ICardInfo }) {
                 onClickPoints(props.CardInfo, props.taco, buyToast)
             }
 
+        }else{
+            window.open("https://opensea.io/assets/"+props.CardInfo.erc1155+"/"+props.CardInfo.id, "_blank");
         }
 
     }

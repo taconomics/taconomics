@@ -50,26 +50,20 @@ export default class Unifty {
             if (this.hasWallet) {
                 let ac = await this.web3.eth.requestAccounts();
                 ab = ac[0];
-            } else {
-                return false;
+                return true;
+            }else{
+                if(this.account != "" || this.account != undefined){
+                    return true;
+                }
             }
-
-
-            //return true;
         } catch (e) {
 
         }
-        if (ab == undefined) {
+        if (ab == undefined || !this.account) {
             return false;
         } else {
             return true;
         }
-        /*await this.sleep(3000);
-        if(this.account != ""){
-            return true;
-        }else{
-            return false;
-        }*/
 
     }
     async setParams() {
@@ -383,17 +377,27 @@ export default class Unifty {
     };
 
     async farmBalanceOf(farmAddress, account) {
-        await this.sleep(this.sleep_time);
+        try{
+          await this.sleep(this.sleep_time);
         let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
         let balance = await farm.methods.balanceOf(account).call({ from: this.account });
         let decimals = await this.farmTokenDecimals(farmAddress);
-        return balance / Math.pow(10, decimals >= 0 ? decimals : 0);
+        return balance / Math.pow(10, decimals >= 0 ? decimals : 0);  
+        }catch(e){
+            console.error("No farm balance")
+        }
+        
     };
     async farmBalanceOfRaw(farmAddress, account) {
-        await this.sleep(this.sleep_time);
+        try{
+          await this.sleep(this.sleep_time);
         let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
         let balance = await farm.methods.balanceOf(account).call({ from: this.account });
-        return balance;
+        return balance;  
+        }catch(e){
+            console.error("No farm balance raw")
+        }
+        
     };
 
     async farmMaxStakeRaw(farmAddress) {
@@ -536,10 +540,15 @@ export default class Unifty {
             });
     };
     async balanceOfErc20Raw(erc20Address, owner) {
-        await this.sleep(this.sleep_time);
+        try{
+         await this.sleep(this.sleep_time);
         let erc20 = new this.web3.eth.Contract(erc20ABI, erc20Address, { from: this.account });
         let balance = await erc20.methods.balanceOf(owner).call({ from: this.account });
-        return balance;
+        return balance;   
+        }catch(e){
+            console.error("No balance of erc20 raw")
+        }
+        
     };
 
     async farmRedeem(farmAddress, erc1155Address, id, fee, preCallback, postCallback, errCallback) {
