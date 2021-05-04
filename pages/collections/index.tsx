@@ -5,14 +5,15 @@ import React, { useEffect, useState } from "react";
 import Unifty from "../../src/uniftyLib/UniftyLib";
 
 import styles from './Collections.module.scss';
-import { columnTemplate } from '../../src/components/TacoLayout'
+import { columnTemplate, TacoProps } from '../../src/components/TacoLayout'
 import Carousel from 'react-elastic-carousel'
 import { BePartTacoCommunity } from "..";
 import GridContent from "../../src/components/GridContent";
 
-export default function Collections({ unifty,changer }) {
+export default function Collections(props:TacoProps) {
+    props.changeTitle("Collections")
     return (<>
-            <AllCollections changer={changer} unifty={unifty}></AllCollections>
+            <AllCollections changer={props.changer} unifty={props.unifty}></AllCollections>
         <BePartTacoCommunity></BePartTacoCommunity>
     </>)
 }

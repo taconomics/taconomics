@@ -9,6 +9,7 @@ import { RecentNfts } from './farms'
 import { useRouter } from 'next/router'
 export default function Home(props:TacoProps) {
   const [isMobile] = useMediaQuery("(max-width: 768px)")
+  props.changeTitle("Home")
   return (
     <Flex flexDirection="column">
       <Box width="100%" >
