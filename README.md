@@ -5,6 +5,10 @@
 - Change slider images to transparent background
 - Add new nft to a farm
 
+
+## New
+- 
+- Change Rarity in /items/[coll]/[id]
 ## NOT INCLUDED IN FIGMA
 - Mobile:
     1. Menu button interaction
