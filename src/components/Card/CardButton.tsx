@@ -10,18 +10,18 @@ export function CardButtonSX(props: { taco: TacoProps, CardInfo: ICardInfo }) {
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure()
     const buyToast = useTrasactionToaster({ title: "Buying card", description: "Please wait..." }, { title: "Transaction complete", description: "Thank you!" }, { title: "Error", description: "Some error has ocurred" })
-   
+
     const onClick = async () => {
 
         if (Number(props.CardInfo.extras.balanceOf) > 0) {
             if (props.CardInfo.farmData.prices.totalFee != 0 && !props.CardInfo.farmShopAddress) {
-                onOpen();
-            } else {
-                onClickPoints(props.CardInfo, props.taco, buyToast)
-            }
 
-        }else{
-            window.open("https://opensea.io/assets/"+props.CardInfo.erc1155+"/"+props.CardInfo.id, "_blank");
+            } else {
+                //onClickPoints(props.CardInfo, props.taco, buyToast)
+            }
+            onOpen();
+        } else {
+            window.open("https://opensea.io/assets/" + props.CardInfo.erc1155 + "/" + props.CardInfo.id, "_blank");
         }
 
     }
@@ -30,12 +30,12 @@ export function CardButtonSX(props: { taco: TacoProps, CardInfo: ICardInfo }) {
             setConnected(await props.taco.unifty.isConnected() && props.CardInfo.loaded);
         }
         con();
-    }, [props.taco.changer,props.CardInfo])
+    }, [props.taco.changer, props.CardInfo])
     return (<>
         <Button variant="outline" onClick={onClick} colorScheme="figma.orange" {...props}>
-            {connected ? Number(props.CardInfo.extras?props.CardInfo.extras.balanceOf:0) > 0 ? "Buy now" : "Check on OpenSea" : "Connect to wallet"}
+            {connected ? Number(props.CardInfo.extras ? props.CardInfo.extras.balanceOf : 0) > 0 ? "Buy now" : "Check on OpenSea" : "Connect to wallet"}
         </Button>
-        {props.CardInfo.farmAddress&&<BuyModal buyToast={buyToast} taco={props.taco} isOpen={isOpen} onClose={onClose} CardInfo={props.CardInfo} ></BuyModal>}
+        {<BuyModal buyToast={buyToast} taco={props.taco} isOpen={isOpen} onClose={onClose} CardInfo={props.CardInfo} ></BuyModal>}
     </>)
 }
 export const CardButton = chakra(CardButtonSX);
@@ -75,7 +75,7 @@ function BuyModal(props: { isOpen, onClose, CardInfo: ICardInfo, taco: TacoProps
     }
     return (<Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        {CardInfo.extras&&<ModalContent>
             <ModalHeader>How do you want to buy this item?</ModalHeader>
             <ModalCloseButton />
             <ModalBody marginBottom={5}>{
@@ -83,14 +83,20 @@ function BuyModal(props: { isOpen, onClose, CardInfo: ICardInfo, taco: TacoProps
                 <HStack justifyContent="center" w="100%" spacing={5}>
                     {props.CardInfo.farmShopAddress && props.CardInfo.extras.shopPrice &&
                         <Button onClick={onClickEth}>
-                            <Image src="/icons/Eth_Icon.svg" w={iconSize}></Image> <Box>{CardInfo.extras.shopPrice}</Box>
+                           <HStack> <Image src="/icons/Eth_Icon.svg" h={iconSize}></Image> <Box>{CardInfo.extras.shopPrice}</Box></HStack>
                         </Button>}
                     <Button onClick={() => {
                         onClickPoints(props.CardInfo, props.taco, props.buyToast)
-                    }}><Image src={"/icons/" + CardInfo.extras.coin + "_Icon.svg"} w={iconSize}></Image> <Box>{CardInfo.extras.pointsPrice}</Box></Button>
+                    }}><HStack>
+                        <Image src={"/icons/" + CardInfo.extras.coin + "_Icon.svg"} h={iconSize}></Image>
+                        <Box>{CardInfo.extras.pointsPrice}</Box>
+                        <Box>+</Box>
+                        <Image src="/icons/Eth_Icon.svg" h={iconSize}></Image> <Box>{CardInfo.farmData.prices.totalFeeDecimals}</Box>
+                    </HStack>
+                    </Button>
                 </HStack>}
 
             </ModalBody>
-        </ModalContent>
+        </ModalContent>}
     </Modal>)
 }

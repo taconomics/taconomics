@@ -3,18 +3,21 @@ import { useRouter } from "next/router";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
+import Loading from "../../../src/components/Loading";
+import { NoCollections, NoNfts } from "../../../src/components/NoData";
 import { columnTemplate, TacoProps } from "../../../src/components/TacoLayout";
 import Unifty from "../../../src/uniftyLib/UniftyLib";
 
 export default function Manager(props: TacoProps) {
     const [myCol, setCol] = useState([]);
     const unifty = props.unifty;
+    const [loaded,setLoaded] = useState(false);
     if (unifty != undefined) {
         useEffect(() => {
             async function func() {
 
                 setCol([])
-
+                setLoaded(false);
                 let connected = await props.unifty.isConnected();
                 let length = await props.unifty.getMyErc1155Length();
                 let myCollections = [];
@@ -24,17 +27,20 @@ export default function Manager(props: TacoProps) {
                     myCollections.push(<CollectionCard id={a} erc={erc} unifty={props.unifty}></CollectionCard>)
                 }
                 setCol(myCollections);
+                setLoaded(true);
             }
 
             func()
         }, [props.changer])
     }
 
-    return (<Grid templateColumns={columnTemplate}>
+    return (<Grid templateColumns={columnTemplate} marginBottom={10}>
         <Box gridColumn="2/2">
             <Box fontSize="x-large" fontWeight="bold">Collection manager</Box>
-            <Flex flexDir="column">{myCol.length > 0 ? myCol : 
-            <Center padding={5}><Spinner></Spinner></Center>}</Flex>
+            <Flex flexDir="column">{
+            loaded
+            ? myCol.length>0?myCol:<NoCollections></NoCollections>: 
+            <Loading></Loading>}</Flex>
         </Box>
 
     </Grid>)

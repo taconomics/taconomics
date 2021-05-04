@@ -2,7 +2,6 @@
 - Check when user doesn't have wallet provider. -> Show modal
 - Social icons links
 - My earnings
-- Update button to see on OpenSea
 - Change slider images to transparent background
 - Add new nft to a farm
 

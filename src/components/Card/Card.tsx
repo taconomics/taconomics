@@ -24,7 +24,7 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
         router.push("/items/" + CardInfo.erc1155 + "/" + CardInfo.id)
     }
 
-    return (<EmptyCard setHover={setHover} valid={true}>
+    return (<EmptyCard setHover={props.canEdit?setHover:undefined} valid={true}>
         {CardInfo.loaded && nft == undefined ?
             <Center><Spinner /></Center> :
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
@@ -45,7 +45,7 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
                 <Image src={CardInfo.meta.image}></Image>
             </Box>}
         {props.canEdit &&
-            <EditCard id={nft.id} height={cardHeight} hover={hover}></EditCard>
+            <EditCard id={nft.id} height={cardHeight} hover={hover?hover:undefined}></EditCard>
         }
     </EmptyCard>)
 }

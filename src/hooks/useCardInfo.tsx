@@ -13,6 +13,7 @@ export interface INft {
     uri: string,
     supply: number,
     maxSupply: number
+    balance: number;
 }
 export interface IPrices {
     totalFee: number
@@ -59,7 +60,9 @@ export interface ICardInfo {
     loaded: boolean
 }
 export function useCardInfo(tacoProps: TacoProps, erc1155: string, id: number, config?: ICardInfoConfig) {
-    const [cardInfo, setCardInfo] = useState<ICardInfo>({ nft: { maxSupply: 0, supply: 0, uri: "" }, meta: { name: "", description: "", image: "" }, id: id, erc1155: erc1155, loaded: false })
+    const [cardInfo, setCardInfo] = useState<ICardInfo>({ nft: { maxSupply: 0, supply: 0, uri: "", balance: 0 }, meta: { name: "", description: "", image: "" }, id: id, erc1155: erc1155, loaded: false })
+
+
     useEffect(() => {
         async function func() {
             const e = await getCardInfo(tacoProps, erc1155, id, config, cardInfo)
@@ -79,11 +82,12 @@ export async function getCardInfo(tacoProps: TacoProps,
     cardInfoCached?: ICardInfo): Promise<ICardInfo> {
 
     const unifty = tacoProps.unifty;
-    if (await unifty.isConnected() && erc1155 && id) {
+    if (true) {
+        console.log("Im here")
         let nft = await unifty.getNft(erc1155, id);
         let farmForSupply = unifty.tacoshiFarm;
 
-        const cardInfo: ICardInfo = { ...cardInfoCached, nft: nft }
+        const cardInfo: ICardInfo = { ...cardInfoCached, nft: nft, erc1155: erc1155, id: id }
         cardInfo.id = id;
         cardInfo.erc1155 = erc1155;
         if (config) {
@@ -130,8 +134,17 @@ export async function getCardInfo(tacoProps: TacoProps,
             }
 
             if (config.useMeta) {
-                let metaNft = await unifty.readUri(nft.uri);
-                cardInfo.meta = metaNft ? metaNft : cardInfo.meta;
+                console.log("Uri",nft)
+                let metaNft;
+                try{
+                   metaNft  = await unifty.readUri(nft.uri);
+                }catch(e){
+
+                }
+                   
+                    cardInfo.meta = metaNft ? metaNft : cardInfo.meta;
+               
+
             }
         }
 

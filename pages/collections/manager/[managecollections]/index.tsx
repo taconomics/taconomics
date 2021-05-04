@@ -71,7 +71,7 @@ function CollectionItems(props: { unifty: Unifty, collection: any, changer: numb
     }, [props.collection, props.changer])
     return (
         <Box>
-            <Box fontSize="xl" fontWeight="bold">Items</Box>
+            <Box fontSize="xl" fontWeight="bold" marginY={5}>Items</Box>
             <HStack flexWrap="wrap" spacing={5}>{items}</HStack>
         </Box>)
 }

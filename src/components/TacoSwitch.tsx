@@ -1,15 +1,20 @@
 import { Box, Center, chakra, Flex } from "@chakra-ui/react";
 import React, { useState } from "react";
 
-export default function TacoSwitchSX(props) {
+export default function TacoSwitchSX(props:{children,onChange}) {
     const size = 100 / props.children.length;
     const [active, setActive] = useState(0);
     const position = active * size;
 
     const newChildren = [];
-    props.children.forEach((element, index) => {
+    if(props.children.forEach){
+         props.children.forEach((element, index) => {
         newChildren.push(React.cloneElement(element, { setActive, active, index, size,onChange:props.onChange }))
     });
+    }else{
+        newChildren.push(React.cloneElement(props.children, { setActive, active, index:0, size,onChange:props.onChange }))
+    }
+   
 
     return (<Flex {...props} flexDir="row" width="100%" justifyContent="center" alignItems="center" position="relative" overflow="hidden" backgroundColor="blackAlpha.200" zIndex="0" borderRadius="lg">
 

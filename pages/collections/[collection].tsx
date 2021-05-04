@@ -51,16 +51,17 @@ export default function Collection(props:TacoProps) {
 }
 
 export async function getCollectionCards(tacoProps:TacoProps,collection:string,canEdit:boolean) {
-    await tacoProps.unifty.sleep(1000)
-    await tacoProps.unifty.isConnected();
+    //await tacoProps.unifty.sleep(1000)
+    //await tacoProps.unifty.isConnected();
     let nfts = await tacoProps.unifty.getNftsByUri(collection);
     let col = [];
-    for (const nft in nfts) {
+    console.log("getCollectionCards",nfts)
+    for (const nft of nfts) {
         
         const name = Math.floor(Math.random() * 100);
         let json = { erc1155: collection, id: nft };
 
-        console.log("Collection card",json)
+       // console.log("Collection card",json)
         col.push(<Card tacoProps={tacoProps} canEdit={canEdit} key={name} nft={json}></Card>);
     }
     return col;

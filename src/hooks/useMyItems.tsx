@@ -19,6 +19,7 @@ export function useMyItems(taco:TacoProps){
 
     useEffect(()=>{
         async function func(){
+            setLoaded(false);
             await taco.unifty.isConnected();
             const length = await taco.unifty.getMyErc1155Length();
             const cols:ICollection[] = []
@@ -40,10 +41,11 @@ export function useMyItems(taco:TacoProps){
                 
             }
             setMyCollections(cols);
+            setLoaded(true)
             
         }
         func()
     },[taco.changer])
 
-    return {myCollections}
+    return {myCollections,loaded}
 }
