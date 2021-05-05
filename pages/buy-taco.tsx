@@ -4,9 +4,11 @@ import { useState } from "react";
 import TacoSwitch, { TacoOption } from "../src/components/TacoSwitch";
 import { FiChevronDown } from 'react-icons/fi'
 import { BsArrowDown } from 'react-icons/bs'
+import { TacoProps } from "../src/components/TacoLayout";
 
-export default function BuyTacoPage() {
+export default function BuyTacoPage(props:TacoProps) {
     const [buyingTaco, setBuyingTaco] = useState(true);
+    props.changeTitle("Buy taco")
     const onChange = (index, name) => {
         if (name == "taco") {
             setBuyingTaco(true);

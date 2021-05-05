@@ -12,6 +12,7 @@ import { useMyItems } from "../src/hooks/useMyItems";
 export default function myItems(props: TacoProps) {
     const items = useMyItems(props);
     console.log("My items", items)
+    props.changeTitle("My items")
     const cards = items.myCollections.map((val) => {
         return val.nfts.map((nft: ICardInfo) => {
             return <Card nft={nft} tacoProps={props}></Card>

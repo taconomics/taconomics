@@ -2,7 +2,7 @@ import { Box, Button, Center, Flex, Grid, HStack, Link, LinkBox, UseAccordionRet
 import React, { useEffect, useState } from "react";
 import Card from "../../src/components/Card/Card";
 import { columnTemplate, TacoProps } from "../../src/components/TacoLayout";
-import { useGetPieces } from "../../src/hooks/useGetPieces";
+import { useAsyncNfts, useGetPieces } from "../../src/hooks/useGetPieces";
 import Unifty from "../../src/uniftyLib/UniftyLib";
 import { getNftsJson } from "./[farm]";
 
@@ -12,11 +12,12 @@ export const defaultFarms = {
     maniacom: "0x3b93f48246AE855E3E7001bc338E43C256D7A2dD"
 }
 
-export default function FarmIndex(props) {
+export default function FarmIndex(props: TacoProps) {
 
     const goToFarm = (e) => {
         console.log(e.target.name);
     }
+    props.changeTitle("Farms");
 
     return (<Center flexDir="column">
         <Box>
@@ -39,58 +40,21 @@ export const createFakeCards = (cards: number) => {
     return arr;
 }
 export function RecentNfts(props: { taco: TacoProps, itemsSize }) {
-  
-    const {nfts} = useGetPieces({tacoProps:props.taco,minimumNfts:10,nextCount:1});
+    const [nextCount, setCount] = useState(0);
 
+    const { nfts } = useAsyncNfts({ minimumNfts: 2, nextCount: nextCount, tacoProps: props.taco }, () => true);//useGetPieces({tacoProps:props.taco,minimumNfts:10,nextCount:1});
 
-   /* useEffect(() => {
-        setNfts([])
-        async function func() {
-
-            let connected = await props.taco.unifty.isConnected();
-            let tacoshi = await getNftsJson(props.taco.unifty, props.taco.unifty.tacoshiFarm);
-            let rabbit = await getNftsJson(props.taco.unifty, props.taco.unifty.rabbitFarm);
-            let one = true;
-
-            let tacoshiCount = 0;
-            let rabbitCount = 0;
-
-            let finalArray = [];
-            if (tacoshi && rabbit) {
-
-                for (let a = 0; a < props.itemsSize; a++) {
-
-                    const name = Math.floor(Math.random() * 1000000);
-                    let nft = one ? tacoshi[tacoshiCount] : rabbit[rabbitCount];
-                    let card = <Card tacoProps={props.taco} key={name} nft={nft}></Card>;
-                    finalArray.push(card)
-                    if (one) {
-                        tacoshiCount++;
-                    } else {
-                        rabbitCount++;
-                    }
-                    one = !one;
-
-
-                }
-                if (finalArray.length == props.itemsSize) {
-                    try {
-                        setNfts(finalArray);
-                    } catch (e) {
-                        console.log("Error in RecentNtfs", e)
-                    }
-
-                }
-            }
-
+    useEffect(() => {
+        if (nfts.length <= 10) {
+            setCount(nextCount + 1);
         }
-        func();
-    }, [props.taco])*/
+
+    }, [nfts])
 
     return (<Grid templateColumns={columnTemplate}>
         <Box gridColumn="2/2" >
             <Box fontSize="x-large" marginBottom={5} fontWeight="bold">Recently added pieces</Box>
-            <HStack flexWrap="wrap" justifyContent={["center", "center", "left"]} spacing={3}>{nfts ? nfts.map((val,index)=>{
+            <HStack flexWrap="wrap" justifyContent={["center", "center", "left"]} spacing={3}>{nfts ? nfts.map((val, index) => {
                 return <Card nft={val.nft} tacoProps={props.taco}></Card>
             }) : <Box>Loading cards</Box>}</HStack>
         </Box>

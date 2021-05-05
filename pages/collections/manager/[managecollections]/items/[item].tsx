@@ -26,6 +26,8 @@ export default function ItemManager(props: TacoProps) {
     const toast = useToast();
     const unifty = props.unifty;
 
+    props.changeTitle("Item manager")
+
     const [isWhiteListed, setWhiteListed] = useState(false);
 
     const ercDir = erc ? erc.erc1155 : "No erc1155";

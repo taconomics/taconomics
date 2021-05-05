@@ -7,8 +7,10 @@ import Unifty from "../src/uniftyLib/UniftyLib";
 import emailjs, { init } from 'emailjs-com';
 import { useRef } from "react";
 import { SocialIcons } from "../src/components/SocialIcons";
+import { TacoProps } from "../src/components/TacoLayout";
 
-export default function SellYourArtPage(props: { unifty: Unifty }) {
+export default function SellYourArtPage(props:TacoProps) {
+    props.changeTitle("Sell your art")
     return (<GridContent marginBottom={20}>
         <Flex flexDirection={["column", "column", "row"]} alignItems={["center", "center", "start"]}>
             <BePart></BePart>

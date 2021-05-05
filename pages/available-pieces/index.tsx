@@ -18,6 +18,8 @@ export default function AvailablePieces(props: TacoProps) {
     const [config, setConfig] = useState<SearchConfig>({ tacoProps: props, nextCount: 0, minimumNfts: 7 });
     const pieces = useGetPieces(config)
 
+    props.changeTitle("Available pieces")
+
     useEventListener("scroll", () => {
         if (window.document.body.offsetHeight == window.pageYOffset + window.innerHeight) {
             addOne();

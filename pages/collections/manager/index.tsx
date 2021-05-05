@@ -12,6 +12,7 @@ export default function Manager(props: TacoProps) {
     const [myCol, setCol] = useState([]);
     const unifty = props.unifty;
     const [loaded,setLoaded] = useState(false);
+    props.changeTitle("Collection manager")
     if (unifty != undefined) {
         useEffect(() => {
             async function func() {

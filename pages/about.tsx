@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import GridContent from "../src/components/GridContent";
 import { HiPlus, HiMinus } from 'react-icons/hi'
 import NextLink from 'next/link'
+import { TacoProps } from "../src/components/TacoLayout";
 
-export default function About() {
+export default function About(props:TacoProps) {
+    props.changeTitle("About us")
     return (<GridContent>
         <WhatIsTaconomics></WhatIsTaconomics>
         <WhatsSpecial></WhatsSpecial>

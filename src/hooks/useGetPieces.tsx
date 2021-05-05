@@ -104,7 +104,7 @@ export const useGetPieces = (searchConfig: SearchConfig) => {
 
 }
 
-function useAsyncNfts(config: SearchConfig,shouldContinue?:()=>boolean) {
+export function useAsyncNfts(config: SearchConfig,shouldContinue?:()=>boolean) {
     const [nfts, setNfts] = useState<PieceNFT[]>([])
     const [currentBlock, setBlock] = useState(0);
     const [canRun, setRun] = useState(true);

@@ -12122,6 +12122,11 @@ react-layout-effect@^1.0.1:
   resolved "https://registry.yarnpkg.com/react-layout-effect/-/react-layout-effect-1.0.5.tgz#0dc4e24452aee5de66c93c166f0ec512dfb1be80"
   integrity sha512-zdRXHuch+OBHU6bvjTelOGUCM+UDr/iCY+c0wXLEAc+G4/FlcJruD/hUOzlKH5XgO90Y/BUJPNhI/g9kl+VAsA==
 
+react-lorem-ipsum@^1.4.9:
+  version "1.4.9"
+  resolved "https://registry.yarnpkg.com/react-lorem-ipsum/-/react-lorem-ipsum-1.4.9.tgz#be92bd5a595cad79493f972a44b28c8a7abf6352"
+  integrity sha512-maYf2KTltui/Fnxrq2ttoKnpIm9JO6j5aYeNvCjEPCKGVMJwWNFL75Nb9hgXnMQGHTHSR4KBSIUnCPD3CzSh3g==
+
 react-only-when@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-only-when/-/react-only-when-1.0.2.tgz#a8a79b48dd6cfbd91ddc710674a94153e88039d3"

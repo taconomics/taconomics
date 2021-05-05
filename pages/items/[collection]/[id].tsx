@@ -1,6 +1,6 @@
 import { Box, Flex, HStack, VStack, Image, Spinner } from "@chakra-ui/react";
 import NextImage from 'next/image'
-import React from "react";
+import React, { useState } from "react";
 import GridContent from "../../../src/components/GridContent";
 import { TacoProps } from "../../../src/components/TacoLayout";
 import { BsArrowLeft } from 'react-icons/bs'
@@ -15,6 +15,7 @@ export default function Item(props: TacoProps) {
     const collection = router.query.collection as string;
     const CardInfo = useCardInfo(props, collection, id, { useFarmData: true, useMeta: true, useExtras: true })
     console.log("Card info", CardInfo)
+    props.changeTitle(CardInfo.meta.name)
     return (<GridContent>
         <Flex w={"100%"} marginBottom={5}>
 
@@ -28,7 +29,7 @@ export function WeirdBackground(element: HTMLElement) {
     return <Box position="absolute" backgroundColor="white" height={"100%"} top={0} left={0}></Box>
 }
 function FullImage(props: { cardInfo: ICardInfo }) {
-    return (<VStack flexGrow={3} spacing={6} w={"10%"}>
+    return (<VStack flexGrow={3} spacing={6} minW={"350px"}>
         <HStack boxShadow="figma"
             border="1px solid"
             borderColor="gray.300"
@@ -45,21 +46,22 @@ function FullImage(props: { cardInfo: ICardInfo }) {
 }
 
 function ItemDescription(props: { taco: TacoProps, cardInfo: ICardInfo }) {
+    const [isHoverBack,setHoverBack] = useState(true)
     console.log("Item description", props.cardInfo);
     return (<VStack flexGrow={4} alignItems="start" paddingLeft={5}>
-        <HStack><BsArrowLeft /><Box>Back to items</Box></HStack>
+        <HStack fontWeight="semibold" color={isHoverBack?"figma.orange.500":"gray.500"}><Box padding={2} borderRadius="full" backgroundColor={isHoverBack?"figma.orange.50":"transparent"}><BsArrowLeft size={25}/></Box><Box>Back to items</Box></HStack>
         <VStack alignItems="start" w={"100%"} padding={5} spacing={7}>
             <HStack w="100%" >
                 <Box fontSize="xx-large" fontWeight="bold" marginRight={5} color="figma.darkgray">{props.cardInfo.meta.name}</Box>
-                <HStack fontSize="md" color="gray.500"><Box fontWeight="bold">{props.cardInfo.extras.balanceOf}/{props.cardInfo.farmData.supply}</Box> <Box>available</Box></HStack>
+                <HStack fontSize="md" color="gray.500"><Box fontWeight="bold">{props.cardInfo.extras?props.cardInfo.extras.balanceOf:0}/{props.cardInfo.extras?props.cardInfo.farmData.supply:0}</Box> <Box>available</Box></HStack>
             </HStack>
-            <HStack><Image src={"/icons/" + props.cardInfo.extras.coin + "_Icon.svg"} h={45}></Image>
-                <Box fontWeight="bold" fontSize="xx-large" color="figma.darkgray">{props.cardInfo.extras.pointsPrice}</Box>
-                {props.cardInfo.farmData.prices.totalFee>0 &&
+            <HStack><Image src={"/icons/" + "Lemon" + "_Icon.svg"} h={45}></Image>
+                <Box fontWeight="bold" fontSize="xx-large" color="figma.darkgray">{props.cardInfo.extras?props.cardInfo.extras.pointsPrice:0}</Box>
+                {props.cardInfo.farmData?props.cardInfo.farmData.prices.totalFee>0:0 &&
                     <HStack fontSize="lg" fontWeight="bold">
                         <Box>+</Box>
                         <Image src="/icons/Eth_Icon.svg" h={30}></Image>
-                        <Box>{props.cardInfo.farmData.prices.totalFeeDecimals}</Box>
+                        <Box>{props.cardInfo.farmData?props.cardInfo.farmData.prices.totalFeeDecimals:0}</Box>
                         <Box color="gray.500">to mint</Box>
                     </HStack>
                 }

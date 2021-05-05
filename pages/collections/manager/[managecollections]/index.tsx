@@ -18,6 +18,7 @@ export default function ManageCollection(props: TacoProps) {
     const [data, setMeta] = useState({ erc: {}, meta: { name: undefined } });
     const [image, setImage] = useState("");
     const isNew = collection == "new";
+    props.changeTitle("Collection manager")
 
     if (isNew) {
         // setMeta({})
@@ -61,7 +62,7 @@ function CollectionItems(props: { unifty: Unifty, collection: any, changer: numb
             set([])
             let items = []
             if (props.collection.erc1155 != undefined) {
-                items = await getCollectionCards({ unifty: props.unifty, changer: props.changer }, props.collection.erc1155, true);
+                items = await getCollectionCards({ unifty: props.unifty, changer: props.changer,changeTitle:undefined }, props.collection.erc1155, true);
             }
             items.push(<AddItemCard />)
             set(items);

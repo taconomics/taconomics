@@ -85,7 +85,7 @@ export function MenuItems(props: { variant?}) {
         <MenuItem><NextLink href="/buy-taco">Buy TACO</NextLink></MenuItem>
         <MenuItem><NextLink href="/sell-your-art">Sell your art</NextLink></MenuItem>
         <MenuItem><NextLink href="/about">About us</NextLink></MenuItem>
-        {variant == "footer" && <MenuItem><NextLink href="/policy">Privacy Policy</NextLink></MenuItem>}
+        {variant == "footer" && <MenuItem><NextLink href="/privacy">Privacy Policy</NextLink></MenuItem>}
 
 
 

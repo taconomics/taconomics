@@ -29,7 +29,7 @@ export default function TacoLayout(props) {
     }
 
     useEffect(()=>{
-        document.title = "Taconomics — "+title;
+        document.title = "Taconomics - "+title;
     },[title])
 
     let clonedElement = React.cloneElement(props.children, { unifty: unifty, changer,changeTitle })
