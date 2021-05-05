@@ -57,29 +57,30 @@ export interface ICardInfo {
     farmShopAddress?: string
     erc1155: string,
     id: number
-    loaded: boolean
 }
 export function useCardInfo(tacoProps: TacoProps, erc1155: string, id: number, config?: ICardInfoConfig) {
-    const [cardInfo, setCardInfo] = useState<ICardInfo>({ nft: { maxSupply: 0, supply: 0, uri: "", balance: 0 }, meta: { name: "", description: "", image: "" }, id: id, erc1155: erc1155, loaded: false })
-
+    const [cardInfo, setCardInfo] = useState<ICardInfo>({ nft: { maxSupply: 0, supply: 0, uri: "", balance: 0 }, meta: { name: "", description: "", image: "" }, id: id, erc1155: erc1155 })
+    const [loaded,setLoaded] = useState(false);
 
     useEffect(() => {
         async function func() {
-            const e = await getCardInfo(tacoProps, erc1155, id, config, cardInfo)
+            setLoaded(false);
+            const e = await getCardInfo(tacoProps, erc1155, id, config, cardInfo,setLoaded)
             setCardInfo(e);
+            setLoaded(true);
         }
         func()
 
     }, [tacoProps.changer, erc1155, id])
 
-    return cardInfo;
+    return {cardInfo,loaded};
 
 }
 
 export async function getCardInfo(tacoProps: TacoProps,
     erc1155: string,
     id: number, config?: ICardInfoConfig,
-    cardInfoCached?: ICardInfo): Promise<ICardInfo> {
+    cardInfoCached?: ICardInfo,setLoaded?:(loaded:boolean)=>any): Promise<ICardInfo> {
 
     const unifty = tacoProps.unifty;
     if (true) {
@@ -91,6 +92,7 @@ export async function getCardInfo(tacoProps: TacoProps,
         cardInfo.id = id;
         cardInfo.erc1155 = erc1155;
         if (config) {
+            if(setLoaded){setLoaded(false);}
             if (config.useFarmData) {
                 let farmNftData = await unifty.farmNftData(farmForSupply, erc1155, id);
                 if (farmNftData) {
@@ -149,8 +151,8 @@ export async function getCardInfo(tacoProps: TacoProps,
         }
 
 
-        cardInfo.loaded = true;
+        //cardInfo.loaded = true;
+        if(setLoaded){setLoaded(true);}
         return cardInfo;
     }
-    return { ...cardInfoCached, loaded: false }
 }

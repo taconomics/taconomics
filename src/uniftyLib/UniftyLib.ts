@@ -287,10 +287,15 @@ export default class Unifty {
     };
 
     async farmTokenDecimals(farmAddress) {
-        let farm_token = await this.farmToken(farmAddress);
-        let erc20 = new this.web3.eth.Contract(erc20ABI, farm_token, { from: this.account });
-        await this.sleep(this.sleep_time);
-        return await erc20.methods.decimals().call({ from: this.account });
+        try {
+            let farm_token = await this.farmToken(farmAddress);
+            let erc20 = new this.web3.eth.Contract(erc20ABI, farm_token, { from: this.account });
+            await this.sleep(this.sleep_time);
+            return await erc20.methods.decimals().call({ from: this.account });
+        } catch (e) {
+
+        }
+
     };
     async farmNftData(farmAddress, erc1155Address, id): Promise<IFarmData> {
         try {
@@ -303,21 +308,26 @@ export default class Unifty {
 
     };
     async farmJsonUrl(farmAddress) {
+        try {
+            await this.sleep(this.sleep_time);
 
-        await this.sleep(this.sleep_time);
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+            let events = await farm.getPastEvents('FarmUri', {
+                filter: {
+                    farm: farmAddress
+                },
+                fromBlock: this.min_block,
+                toBlock: 'latest'
+            });
 
-        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
-        let events = await farm.getPastEvents('FarmUri', {
-            filter: {
-                farm: farmAddress
-            },
-            fromBlock: this.min_block,
-            toBlock: 'latest'
-        });
+            //console.log(events);
 
-        //console.log(events);
+            return events.length > 0 ? events[events.length - 1].returnValues.uri : '';
+        } catch (e) {
 
-        return events.length > 0 ? events[events.length - 1].returnValues.uri : '';
+        }
+
+
     };
 
     async getFarmNfts(farmAddress): Promise<IFarmData[]> {
@@ -401,46 +411,77 @@ export default class Unifty {
     };
 
     async farmMaxStakeRaw(farmAddress) {
-        await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
-        let max = await farm.methods.maxStake().call({ from: this.account });
-        return max;
+        try {
+            await this.sleep(this.sleep_time);
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+            let max = await farm.methods.maxStake().call({ from: this.account });
+            return max;
+        } catch (e) {
+
+        }
+
     };
     async farmMinStakeRaw(farmAddress) {
-        await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
-        let max = await farm.methods.minStake().call({ from: this.account });
-        return max;
+        try {
+            await this.sleep(this.sleep_time);
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+            let max = await farm.methods.minStake().call({ from: this.account });
+            return max;
+        } catch (e) {
+
+        }
+
     };
     async farmMaxStake(farmAddress) {
-        await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
-        let max = await farm.methods.maxStake().call({ from: this.account });
-        let decimals = await this.farmTokenDecimals(farmAddress);
-        return max / Math.pow(10, decimals >= 0 ? decimals : 0);
+        try {
+            await this.sleep(this.sleep_time);
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+            let max = await farm.methods.maxStake().call({ from: this.account });
+            let decimals = await this.farmTokenDecimals(farmAddress);
+            return max / Math.pow(10, decimals >= 0 ? decimals : 0);
+        } catch (e) {
+
+        }
+
     };
 
     async farmMinStake(farmAddress) {
-        await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
-        let max = await farm.methods.minStake().call({ from: this.account });
-        let decimals = await this.farmTokenDecimals(farmAddress);
-        return max / Math.pow(10, decimals >= 0 ? decimals : 0);
+        try {
+            await this.sleep(this.sleep_time);
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+            let max = await farm.methods.minStake().call({ from: this.account });
+            let decimals = await this.farmTokenDecimals(farmAddress);
+            return max / Math.pow(10, decimals >= 0 ? decimals : 0);
+
+        } catch (e) {
+
+        }
+
     };
 
     async allowanceErc20(erc20Address, owner, spender) {
-        await this.sleep(this.sleep_time);
-        let erc20 = new this.web3.eth.Contract(erc20ABI, erc20Address, { from: this.account });
-        let decimals = await erc20.methods.decimals().call({ from: this.account });
-        await this.sleep(this.sleep_time);
-        let allowance = await erc20.methods.allowance(owner, spender).call({ from: this.account });
-        return allowance / Math.pow(10, decimals >= 0 ? decimals : 0);
+        try {
+            await this.sleep(this.sleep_time);
+            let erc20 = new this.web3.eth.Contract(erc20ABI, erc20Address, { from: this.account });
+            let decimals = await erc20.methods.decimals().call({ from: this.account });
+            await this.sleep(this.sleep_time);
+            let allowance = await erc20.methods.allowance(owner, spender).call({ from: this.account });
+            return allowance / Math.pow(10, decimals >= 0 ? decimals : 0);
+        } catch (e) {
+
+        }
+
     };
     async allowanceErc20Raw(erc20Address, owner, spender) {
-        await this.sleep(this.sleep_time);
-        let erc20 = new this.web3.eth.Contract(erc20ABI, erc20Address, { from: this.account });
-        let allowance = await erc20.methods.allowance(owner, spender).call({ from: this.account });
-        return allowance;
+        try {
+            await this.sleep(this.sleep_time);
+            let erc20 = new this.web3.eth.Contract(erc20ABI, erc20Address, { from: this.account });
+            let allowance = await erc20.methods.allowance(owner, spender).call({ from: this.account });
+            return allowance;
+        } catch (e) {
+
+        }
+
     };
     async approveErc20(erc20Address, amount, spender, preCallback, postCallback, errCallback) {
 
@@ -672,42 +713,51 @@ export default class Unifty {
      */
 
     async getMyNfts(erc1155Address) {
+        try {
+            await this.sleep(this.sleep_time);
 
-        await this.sleep(this.sleep_time);
+            let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
 
-        let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
+            let events = await erc1155.getPastEvents('TransferSingle', {
+                filter: {
+                    _to: this.account
+                },
+                fromBlock: 0,
+                toBlock: 'latest'
+            });
 
-        let events = await erc1155.getPastEvents('TransferSingle', {
-            filter: {
-                _to: this.account
-            },
-            fromBlock: 0,
-            toBlock: 'latest'
-        });
+            let nfts = [];
 
-        let nfts = [];
+            if (Array.isArray(events)) {
 
-        if (Array.isArray(events)) {
+                events = events.reverse();
 
-            events = events.reverse();
+                for (let i = 0; i < events.length; i++) {
 
-            for (let i = 0; i < events.length; i++) {
-
-                if (typeof events[i] == 'object') {
-                    if (!nfts.includes(events[i].returnValues._id)) {
-                        nfts.push(events[i].returnValues._id);
+                    if (typeof events[i] == 'object') {
+                        if (!nfts.includes(events[i].returnValues._id)) {
+                            nfts.push(events[i].returnValues._id);
+                        }
                     }
                 }
             }
+
+            return nfts;
+        } catch (e) {
+
         }
 
-        return nfts;
+
     };
 
     async balanceOf(erc1155Address, account, nftId) {
+        try {
+            let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
+            return await erc1155.methods.balanceOf(account, nftId).call({ from: this.account });
+        } catch (e) {
 
-        let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
-        return await erc1155.methods.balanceOf(account, nftId).call({ from: this.account });
+        }
+
     };
 
     async getNft(erc1155Address, nftId) {
@@ -730,16 +780,16 @@ export default class Unifty {
         } catch (e) { }
 
     };
-    async balanceof(erc1155Address, account, nftId){
-        try{
+    async balanceof(erc1155Address, account, nftId) {
+        try {
             await this.sleep(this.sleep_time);
-        let erc1155 = new this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
-        return await erc1155.methods.balanceOf(account, nftId).call({from:this.account});
-        }catch
-        (e){
-            
+            let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
+            return await erc1155.methods.balanceOf(account, nftId).call({ from: this.account });
+        } catch
+        (e) {
+
         }
-        
+
     };
 
     async getNftMeta(erc1155ContractAddress, nftId) {
@@ -778,23 +828,27 @@ export default class Unifty {
 
 
     async getNftMetaByEvent(erc1155ContractAddress, nftId) {
+        try {
+            this.sleep(this.sleep_time);
 
-        this.sleep(this.sleep_time);
+            let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155ContractAddress, { from: this.account });
+            let uris = await erc1155.getPastEvents('URI', {
+                filter: {
+                    _id: nftId
+                },
+                fromBlock: 0,
+                toBlock: 'latest'
+            });
+            uris = uris.reverse();
+            if (uris.length > 0) {
+                return uris[0].returnValues[0];
+            }
 
-        let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155ContractAddress, { from: this.account });
-        let uris = await erc1155.getPastEvents('URI', {
-            filter: {
-                _id: nftId
-            },
-            fromBlock: 0,
-            toBlock: 'latest'
-        });
-        uris = uris.reverse();
-        if (uris.length > 0) {
-            return uris[0].returnValues[0];
+            return '';
+        } catch (e) {
+
         }
 
-        return '';
     };
     async newNft(supply, maxSupply, jsonUrl, erc1155Address, preCallback, postCallback, errCallback) {
 
@@ -833,19 +887,26 @@ export default class Unifty {
 
     async getMyErc1155(index) {
         await this.sleep(this.sleep_time);
-        if (this.genesis != undefined && this.account != "") {
+        try {
             let erc1155 = await this.genesis.methods.getPool(this.account, index).call({ from: this.account });
             // console.log(erc1155);
             let meta = await this.getErc1155Meta(erc1155);
             let _pool = { erc1155: erc1155, contractURI: meta.contractURI, name: meta.name, symbol: meta.symbol };
             return _pool;
+        } catch (e) {
+
         }
 
     };
 
     async getMyErc1155Length() {
-        await this.sleep(this.sleep_time);
-        return await this.genesis.methods.getPoolsLength(this.account).call({ from: this.account });
+        try {
+            await this.sleep(this.sleep_time);
+            return await this.genesis.methods.getPoolsLength(this.account).call({ from: this.account });
+        } catch (e) {
+
+        }
+
     };
 
     async getNftsByUri(erc1155Address): Promise<INft[]> {
@@ -930,12 +991,22 @@ export default class Unifty {
         }
     };
     async getPoolFee() {
-        await this.sleep(this.sleep_time);
-        return await this.genesis.methods.poolFee().call({ from: this.account });
+        try {
+            await this.sleep(this.sleep_time);
+            return await this.genesis.methods.poolFee().call({ from: this.account });
+        } catch (e) {
+
+        }
+
     };
     async getPoolMinimumNif() {
-        await this.sleep(this.sleep_time);
+        try{
+            await this.sleep(this.sleep_time);
         return await this.genesis.methods.poolFeeMinimumNif().call({ from: this.account });
+        }catch(e){
+
+        }
+        
     };
 
     async iHaveAnyWildcard() {
@@ -944,8 +1015,8 @@ export default class Unifty {
     };
 
     async newErc1155(name, ticker, contractJsonUri, proxyRegistryAddress, preCallback, postCallback, errCallback) {
-
-        await this.sleep(this.sleep_time);
+        try{
+          await this.sleep(this.sleep_time);
         let nif = this.web3.utils.toBN(await this.nif.methods.balanceOf(this.account).call({ from: this.account }));
         let minNif = this.web3.utils.toBN(await this.getPoolMinimumNif());
 
@@ -983,11 +1054,15 @@ export default class Unifty {
             })
             .on("receipt", function (receipt) {
                 postCallback(receipt);
-            });
+            });  
+        }catch(e){
+
+        }
+        
     };
 
     async updateUri(nftId, jsonUrl, erc1155Address, preCallback, postCallback, errCallback) {
-
+        
         let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
 
         await this.sleep(this.sleep_time);

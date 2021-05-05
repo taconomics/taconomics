@@ -28,7 +28,7 @@ export default function UserWallet(props: { unifty: Unifty, changer: number, var
         async function con() {
             let connected = await props.unifty.isConnected();
             console.log("Is connected", connected)
-            setIsConnected(connected);
+            setIsConnected(connected && props.unifty.hasWallet);
         }
         con();
     }, [props.changer])

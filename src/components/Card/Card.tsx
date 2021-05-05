@@ -18,31 +18,31 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
     const nft = props.nft ? props.nft : { erc1155: undefined, id: undefined };
     const unifty = props.tacoProps.unifty;
     const [hover, setHover] = useState(false);
-    let CardInfo: ICardInfo = useCardInfo(props.tacoProps, nft.erc1155, nft.id, { useExtras: true, useFarmData: true, useMeta: true })
+    let {cardInfo,loaded} = useCardInfo(props.tacoProps, nft.erc1155, nft.id, { useExtras: true, useFarmData: true, useMeta: true })
     const router = useRouter();
     const goToItem = () => {
-        router.push("/items/" + CardInfo.erc1155 + "/" + CardInfo.id)
+        router.push("/items/" + cardInfo.erc1155 + "/" + cardInfo.id)
     }
 
     return (<EmptyCard setHover={props.canEdit?setHover:undefined} valid={true}>
-        {CardInfo.loaded && nft == undefined ?
+        {loaded && nft == undefined ?
             <Center><Spinner /></Center> :
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
-                <CardTypeBadge maxSupply={CardInfo.nft.supply}></CardTypeBadge>
-                <Image marginTop={10} maxHeight={cardHeight / 3.4 + "px"} cursor="pointer" onClick={goToItem} src={CardInfo.meta.image}></Image>
+                <CardTypeBadge maxSupply={cardInfo.nft.supply}></CardTypeBadge>
+                <Image marginTop={10} maxHeight={cardHeight / 3.4 + "px"} cursor="pointer" onClick={goToItem} src={cardInfo.meta.image}></Image>
                 <Box cursor="pointer" fontSize="large" textAlign="center" fontWeight="bold" onClick={goToItem}>
-                    {CardInfo.meta.name}
+                    {cardInfo.meta.name}
                 </Box>
-                <FarmInfo CardInfo={CardInfo}></FarmInfo>
+                <FarmInfo CardInfo={cardInfo}></FarmInfo>
 
-                <CardButton taco={props.tacoProps} CardInfo={CardInfo}></CardButton>
+                <CardButton loaded={loaded} taco={props.tacoProps} CardInfo={cardInfo}></CardButton>
 
             </Flex>
         }
-        {CardInfo != undefined && nft == undefined ?
+        {cardInfo != undefined && nft == undefined ?
             <Center><Spinner /></Center> :
             <Box gridRow="1/1" margin="20px" gridColumn="1/1" zIndex="100" overflow="hidden" filter="blur(4px)" height={cardHeight / 2.3 + "px"}>
-                <Image src={CardInfo.meta.image}></Image>
+                <Image src={cardInfo.meta.image}></Image>
             </Box>}
         {props.canEdit &&
             <EditCard id={nft.id} height={cardHeight} hover={hover?hover:undefined}></EditCard>

@@ -50,16 +50,19 @@ export default function ManageStake(props: { unifty: Unifty, isOpen, onOpen, onC
     }, [isTaco])
 
     async function updateBalance() {
-        const address = props.unifty.getFarmAddress(isTaco);
-        const s = await props.unifty.farmBalanceOf(address, props.unifty.account);
-        setStaked(s);
+        if (props.unifty.account) {
+            const address = props.unifty.getFarmAddress(isTaco);
+            const s = await props.unifty.farmBalanceOf(address, props.unifty.account);
+            setStaked(s);
 
-        let farmToken = await props.unifty.farmToken(address);
-        let balanceOfErc20 = props.unifty.web3.utils.toBN(await props.unifty.balanceOfErc20Raw(farmToken, props.unifty.account));
-        let decimals = await props.unifty.farmTokenDecimals(address);
-        let format = props.unifty.formatNumberString(balanceOfErc20.toString(), decimals)
-        setDecimals(decimals);
-        setFarmLeft(format);
+            let farmToken = await props.unifty.farmToken(address);
+            let balanceOfErc20 = props.unifty.web3.utils.toBN(await props.unifty.balanceOfErc20Raw(farmToken, props.unifty.account));
+            let decimals = await props.unifty.farmTokenDecimals(address);
+            let format = props.unifty.formatNumberString(balanceOfErc20.toString(), decimals)
+            setDecimals(decimals);
+            setFarmLeft(format);
+        }
+
     }
     return (
         <Modal isOpen={props.isOpen} onClose={props.onClose} isCentered size="2xl" >
