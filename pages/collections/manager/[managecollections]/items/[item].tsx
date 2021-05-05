@@ -31,7 +31,7 @@ export default function ItemManager(props: TacoProps) {
     const [isWhiteListed, setWhiteListed] = useState(false);
 
     const ercDir = erc ? erc.erc1155 : "No erc1155";
-    const cardInfo = useCardInfo(props, ercDir, isNew ? 0 : Number(item), { useExtras: true, useMeta: true, useFarmData: true })
+    const {cardInfo,loaded} = useCardInfo(props, ercDir, isNew ? 0 : Number(item), { useExtras: true, useMeta: true, useFarmData: true })
 
 
     useEffect(() => {
