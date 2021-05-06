@@ -52,7 +52,6 @@ export function RecentNfts(props: { taco: TacoProps, itemsSize }) {
         setCards(createCards());
     }, [nfts])
 
-    console.log("_Nfts", nfts)
 
 
     const createCards = (): any[] => {

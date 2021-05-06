@@ -1,10 +1,12 @@
-import { Button, HStack, Menu, MenuButton, Image, MenuList, Box, Flex, useMediaQuery, Link, useDisclosure, useInterval, Input, MenuItem, Center } from "@chakra-ui/react"
+import { Button, HStack, Menu, MenuButton, Image, MenuList, Box, Flex, useMediaQuery, Link, useDisclosure, useInterval, Input, MenuItem, Center, VStack } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
 import { useEffect } from "react";
 import Unifty from "../../uniftyLib/UniftyLib";
 import NextLink from 'next/link'
 import ManageStake from "../ManageStake";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
+import { TacoProps } from "../TacoLayout";
+import Claim from "../Claim";
 
 
 const Lemon_Icon = "/icons/Lemon_Icon.svg";
@@ -47,23 +49,24 @@ export default function UserWallet(props: { unifty: Unifty, changer: number, var
     </Box>)
 }
 
-function WalletContainer(props: { unifty: Unifty, changer,variant? }) {
-    const [isWhitelist,setWhitelist] = useState(false);
+function WalletContainer(props: { unifty: Unifty, changer, variant?}) {
+    const [isWhitelist, setWhitelist] = useState(false);
 
-    useEffect(()=>{
-        async function f(){
+    useEffect(() => {
+        async function f() {
             await props.unifty.isConnected();
-           const rabbit = await props.unifty.farmIsWhitelistAdmin(props.unifty.account,props.unifty.rabbitFarm);
-           const tacoshi = await props.unifty.farmIsWhitelistAdmin(props.unifty.account,props.unifty.tacoshiFarm);
-           setWhitelist(rabbit||tacoshi);
+            const rabbit = await props.unifty.farmIsWhitelistAdmin(props.unifty.account, props.unifty.rabbitFarm);
+            const tacoshi = await props.unifty.farmIsWhitelistAdmin(props.unifty.account, props.unifty.tacoshiFarm);
+            setWhitelist(rabbit || tacoshi);
         }
         f()
-    },[props.changer])
+    }, [props.changer])
     return (
-        <Flex width={["auto", "auto", "100%"]} flexDir={["column","column","row"]} alignItems={["start","start","center"]} justifyContent={"space-between"}>
+        <Flex width={["auto", "auto", "100%"]} flexDir={["column", "column", "row"]} alignItems={["start", "start", "center"]} justifyContent={"space-between"}>
 
-            {isWhitelist&&<Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>}
+            {isWhitelist && <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>}
             <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/my-items">My items</NextLink></Box>
+            <MyEarnings unifty={props.unifty}></MyEarnings>
             <Coins changer={props.changer} unifty={props.unifty}></Coins>
         </Flex>)
 
@@ -131,6 +134,41 @@ function ManageStakeMenu(props: { unifty: Unifty, changer }) {
         <Button marginTop="20px" onClick={onOpen} colorScheme="blackButton"><Image paddingRight={2} height={5} src={Cubiertos_Icon}></Image>Manage Stake</Button>
         <ManageStake unifty={props.unifty} isOpen={isOpen} onClose={onClose} onOpen={onOpen}></ManageStake>
     </Flex>)
+}
+
+function MyEarnings(props: { unifty: Unifty }) {
+    const [isOpenMyEarn, setOpen] = useState(false);
+    const wrapperRef = useRef(null);
+    const { isOpen, onClose, onOpen } = useDisclosure();
+
+    const [earned,setEarned] = useState(0);
+
+    useEffect(()=>{
+        async function f(){
+            let tacoshi = await props.unifty.farmPendingWithdrawals(props.unifty.account,props.unifty.tacoshiFarm);
+            let rabbit = await props.unifty.farmPendingWithdrawals(props.unifty.account,props.unifty.rabbitFarm);
+
+            let total = tacoshi+rabbit;
+            setEarned(Number(props.unifty.formatNumberString(total, 18)));
+        }
+        f();
+    },[isOpenMyEarn])
+
+    useOutsideAlerter(wrapperRef, setOpen);
+    return (<Box position="relative" ref={wrapperRef}>
+        <Button as={Button} colorScheme="transparent" onClick={() => { setOpen(!isOpenMyEarn) }} margin={0}>
+            <Box fontWeight="bold" color="black">My earnings</Box>
+        </Button>
+        {<TacoButtonBoxItem setOpen={setOpen} isOpen={isOpenMyEarn}>
+            <VStack textAlign="center">
+                <Box><Image src="/icons/Eth_Icon.svg"></Image></Box>
+                <Box color="gray.600" fontSize="sm">You have earned</Box>
+                <Box fontWeight="bold">{earned} ETHS</Box>
+                <Button colorScheme="figma.orange" onClick={onOpen}><HStack><Image src="/icons/Claim_Icon.svg"></Image><Box>Claim</Box></HStack></Button>
+            </VStack>
+        </TacoButtonBoxItem>}
+        <Claim unifty={props.unifty} isOpen={isOpen} onClose={onClose}></Claim>
+    </Box>)
 }
 
 /////////////////////////

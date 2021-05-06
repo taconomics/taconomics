@@ -179,19 +179,24 @@ export default class Unifty {
     };
 
     formatNumberString(string, decimals) {
+        try {
+            let pos = string.length - decimals;
 
-        let pos = string.length - decimals;
+            if (decimals == 0) {
+                // nothing
+            } else
+                if (pos > 0) {
+                    string = string.substring(0, pos) + "." + string.substring(pos, string.length);
+                } else {
+                    string = '0.' + ("0".repeat(decimals - string.length)) + string;
+                }
 
-        if (decimals == 0) {
-            // nothing
-        } else
-            if (pos > 0) {
-                string = string.substring(0, pos) + "." + string.substring(pos, string.length);
-            } else {
-                string = '0.' + ("0".repeat(decimals - string.length)) + string;
-            }
+            return string
+        }catch(e){
 
-        return string
+        }
+
+       
     };
     /**
      * Farms
@@ -202,10 +207,66 @@ export default class Unifty {
      * @returns Farm token
      */
 
-     async farmIsWhitelistAdmin(address, farmAddress){
-        await this.sleep(this.sleep_time);
-        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
-        return await farm.methods.isWhitelistAdmin(address).call({from:this.account});
+    async farmIsWhitelistAdmin(address, farmAddress) {
+        try {
+            await this.sleep(this.sleep_time);
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+            return await farm.methods.isWhitelistAdmin(address).call({ from: this.account });
+        } catch (e) {
+
+        }
+
+    };
+    async farmPendingWithdrawals(address, farmAddress) {
+        try {
+            await this.sleep(this.sleep_time);
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+            return await farm.methods.pendingWithdrawals(address).call({ from: this.account });
+        } catch (e) {
+
+        }
+
+    };
+
+    async farmWithdrawFees(farmAddress, preCallback, postCallback, errCallback) {
+        try {
+            let farm = new this.web3.eth.Contract(farmABI, farmAddress, { from: this.account });
+
+            let gas = 0;
+
+            try {
+                await this.sleep(this.sleep_time);
+                gas = await farm.methods.withdrawFee().estimateGas({
+                    from: this.account
+                });
+            } catch (e) {
+                // console.log('Error at gas estimation: ', e, 'fee: ', fee, 'minStake: ', minStake, 'maxStake: ', maxStake);
+                errCallback(e);
+                return;
+            }
+
+            const price = await this.web3.eth.getGasPrice();
+
+            farm.methods.withdrawFee()
+                .send({
+                    from: this.account,
+                    gas: gas + Math.floor(gas * 0.1),
+                    gasPrice: Number(price) + Math.floor(Number(price) * 0.1)
+                })
+                .on('error', async function (e) {
+                    console.log(e);
+                    errCallback('');
+                })
+                .on('transactionHash', async function (transactionHash) {
+                    preCallback();
+                })
+                .on("receipt", function (receipt) {
+                    postCallback(receipt);
+                });
+        } catch (e) {
+
+        }
+
     };
 
 
@@ -287,7 +348,7 @@ export default class Unifty {
             let ret = await shop.methods.getPrice(erc1155Address, id).call({ from: this.account });
             return ret;
         } catch (e) {
-            console.error("Not in this farm")
+          
         }
 
     };
@@ -767,10 +828,10 @@ export default class Unifty {
     };
 
     async getNft(erc1155Address, nftId) {
-        if(!this.account){
+        if (!this.account) {
             await this.setAccount();
         }
-        
+
         let supply = 0;
         let maxSupply = 0;
 
@@ -788,7 +849,7 @@ export default class Unifty {
             return { uri: uri, supply: supply, maxSupply: maxSupply, balance: balance }
         } catch (e) {
 
-         }
+        }
 
     };
     async balanceof(erc1155Address, account, nftId) {
@@ -1011,13 +1072,13 @@ export default class Unifty {
 
     };
     async getPoolMinimumNif() {
-        try{
+        try {
             await this.sleep(this.sleep_time);
-        return await this.genesis.methods.poolFeeMinimumNif().call({ from: this.account });
-        }catch(e){
+            return await this.genesis.methods.poolFeeMinimumNif().call({ from: this.account });
+        } catch (e) {
 
         }
-        
+
     };
 
     async iHaveAnyWildcard() {
@@ -1026,54 +1087,54 @@ export default class Unifty {
     };
 
     async newErc1155(name, ticker, contractJsonUri, proxyRegistryAddress, preCallback, postCallback, errCallback) {
-        try{
-          await this.sleep(this.sleep_time);
-        let nif = this.web3.utils.toBN(await this.nif.methods.balanceOf(this.account).call({ from: this.account }));
-        let minNif = this.web3.utils.toBN(await this.getPoolMinimumNif());
-
-        let gas = 0;
-
         try {
             await this.sleep(this.sleep_time);
-            gas = await this.genesis.methods.newPool(name, ticker, contractJsonUri, '', proxyRegistryAddress).estimateGas({
-                from: this.account,
-                value: await this.iHaveAnyWildcard() || nif.gte(minNif) ? 0 : await this.getPoolFee()
+            let nif = this.web3.utils.toBN(await this.nif.methods.balanceOf(this.account).call({ from: this.account }));
+            let minNif = this.web3.utils.toBN(await this.getPoolMinimumNif());
 
-            });
-        } catch (e) {
-            errCallback(e);
-            return;
-        }
+            let gas = 0;
 
-        const price = await this.web3.eth.getGasPrice();
-
-        await this.genesis.methods.newPool(name, ticker, contractJsonUri, '', proxyRegistryAddress)
-            .send(
-                {
+            try {
+                await this.sleep(this.sleep_time);
+                gas = await this.genesis.methods.newPool(name, ticker, contractJsonUri, '', proxyRegistryAddress).estimateGas({
                     from: this.account,
-                    value:
-                        await this.iHaveAnyWildcard() || nif.gte(minNif) ? 0 : await this.getPoolFee(),
-                    gas: gas + Math.floor(gas * 0.1),
-                    gasPrice: Number(price) + Math.floor(Number(price) * 0.1)
-                })
-            .on('error', async function (e) {
-                console.log(e);
+                    value: await this.iHaveAnyWildcard() || nif.gte(minNif) ? 0 : await this.getPoolFee()
+
+                });
+            } catch (e) {
                 errCallback(e);
-            })
-            .on('transactionHash', async function (transactionHash) {
-                preCallback(transactionHash);
-            })
-            .on("receipt", function (receipt) {
-                postCallback(receipt);
-            });  
-        }catch(e){
+                return;
+            }
+
+            const price = await this.web3.eth.getGasPrice();
+
+            await this.genesis.methods.newPool(name, ticker, contractJsonUri, '', proxyRegistryAddress)
+                .send(
+                    {
+                        from: this.account,
+                        value:
+                            await this.iHaveAnyWildcard() || nif.gte(minNif) ? 0 : await this.getPoolFee(),
+                        gas: gas + Math.floor(gas * 0.1),
+                        gasPrice: Number(price) + Math.floor(Number(price) * 0.1)
+                    })
+                .on('error', async function (e) {
+                    console.log(e);
+                    errCallback(e);
+                })
+                .on('transactionHash', async function (transactionHash) {
+                    preCallback(transactionHash);
+                })
+                .on("receipt", function (receipt) {
+                    postCallback(receipt);
+                });
+        } catch (e) {
 
         }
-        
+
     };
 
     async updateUri(nftId, jsonUrl, erc1155Address, preCallback, postCallback, errCallback) {
-        
+
         let erc1155 = new this.web3.eth.Contract(erc1155ABI, erc1155Address, { from: this.account });
 
         await this.sleep(this.sleep_time);

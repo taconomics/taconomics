@@ -1,7 +1,7 @@
-import { Box, Button, Center, color, Flex, Grid, HStack, useMediaQuery } from '@chakra-ui/react'
+import { Box, Button, Center, color, Flex, Grid,Image, HStack, useMediaQuery } from '@chakra-ui/react'
 import Head from 'next/head'
 import React, { useState } from 'react'
-import Image from 'next/image'
+import NextImage from 'next/image'
 import { columnTemplate, TacoProps } from '../src/components/TacoLayout'
 import Carousel from 'react-elastic-carousel'
 import { FeaturedCollections } from './collections'
@@ -83,8 +83,8 @@ export function SliderPage(props: { children }) {
 }
 
 export function SliderItem(props: { title, image, subtitle?}) {
-  const imgSize = 200;
-  return (<Flex alignItems="center" flexDir={["row", "row", "column"]} padding="30px" maxW={{ lg: "350px", md: "600px", sm: "600px" }} userSelect="none">
+  const imgSize = [200];
+  return (<Flex textAlign="center" alignItems="center" flexDir={["row", "row", "column"]} padding="30px" maxW={{ lg: "350px", md: "600px", sm: "600px" }} userSelect="none">
     <Box fontWeight="semibold" w={["60%", "100%", "100%"]} marginRight={{ lg: 0, md: "30px", sm: "30px" }} fontSize="x-large">{props.title}</Box>
     <Flex flexDir="column" alignItems="center" maxW={imgSize}>
       <Image src={props.image} layout="fixed" draggable="false" width={imgSize} height={imgSize}></Image>
@@ -107,7 +107,7 @@ export function AboutNFTS() {
       </Flex>
       <Center height={size} justifyContent="center" width={size}>
 
-        <Image src="/img/taco-celular.svg" layout="fixed" width={300} height={300}></Image>
+        <NextImage src="/img/taco-celular.svg" layout="fixed" width={300} height={300}></NextImage>
       </Center>
     </Flex>)
 }
@@ -129,7 +129,7 @@ export function Blob(props) {
   const { color, size = 100, right, left, top, bottom } = props;
   // let size =props.size || 30;
   return (<Flex position="absolute" zIndex="-1" height={size} width={size} right={right} top={top} left={left} bottom={bottom}  >
-    <Image draggable={false} src={"/img/blob " + color + ".svg"} layout="fill"></Image>
+    <NextImage draggable={false} src={"/img/blob " + color + ".svg"} layout="fill"></NextImage>
   </Flex>
   )
 }

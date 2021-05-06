@@ -9,23 +9,23 @@ import { BePartTacoCommunity } from "..";
 
 import * as Box3 from '3box';
 
-export default function Collection(props:TacoProps) {
+export default function Collection(props: TacoProps) {
     const router = useRouter();
     const [nfts, setNfts] = useState([]);
-    const [owner,setOwner] = useState(undefined);
+    const [owner, setOwner] = useState(undefined);
     const [erc1155Meta, setErc1155Meta] = useState({ name: <Center><Spinner /></Center>, description: <Center><Spinner /></Center> });
     const collection = router.query.collection as string;
 
     useEffect(() => {
-        async function func()  {
+        async function func() {
             if (collection != undefined) {
-               let col = await getCollectionCards(props,collection,false);
+                let col = await getCollectionCards(props, collection, false);
                 setNfts(col);
             }
             let erc1155Meta = await props.unifty.getErc1155Meta(collection);
 
             let owner = await props.unifty.getErc1155Owner(collection);
-            console.log("Owner",owner)
+            console.log("Owner", owner)
             setOwner(owner);
 
             fetch(erc1155Meta.contractURI).then(r => r.json()).catch(e => { console.error(e) }).then(e => {
@@ -50,49 +50,59 @@ export default function Collection(props:TacoProps) {
     </>)
 }
 
-export async function getCollectionCards(tacoProps:TacoProps,collection:string,canEdit:boolean) {
+export async function getCollectionCards(tacoProps: TacoProps, collection: string, canEdit: boolean) {
     //await tacoProps.unifty.sleep(1000)
     //await tacoProps.unifty.isConnected();
     let nfts = await tacoProps.unifty.getNftsByUri(collection);
     let col = [];
-    console.log("getCollectionCards",nfts)
+    console.log("getCollectionCards", nfts)
     for (const nft in nfts) {
-        
+
         const name = Math.floor(Math.random() * 100);
         let json = { erc1155: collection, id: nfts[nft] };
 
-       // console.log("Collection card",json)
+        // console.log("Collection card",json)
         col.push(<Card tacoProps={tacoProps} canEdit={canEdit} key={name} nft={json}></Card>);
     }
     return col;
 }
 
 
-export function ArtistInfo(props: { unifty: Unifty, info: any,changer:number,owner }) {
-    console.log("Info",props.info)
-    const [box3Profile,setProfile] = useState({name:undefined,description:undefined})
-   useEffect(()=>{
-       async function artistInfoFunc(){
-           const profile = await Box3.getProfile(props.owner)
-           console.log("Box3 profile",profile);
-           setProfile(profile);
-       }
+export function ArtistInfo(props: { unifty: Unifty, info: any, changer: number, owner }) {
+    console.log("Info", props.info)
+    const [box3Profile, setProfile] = useState({ name: undefined, description: undefined })
+    useEffect(() => {
+        async function artistInfoFunc() {
+            const profile = await Box3.getProfile(props.owner)
+            console.log("Box3 profile", profile);
+            setProfile(profile);
+        }
 
-       artistInfoFunc();
-    
-   },[props.changer,props.owner])
+        artistInfoFunc();
+
+    }, [props.changer, props.owner])
     return (<Flex>
-        <ArtistBadge info={props.info}></ArtistBadge>
+        <ArtistBadge info={box3Profile}></ArtistBadge>
         <Box maxWidth={["60%", "50%"]} paddingLeft={["100px"]} >
-            <Box fontSize="x-large" padding="20px" paddingLeft="0px" fontWeight="bold">{box3Profile.name?box3Profile.name:props.owner}</Box>
-            <Box fontSize="small">{box3Profile.description?box3Profile.description:"No description to show."}</Box>
+            <Box fontSize="x-large" padding="20px" paddingLeft="0px" fontWeight="bold">{box3Profile.name ? box3Profile.name : props.owner}</Box>
+            <Box fontSize="small">{box3Profile.description ? box3Profile.description : "No description to show."}</Box>
         </Box>
 
     </Flex>)
 }
 function ArtistBadge(props: { info }) {
+    let img = "/img/slider/create_tacoart.svg";
+    if (props.info) {
+
+        if (props.info.image) {
+            console.log("img ", props.info.image[0].contentUrl["/"])
+            img = "https://gateway.ipfs.io/ipfs/"+props.info.image[0].contentUrl["/"]
+        }
+
+    }
+
     const size = ["200px"]
-    return (<Box width={size} height={size} borderRadius="full" overflow="hidden"><Image src="https://bit.ly/dan-abramov" layout="responsive" width="100%" height="100%"></Image></Box>)
+    return (<Box width={size} height={size} borderRadius="full" overflow="hidden"><Image src={img} layout="responsive" width="100%" height="100%"></Image></Box>)
 }
 
 function CollectionCardInfo(props: { info }) {
@@ -109,7 +119,7 @@ function CollectionCardInfo(props: { info }) {
                     <Box fontSize="sm">{props.info.description}</Box>
                 </Flex>
                 <Center>
-                    <Box backgroundImage={"url(" + props.info.image+ ")"} backgroundPosition="center" backgroundSize={"auto 100%"} borderRadius="lg" width={imgSizeX} height={imgSizeY}></Box>
+                    <Box backgroundImage={"url(" + props.info.image + ")"} backgroundPosition="center" backgroundSize={"auto 100%"} borderRadius="lg" width={imgSizeX} height={imgSizeY}></Box>
                 </Center>
 
             </Flex>)

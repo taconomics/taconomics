@@ -5,29 +5,31 @@ import { ICardInfo } from "../../hooks/useCardInfo";
 import { useTrasactionToaster } from "../../hooks/useTransactionToaster";
 import { TacoProps } from "../TacoLayout";
 
-export function CardButtonSX(props: { taco: TacoProps, CardInfo: ICardInfo,loaded:boolean }) {
+export function CardButtonSX(props: { taco: TacoProps, CardInfo: ICardInfo, loaded: boolean }) {
     const [connected, setConnected] = useState(false);
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure()
     const buyToast = useTrasactionToaster({ title: "Buying card", description: "Please wait..." }, { title: "Transaction complete", description: "Thank you!" }, { title: "Error", description: "Some error has ocurred" })
 
     const onClick = async () => {
+        if (props.taco.unifty.hasWallet) {
+            if (Number(props.CardInfo.extras.balanceOf) > 0) {
+                if (props.CardInfo.farmData.prices.totalFee != 0 && !props.CardInfo.farmShopAddress) {
 
-        if (Number(props.CardInfo.extras.balanceOf) > 0) {
-            if (props.CardInfo.farmData.prices.totalFee != 0 && !props.CardInfo.farmShopAddress) {
-
+                } else {
+                    //onClickPoints(props.CardInfo, props.taco, buyToast)
+                }
+                onOpen();
             } else {
-                //onClickPoints(props.CardInfo, props.taco, buyToast)
+                window.open("https://opensea.io/assets/" + props.CardInfo.erc1155 + "/" + props.CardInfo.id, "_blank");
             }
-            onOpen();
-        } else {
-            window.open("https://opensea.io/assets/" + props.CardInfo.erc1155 + "/" + props.CardInfo.id, "_blank");
         }
+
 
     }
     useEffect(() => {
         async function con() {
-            setConnected(await props.taco.unifty.isConnected() && props.loaded);
+            setConnected(props.taco.unifty.hasWallet);
         }
         con();
     }, [props.taco.changer, props.CardInfo])
@@ -40,13 +42,13 @@ export function CardButtonSX(props: { taco: TacoProps, CardInfo: ICardInfo,loade
 }
 export const CardButton = chakra(CardButtonSX);
 
-const onClickPoints = async (CardInfo: ICardInfo, taco: TacoProps, buyToast,loaded:boolean) => {
+const onClickPoints = async (CardInfo: ICardInfo, taco: TacoProps, buyToast, loaded: boolean) => {
     if (loaded) {
         taco.unifty.farmRedeem(CardInfo.farmAddress, CardInfo.erc1155, CardInfo.id, (CardInfo.farmData.prices.totalFee).toString(), buyToast.onLoad, buyToast.onSuccess, buyToast.onError)
     }
 }
 
-function BuyModal(props: { isOpen, onClose, CardInfo: ICardInfo, taco: TacoProps, buyToast,loaded:boolean }) {
+function BuyModal(props: { isOpen, onClose, CardInfo: ICardInfo, taco: TacoProps, buyToast, loaded: boolean }) {
     const { isOpen, onClose, CardInfo } = props;
     const iconSize = "17px"
 
@@ -75,7 +77,7 @@ function BuyModal(props: { isOpen, onClose, CardInfo: ICardInfo, taco: TacoProps
     }
     return (<Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        {CardInfo.extras&&<ModalContent>
+        {CardInfo.extras && <ModalContent>
             <ModalHeader>How do you want to buy this item?</ModalHeader>
             <ModalCloseButton />
             <ModalBody marginBottom={5}>{
@@ -83,16 +85,16 @@ function BuyModal(props: { isOpen, onClose, CardInfo: ICardInfo, taco: TacoProps
                 <HStack justifyContent="center" w="100%" spacing={5}>
                     {props.CardInfo.farmShopAddress && props.CardInfo.extras.shopPrice &&
                         <Button onClick={onClickEth}>
-                           <HStack> <Image src="/icons/Eth_Icon.svg" h={iconSize}></Image> <Box>{CardInfo.extras.shopPrice}</Box></HStack>
+                            <HStack> <Image src="/icons/Eth_Icon.svg" h={iconSize}></Image> <Box>{CardInfo.extras.shopPrice}</Box></HStack>
                         </Button>}
                     <Button onClick={() => {
-                        onClickPoints(props.CardInfo, props.taco, props.buyToast,props.loaded)
+                        onClickPoints(props.CardInfo, props.taco, props.buyToast, props.loaded)
                     }}><HStack>
-                        <Image src={"/icons/" + CardInfo.extras.coin + "_Icon.svg"} h={iconSize}></Image>
-                        <Box>{CardInfo.extras.pointsPrice}</Box>
-                        <Box>+</Box>
-                        <Image src="/icons/Eth_Icon.svg" h={iconSize}></Image> <Box>{CardInfo.farmData.prices.totalFeeDecimals}</Box>
-                    </HStack>
+                            <Image src={"/icons/" + CardInfo.extras.coin + "_Icon.svg"} h={iconSize}></Image>
+                            <Box>{CardInfo.extras.pointsPrice}</Box>
+                            <Box>+</Box>
+                            <Image src="/icons/Eth_Icon.svg" h={iconSize}></Image> <Box>{CardInfo.farmData.prices.totalFeeDecimals}</Box>
+                        </HStack>
                     </Button>
                 </HStack>}
 
