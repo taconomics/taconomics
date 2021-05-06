@@ -1,4 +1,4 @@
-import { Box, Button, Center, chakra, Flex, Menu, MenuButton, MenuItem, MenuList, Select } from "@chakra-ui/react";
+import { Box, Button, Center, chakra, Flex, Menu, MenuButton, MenuItem, MenuList, Select, VStack } from "@chakra-ui/react";
 import React from "react";
 import { useState } from "react";
 import TacoSwitch, { TacoOption } from "../src/components/TacoSwitch";
@@ -6,67 +6,29 @@ import { FiChevronDown } from 'react-icons/fi'
 import { BsArrowDown } from 'react-icons/bs'
 import { TacoProps } from "../src/components/TacoLayout";
 
-export default function BuyTacoPage(props:TacoProps) {
+export default function BuyTacoPage(props: TacoProps) {
     const [buyingTaco, setBuyingTaco] = useState(true);
     props.changeTitle("Buy taco")
-    const onChange = (index, name) => {
-        if (name == "taco") {
-            setBuyingTaco(true);
-        } else {
-            setBuyingTaco(false);
-        }
-    }
     return (<Center flexDir="column">
-        <Flex padding={5} backgroundColor="white" shadow="figma" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5}>
-            <TacoSwitch onChange={onChange}>
-                <TacoOption key="taco" name="taco">Buy TACO</TacoOption>
-                <TacoOption key="salsa" name="salsa">Make Salsa</TacoOption>
-            </TacoSwitch>
-        </Flex>
-        {buyingTaco?
-        <BuyTaco></BuyTaco>
-        :
-        <MakeSalsa></MakeSalsa>
+        {
+            <VStack marginBottom={5} spacing={5}>
+                <LinkSwap href={"https://matcha.xyz/markets/TACO"} name="Matcha"></LinkSwap>
+                <LinkSwap href={"https://app.uniswap.org/#/swap?outputCurrency=0x00d1793d7c3aae506257ba985b34c76aaf642557"} name="Uniswap"></LinkSwap>
+                <LinkSwap href={"https://balancer.exchange/#/swap/0x00d1793d7c3aae506257ba985b34c76aaf642557"} name="Balancer"></LinkSwap>
+                <LinkSwap href={"https://app.1inch.io/#/1/swap/TACO"} name="1Inch"></LinkSwap>
+                <LinkSwap href={"https://app.zerion.io/invest/asset/TACO-0x00d1793d7c3aae506257ba985b34c76aaf642557"} name="Zerion"></LinkSwap>
+                <LinkSwap href={"https://www.dharma.io/ "} name="Dharma"></LinkSwap>
+            </VStack>
         }
-       
+
 
     </Center>)
 }
 
-function BuyTaco() {
-    return (<Flex padding={5} flexDir="column" backgroundColor="white" shadow="figma" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5} alignItems="center" justifyContent="center">
-        <ValueBox></ValueBox>
-        <BsArrowDown/>
-        <ValueBox></ValueBox>
-        <Button colorScheme="figma.orange" width="70%">Connect wallet</Button>
-    </Flex>)
-}
-function MakeSalsa() {
-    return (<Flex padding={5} flexDir="column" backgroundColor="white" shadow="figma" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5} alignItems="center" justifyContent="center">
-        MakeSalsa
-    </Flex>)
-}
-function ValueBox() {
-    const [value, setValue] = useState(0.0);
-    const [selected,setSelected] = useState("ETH")
-    return (<Flex backgroundColor="blackAlpha.200"  flexDir="column" padding={2} marginY={5} borderRadius="lg" width="70%">
-        <Box fontSize="x-small" color="blackAlpha.600">From</Box>
-        <Flex justifyContent="space-between" alignItems="center">
-            <Box fontSize="lg" fontWeight="bold" color="blackAlpha.600">{value}</Box>
-            <Menu>
-                <MenuButton backgroundColor="white" as={Button} rightIcon={<FiChevronDown />}>
-                    {selected}
-                </MenuButton>
-                <MenuList >
-                    <ValueBoxItem setSelected={setSelected}>ETH</ValueBoxItem>
-                    <ValueBoxItem setSelected={setSelected}>TACO</ValueBoxItem>
-                </MenuList>
-            </Menu>
-        </Flex>
-    </Flex>)
-}
-function ValueBoxItem({setSelected,children}){
-    return (<MenuItem onClick={()=>{
-        setSelected(children);
-    }}>{children}</MenuItem>)
+function LinkSwap(props: { href, name }) {
+    const goToLink = ()=>{
+        window.open(props.href, "_blank");
+    }
+    const color = "figma.orange.700";
+    return (<Box cursor="pointer" border="1px" borderColor={color} _hover={{backgroundColor:"figma.orange.50"}} color={color} padding={5} w={"500px"} textAlign="center" fontWeight="bold" onClick={goToLink}>{props.name}</Box>)
 }

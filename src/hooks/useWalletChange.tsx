@@ -1,6 +1,7 @@
-import { propNames, useInterval, useToast} from '@chakra-ui/react';
+import { propNames, useToast} from '@chakra-ui/react';
 import React, { useState, useEffect, useRef } from 'react';
 import Unifty from '../uniftyLib/UniftyLib';
+import useInterval from './useInterval';
 
 export function useWalletChanger(unifty:Unifty) {
     const [changes,setChanges] = useState(0);
@@ -29,10 +30,12 @@ export function useWalletChanger(unifty:Unifty) {
             window.ethereum.on('message', reload);
             
         }else{
-            toast({description:"No ether"})
+            toast({description:"You don't have MetaMask."})
         }
 
     },[changes])
+
+   // useInterval(()=>{reload()},1000);
 
     
     return changes;

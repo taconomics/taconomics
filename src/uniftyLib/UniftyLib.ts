@@ -202,6 +202,12 @@ export default class Unifty {
      * @returns Farm token
      */
 
+     async farmIsWhitelistAdmin(address, farmAddress){
+        await this.sleep(this.sleep_time);
+        let farm = new this.web3.eth.Contract( farmABI, farmAddress, {from:this.account} );
+        return await farm.methods.isWhitelistAdmin(address).call({from:this.account});
+    };
+
 
     async farmToken(farmAddress) {
         try {
@@ -761,7 +767,10 @@ export default class Unifty {
     };
 
     async getNft(erc1155Address, nftId) {
-
+        if(!this.account){
+            await this.setAccount();
+        }
+        
         let supply = 0;
         let maxSupply = 0;
 
@@ -777,7 +786,9 @@ export default class Unifty {
             let uri = await this.getNftMeta(erc1155Address, nftId);
 
             return { uri: uri, supply: supply, maxSupply: maxSupply, balance: balance }
-        } catch (e) { }
+        } catch (e) {
+
+         }
 
     };
     async balanceof(erc1155Address, account, nftId) {
@@ -909,7 +920,7 @@ export default class Unifty {
 
     };
 
-    async getNftsByUri(erc1155Address): Promise<INft[]> {
+    async getNftsByUri(erc1155Address): Promise<any[]> {
         try {
             await this.sleep(this.sleep_time);
 

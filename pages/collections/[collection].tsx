@@ -56,10 +56,10 @@ export async function getCollectionCards(tacoProps:TacoProps,collection:string,c
     let nfts = await tacoProps.unifty.getNftsByUri(collection);
     let col = [];
     console.log("getCollectionCards",nfts)
-    for (const nft of nfts) {
+    for (const nft in nfts) {
         
         const name = Math.floor(Math.random() * 100);
-        let json = { erc1155: collection, id: nft };
+        let json = { erc1155: collection, id: nfts[nft] };
 
        // console.log("Collection card",json)
         col.push(<Card tacoProps={tacoProps} canEdit={canEdit} key={name} nft={json}></Card>);
@@ -84,8 +84,8 @@ export function ArtistInfo(props: { unifty: Unifty, info: any,changer:number,own
     return (<Flex>
         <ArtistBadge info={props.info}></ArtistBadge>
         <Box maxWidth={["60%", "50%"]} paddingLeft={["100px"]} >
-            <Box fontSize="x-large" padding="20px" paddingLeft="0px" fontWeight="bold">{box3Profile.name?box3Profile.name:"Artist name"}</Box>
-            <Box fontSize="small">{box3Profile.description?box3Profile.description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nibh a faucibus porttitor odio at enim vitae, amet dignissim. Pellentesque nec pellentesque lectus id nulla quisque. Vitae amet, aliquam duis ornare vehicula suspendisse. Vulputate pellentesque pulvinar non tellus."}</Box>
+            <Box fontSize="x-large" padding="20px" paddingLeft="0px" fontWeight="bold">{box3Profile.name?box3Profile.name:props.owner}</Box>
+            <Box fontSize="small">{box3Profile.description?box3Profile.description:"No description to show."}</Box>
         </Box>
 
     </Flex>)
@@ -98,6 +98,7 @@ function ArtistBadge(props: { info }) {
 function CollectionCardInfo(props: { info }) {
     const imgSizeX = ["200px"]
     const imgSizeY = ["150px"]
+    console.log(props.info)
     if (props.info != undefined) {
         return (
             <Flex backgroundColor="white" overflow="hidden" flexDirection="row" justifyContent="space-between" marginBottom={5} marginTop="30px" padding={"20px"} boxShadow="figma" borderRadius="sm">
@@ -108,7 +109,7 @@ function CollectionCardInfo(props: { info }) {
                     <Box fontSize="sm">{props.info.description}</Box>
                 </Flex>
                 <Center>
-                    <Box backgroundImage={"url(" + props.info.image?props.info.image:"" + ")"} backgroundPosition="center" backgroundSize={imgSizeX} borderRadius="lg" width={imgSizeX} height={imgSizeY}></Box>
+                    <Box backgroundImage={"url(" + props.info.image+ ")"} backgroundPosition="center" backgroundSize={"auto 100%"} borderRadius="lg" width={imgSizeX} height={imgSizeY}></Box>
                 </Center>
 
             </Flex>)

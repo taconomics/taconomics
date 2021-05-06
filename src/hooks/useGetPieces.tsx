@@ -35,40 +35,34 @@ export const useGetPieces = (searchConfig: SearchConfig) => {
     const emptyResult = { artist: [], collections: [], rarity: Object.keys(CardTypes), price: [] }
 
     const [results, setResult] = useState<SearchResult>(emptyResult);
-   
+
 
     const changer = useWalletChanger(searchConfig.tacoProps.unifty);
 
     const [queryNfts, setQueryNfts] = useState<PieceNFT[]>([])
-    const isLooking = searchConfig.artist||searchConfig.collection||searchConfig.name||searchConfig.price||searchConfig.rarity
-    const { nfts, loaded } = useAsyncNfts(searchConfig,()=>!isLooking?false:true);
+    const isLooking = searchConfig.artist || searchConfig.collection || searchConfig.name || searchConfig.price || searchConfig.rarity
+    const { nfts, loaded } = useAsyncNfts(searchConfig, () => !isLooking ? false : true);
     const [queryLoaded, setQueryLoaded] = useState(true);
 
-
-    //const [nfts, setNfts] = useState<PieceNFT[]>([])
-
-  /*  useEffect(() => {
-        setResult(emptyResult)
-    }, [changer])*/
     useEffect(() => {
-        async function n(){
-            let newResult = {...emptyResult}/*results ? { ...results } : { ...emptyResult }*/;
-            for (let nft of nfts){
+        async function n() {
+            let newResult = { ...emptyResult }/*results ? { ...results } : { ...emptyResult }*/;
+            for (let nft of nfts) {
                 // const CardInfo =await getCardInfo(searchConfig.tacoProps,nft.nft.erc1155,nft.nft.id,{useMeta:true})
                 if (!newResult.artist.includes(nft.nft.artist)) {
                     newResult.artist.push(nft.nft.artist);
                 }
                 //let addCollection = true;
                 let erc1155Meta = await searchConfig.tacoProps.unifty.getErc1155Meta(nft.nft.erc1155);
-                var exists = Object.keys(newResult.collections).some(function(k) {
+                var exists = Object.keys(newResult.collections).some(function (k) {
                     return newResult.collections[k].meta.name === erc1155Meta.name;
                 })
-                if(!exists){
+                if (!exists) {
                     newResult.collections.push({ nft: nft.nft, meta: erc1155Meta });
                 }
-           
+
             }
-    
+
             setResult(newResult);
         }
         n();
@@ -81,7 +75,7 @@ export const useGetPieces = (searchConfig: SearchConfig) => {
             for (let piece of nfts) {
                 if (await isValidNft(piece, searchConfig)) {
                     newNfts.push(piece);
-                   
+
                 }
             }
             setQueryNfts(newNfts);
@@ -104,7 +98,7 @@ export const useGetPieces = (searchConfig: SearchConfig) => {
 
 }
 
-export function useAsyncNfts(config: SearchConfig,shouldContinue?:()=>boolean) {
+export function useAsyncNfts(config: SearchConfig, shouldContinue?: () => boolean) {
     const [nfts, setNfts] = useState<PieceNFT[]>([])
     const [currentBlock, setBlock] = useState(0);
     const [canRun, setRun] = useState(true);
@@ -114,7 +108,7 @@ export function useAsyncNfts(config: SearchConfig,shouldContinue?:()=>boolean) {
     const startRange = 30000;
     const [range, setRange] = useState(startRange);
 
-    shouldContinue = shouldContinue?shouldContinue:()=>false;
+    shouldContinue = shouldContinue ? shouldContinue : () => false;
 
     const _shouldContinue = shouldContinue();
 
@@ -147,7 +141,7 @@ export function useAsyncNfts(config: SearchConfig,shouldContinue?:()=>boolean) {
         //setRunTick(runTick + 1)
         setRun(true);
         setLoaded(false)
-    }, [config.nextCount,_shouldContinue])
+    }, [config.nextCount, _shouldContinue])
 
     const interval = async () => {
         setRun(false);
@@ -155,33 +149,40 @@ export function useAsyncNfts(config: SearchConfig,shouldContinue?:()=>boolean) {
         const newNfts: PieceNFT[] = []
         const newBlock = currentBlock - range;
         let queryTacoshi = await config.tacoProps.unifty.getFarmNftsToBlock(config.tacoProps.unifty.tacoshiFarm, newBlock, currentBlock)
-        for (let nft of queryTacoshi) {
-            let metaNftUri = await config.tacoProps.unifty.getNftMeta(nft.erc1155, nft.id);
-            const newF = { nft: nft, metaUri: metaNftUri }
-            if (await isValidNft(newF, config)) {
+        try{
+            for (let nft of queryTacoshi) {
+                let metaNftUri = await config.tacoProps.unifty.getNftMeta(nft.erc1155, nft.id);
+                const newF = { nft: nft, metaUri: metaNftUri }
+                if (await isValidNft(newF, config)) {
 
-                newNfts.push(newF);
+                    newNfts.push(newF);
+                }
             }
+        }catch(e){
+            
         }
+
 
         let queryRabbit = await config.tacoProps.unifty.getFarmNftsToBlock(config.tacoProps.unifty.rabbitFarm, newBlock, currentBlock)
-        for (let nft of queryRabbit) {
-            let metaNftUri = await config.tacoProps.unifty.getNftMeta(nft.erc1155, nft.id);
-            const newF = { nft: nft, metaUri: metaNftUri }
-            //  if (await isValidNft(newF, config)) {
+        try{
+            for (let nft of queryRabbit) {
+                let metaNftUri = await config.tacoProps.unifty.getNftMeta(nft.erc1155, nft.id);
+                const newF = { nft: nft, metaUri: metaNftUri }
+                newNfts.push(newF);
+            }
+        }catch(e){
 
-            newNfts.push(newF);
-            //}
         }
+
         setBlock(newBlock - range >= 0 ? newBlock : 0);
         setNfts([...nfts, ...newNfts])
 
-        if (nfts.length + newNfts.length < config.minimumNfts || (shouldContinue()&&newBlock - range <= 0)) {
+        if (nfts.length + newNfts.length < config.minimumNfts || (shouldContinue() && newBlock - range <= 0)) {
             setRun(true);
             setRange(range + (startRange / 2))
 
-        } else { 
-            setLoaded(true) 
+        } else {
+            setLoaded(true)
         }
         if (newBlock - range <= 0) {
             setLoaded(true);
@@ -200,7 +201,7 @@ export function useAsyncNfts(config: SearchConfig,shouldContinue?:()=>boolean) {
 async function isValidNft(nft: PieceNFT, config: SearchConfig): Promise<boolean> {
 
     const artist = config.artist == nft.nft.artist || !config.artist
-    let  collection =  nft.nft.erc1155 == config.collection|| !config.collection
+    let collection = nft.nft.erc1155 == config.collection || !config.collection
     let name = true;
     let rarity = true;
 

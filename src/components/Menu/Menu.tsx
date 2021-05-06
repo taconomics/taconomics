@@ -7,15 +7,15 @@ import NextLink from "next/link"
 import { TacoProps } from '../TacoLayout';
 //import img from "./"
 
-export default function Menu(props:TacoProps) {
+export default function Menu(props: TacoProps) {
 
     const [isMobile] = useMediaQuery("(max-width: 768px)")
 
-    return (<Flex flexDir="row" w="100%" alignItems="center" justifyContent="space-between" fontFamily="Nunito">
+    return (<Flex flexDir="row" w="100%" alignItems="center" justifyContent={"space-between"} fontFamily="Nunito">
         {isMobile && <MenuItemsMobile taco={props}></MenuItemsMobile>}
         <Logo></Logo>
         {!isMobile && <MenuItems></MenuItems>}
-        {!isMobile&&<UserWallet changer={props.changer} unifty={props.unifty}></UserWallet>}
+        {!isMobile && <UserWallet changer={props.changer} unifty={props.unifty}></UserWallet>}
     </Flex>)
 }
 
@@ -25,14 +25,17 @@ export enum LogoVariants {
 }
 export function Logo(props: { variant?: LogoVariants }) {
     let variant = props.variant ? props.variant : LogoVariants.NONE;
-    return (<LinkBox minWidth="60px">
-        <NextLink href="/" passHref>
-            <LinkOverlay><Image src={"/Logo" + variant + ".svg"} layout="intrinsic" width={80} height={80}></Image>
-            </LinkOverlay>
-        </NextLink></LinkBox>)
+    return (<LinkBox minWidth="60px" w={["100%", "100%", "auto"]}>
+        <Center>
+            <NextLink href="/" passHref>
+                <LinkOverlay><Image src={"/Logo" + variant + ".svg"} layout="intrinsic" width={80} height={80}></Image>
+                </LinkOverlay>
+            </NextLink>
+        </Center>
+    </LinkBox>)
 }
 
-export function MenuItemsMobile(props:{taco:TacoProps}) {
+export function MenuItemsMobile(props: { taco: TacoProps }) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef()
     return <><Button onClick={onOpen}><Image src="/icons/Burger.svg" layout="intrinsic" width={20} height={20} /></Button>
@@ -52,9 +55,9 @@ export function MenuItemsMobile(props:{taco:TacoProps}) {
                     </DrawerHeader>
 
                     <DrawerBody>
-                    <Box fontSize="xl" color="gray.700">Menu</Box>
+                        <MenuDrawerTitle>Menu</MenuDrawerTitle>
                         <MenuItems variant="drawer"></MenuItems>
-                        <Box fontSize="xl" color="gray.700" marginTop={5}>User wallet</Box>
+                        <MenuDrawerTitle>User wallet</MenuDrawerTitle>
                         <UserWallet unifty={props.taco.unifty} changer={props.taco.changer}></UserWallet>
                     </DrawerBody>
 
@@ -67,6 +70,10 @@ export function MenuItemsMobile(props:{taco:TacoProps}) {
             </DrawerOverlay>
         </Drawer>
     </>
+}
+
+export function MenuDrawerTitle({ children }) {
+    return (<Box fontSize="xl" marginY={5} color={"figma.orange.600"} fontWeight="extrabold">{children}</Box>)
 }
 
 export function MenuItems(props: { variant?}) {

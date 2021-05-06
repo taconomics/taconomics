@@ -1,4 +1,4 @@
-import { Button, HStack, Menu, MenuButton, Image, MenuList, Box, Flex, useMediaQuery, Link, useDisclosure, useInterval, Input, MenuItem } from "@chakra-ui/react"
+import { Button, HStack, Menu, MenuButton, Image, MenuList, Box, Flex, useMediaQuery, Link, useDisclosure, useInterval, Input, MenuItem, Center } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
 import { useEffect } from "react";
 import Unifty from "../../uniftyLib/UniftyLib";
@@ -48,11 +48,21 @@ export default function UserWallet(props: { unifty: Unifty, changer: number, var
 }
 
 function WalletContainer(props: { unifty: Unifty, changer,variant? }) {
+    const [isWhitelist,setWhitelist] = useState(false);
 
+    useEffect(()=>{
+        async function f(){
+            await props.unifty.isConnected();
+           const rabbit = await props.unifty.farmIsWhitelistAdmin(props.unifty.account,props.unifty.rabbitFarm);
+           const tacoshi = await props.unifty.farmIsWhitelistAdmin(props.unifty.account,props.unifty.tacoshiFarm);
+           setWhitelist(rabbit||tacoshi);
+        }
+        f()
+    },[props.changer])
     return (
         <Flex width={["auto", "auto", "100%"]} flexDir={["column","column","row"]} alignItems={["start","start","center"]} justifyContent={"space-between"}>
 
-            <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>
+            {isWhitelist&&<Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>}
             <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/my-items">My items</NextLink></Box>
             <Coins changer={props.changer} unifty={props.unifty}></Coins>
         </Flex>)
@@ -65,8 +75,8 @@ function Coins(props: { unifty: Unifty, changer }) {
     const [lemonBalance, setLemons] = useState(0);
     async function func() {
         let connected = await props.unifty.isConnected();
-        let chilesPoints = await props.unifty.farmPointsEarned(props.unifty.rabbitFarm, props.unifty.account);
-        let lemonPoints = await props.unifty.farmPointsEarned(props.unifty.tacoshiFarm, props.unifty.account);
+        let chilesPoints = await props.unifty.farmPointsEarned(props.unifty.tacoshiFarm, props.unifty.account);
+        let lemonPoints = await props.unifty.farmPointsEarned(props.unifty.rabbitFarm, props.unifty.account);
         setChiles(Math.ceil(chilesPoints));
         setLemons(Math.ceil(lemonPoints));
     }
@@ -92,7 +102,9 @@ export function Coin({ iconSize, img, balance, spacing, children = undefined }) 
 
 
 function ButtonConnect({ onClickConnect }) {
-    return (<Button onClick={onClickConnect} colorScheme="blackButton" leftIcon={<Image width="20px" src={Wallet_Icon} />}>Connect wallet</Button>)
+    return (<Center>
+        <Button onClick={onClickConnect} colorScheme="blackButton" leftIcon={<Image width="20px" src={Wallet_Icon} />}>Connect wallet</Button>
+    </Center>)
 }
 
 function ManageStakeMenu(props: { unifty: Unifty, changer }) {

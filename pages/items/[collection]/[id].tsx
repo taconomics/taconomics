@@ -9,13 +9,13 @@ import { ITrait, ICardInfo, useCardInfo } from "../../../src/hooks/useCardInfo";
 import router, { useRouter } from "next/router";
 import { CardButton } from "../../../src/components/Card/CardButton";
 import { useEffect } from "react";
+import { getCardType } from "../../../src/components/Card/Card";
 
 export default function Item(props: TacoProps) {
     const router = useRouter();
     const id = Number(router.query.id);
     const collection = router.query.collection as string;
     const { cardInfo, loaded } = useCardInfo(props, collection, id, { useFarmData: true, useMeta: true, useExtras: true })
-    console.log("Card info", cardInfo)
     props.changeTitle(cardInfo.meta.name)
     const [count, setCount] = useState(0);
 
@@ -23,9 +23,9 @@ export default function Item(props: TacoProps) {
         setCount(count + 1);
     }, [loaded])
     return (<GridContent>
-        <Flex w={"100%"} marginBottom={5}>
+        <Flex w={"100%"} flexDir={["column","column","row"]} marginBottom={5}>
 
-            {loaded && <FullImage cardInfo={cardInfo}></FullImage>}
+            {loaded && <FullImage loaded={loaded} cardInfo={cardInfo}></FullImage>}
             {loaded && <ItemDescription cardInfo={cardInfo} loaded={loaded} taco={props}></ItemDescription>}
 
         </Flex>
@@ -34,7 +34,7 @@ export default function Item(props: TacoProps) {
 export function WeirdBackground(element: HTMLElement) {
     return <Box position="absolute" backgroundColor="white" height={"100%"} top={0} left={0}></Box>
 }
-function FullImage(props: { cardInfo: ICardInfo }) {
+function FullImage(props: { cardInfo: ICardInfo,loaded }) {
     return (<VStack flexGrow={3} spacing={6} minW={"350px"}>
         <HStack boxShadow="figma"
             border="1px solid"
@@ -43,11 +43,17 @@ function FullImage(props: { cardInfo: ICardInfo }) {
             borderRadius="md"
             textAlign="center"
             color="#41B4E6" paddingX={3} paddingY={1}
-            fontWeight="semibold"><Image src="/icons/Diamante_Icon.svg" w="20px"></Image><Box fontSize="15px">Rare collectible</Box></HStack>
+            fontWeight="semibold">
+                <Image src="/icons/Diamante_Icon.svg" w="20px"></Image>
+                <Box fontSize="15px" textTransform="capitalize">
+                {getCardType(props.cardInfo.farmData?props.cardInfo.farmData.supply:0)} collectible</Box>
+                </HStack>
 
         <Box width="100%" height="100%" backgroundSize="contain" backgroundPosition="center" backgroundRepeat="no-repeat" backgroundImage={"url(" + props.cardInfo.meta.image + ")"}></Box>
 
-        <Box fontWeight="bold" color="gray.400" textAlign="center">Check on OpenSea</Box>
+        <Box fontWeight="bold" color="gray.400" textAlign="center" cursor="pointer" onClick={()=>{
+             window.open("https://opensea.io/assets/" + props.cardInfo.erc1155 + "/" + props.cardInfo.id, "_blank");}
+             }>Check on OpenSea</Box>
     </VStack>)
 }
 

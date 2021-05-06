@@ -1,4 +1,4 @@
-import { Box, Button, Center, HStack, IconButton, Input, InputGroup, InputLeftAddon, InputRightAddon, InputRightElement, Select, Spinner, useEventListener } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, HStack, IconButton, Input, InputGroup, InputLeftAddon, InputRightAddon, InputRightElement, Select, Spinner, Stack, useEventListener } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import GridContent from "../../src/components/GridContent";
@@ -39,10 +39,10 @@ export default function AvailablePieces(props: TacoProps) {
         return (<Card nft={val.nft} key={val.nft.erc1155+"/"+val.nft.id} tacoProps={props}></Card>)
     })
     return (<GridContent marginBottom={10}>
-        <HStack>
+        <Flex flexDir={["column","column","row"]} alignItems={["start","start","center"]} w="100%">
             <Box fontSize="xl" fontWeight="bold" marginRight={20}>Available pieces</Box>
             <SearchPieces config={config} setConfig={setConfig} tacoProps={props} results={undefined}></SearchPieces>
-        </HStack>
+        </Flex>
        
         <SearchLabels config={config} setConfig={setConfig} tacoProps={props} results={pieces.results}></SearchLabels>
         <MessageQueryLoading queryLoaded={pieces.queryLoaded}></MessageQueryLoading>
@@ -96,12 +96,12 @@ interface ISearchLabel {
 }
 
 function SearchLabels(props: ISearchLabel) {
-    return (<HStack marginY={5}>
+    return (<Flex flexDir={["column","column","row"]} marginY={5}>
         <SelectArtists {...props}></SelectArtists>
         <SelectCollections {...props}></SelectCollections>
         <SelectRarity {...props} />
         <SelectInput results={props.results.price} placeholder="Price"></SelectInput>
-    </HStack>)
+    </Flex>)
 }
 
 interface ISelectInput {
@@ -112,7 +112,7 @@ interface ISelectInput {
 }
 
 function SelectInput(props: ISelectInput) {
-    return (<Select placeholder={props.placeholder} textTransform="capitalize" backgroundColor="white" onChange={props.onChange}>
+    return (<Select padding={2} placeholder={props.placeholder} textTransform="capitalize" backgroundColor="white" onChange={props.onChange}>
         {props.results.map((value) => {
             if (props.creator) {
                 return props.creator(value)

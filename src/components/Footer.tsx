@@ -26,7 +26,7 @@ function FooterSocialContainer(props) {
 }
 function FooterSignature(props:{width}) {
     return (<Flex justifyContent="space-between" width={props.width} flexDir={["column","row","row"]}>
-        <Box>© 2020 Taconomics. All rights reserved</Box>
+        <Box>© 2021 Taconomics. All rights reserved</Box>
         <SocialIcons size={20} Container={FooterSocialContainer} marginY={[3,0,0]} alignItems="center" justifyContent="center"></SocialIcons>
     </Flex>)
 }

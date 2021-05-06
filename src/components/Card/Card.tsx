@@ -10,6 +10,7 @@ import { ICardInfo, useCardInfo } from '../../hooks/useCardInfo';
 import { TacoProps } from '../TacoLayout';
 import { FaRegSadTear } from 'react-icons/fa'
 import { CardButton } from './CardButton';
+import Loading from '../Loading';
 
 export const cardWidth = 240;
 export const cardHeight = 300;
@@ -24,11 +25,13 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
         router.push("/items/" + cardInfo.erc1155 + "/" + cardInfo.id)
     }
 
+
     return (<EmptyCard setHover={props.canEdit?setHover:undefined} valid={true}>
-        {loaded && nft == undefined ?
-            <Center><Spinner /></Center> :
+        {!loaded?
+            <Loading></Loading> :
+
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
-                <CardTypeBadge maxSupply={cardInfo.nft.supply}></CardTypeBadge>
+                <CardTypeBadge maxSupply={cardInfo.nft?cardInfo.nft.supply:0}></CardTypeBadge>
                 <Image marginTop={10} maxHeight={cardHeight / 3.4 + "px"} cursor="pointer" onClick={goToItem} src={cardInfo.meta.image}></Image>
                 <Box cursor="pointer" fontSize="large" textAlign="center" fontWeight="bold" onClick={goToItem}>
                     {cardInfo.meta.name}
@@ -39,7 +42,7 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
 
             </Flex>
         }
-        {cardInfo != undefined && nft == undefined ?
+        {!loaded ?
             <Center><Spinner /></Center> :
             <Box gridRow="1/1" margin="20px" gridColumn="1/1" zIndex="100" overflow="hidden" filter="blur(4px)" height={cardHeight / 2.3 + "px"}>
                 <Image src={cardInfo.meta.image}></Image>

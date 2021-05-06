@@ -1,10 +1,6 @@
 ## TO DO:
-- Check when user doesn't have wallet provider. -> Show modal
 - Social icons links
 - My earnings
-- Change slider images to transparent background
-- Add new nft to a farm
-
 
 ## New
 - 

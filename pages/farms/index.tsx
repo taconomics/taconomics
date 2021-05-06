@@ -43,20 +43,35 @@ export function RecentNfts(props: { taco: TacoProps, itemsSize }) {
     const [nextCount, setCount] = useState(0);
 
     const { nfts } = useAsyncNfts({ minimumNfts: 2, nextCount: nextCount, tacoProps: props.taco }, () => true);//useGetPieces({tacoProps:props.taco,minimumNfts:10,nextCount:1});
-
+    const [cards,setCards] = useState([]);
     useEffect(() => {
         if (nfts.length <= 10) {
             setCount(nextCount + 1);
         }
 
+        setCards(createCards());
     }, [nfts])
+
+    console.log("_Nfts", nfts)
+
+
+    const createCards = (): any[] => {
+        let c = []
+        if (nfts.length > 0) {
+            for (let nft of nfts) {
+                c.push(<Card nft={{erc1155:nft.nft.erc1155,id:nft.nft.id}} tacoProps={props.taco}></Card>)
+            }
+        }
+
+        return c;
+    }
+
+
 
     return (<Grid templateColumns={columnTemplate}>
         <Box gridColumn="2/2" >
             <Box fontSize="x-large" marginBottom={5} fontWeight="bold">Recently added pieces</Box>
-            <HStack flexWrap="wrap" justifyContent={["center", "center", "left"]} spacing={3}>{nfts ? nfts.map((val, index) => {
-                return <Card nft={val.nft} tacoProps={props.taco}></Card>
-            }) : <Box>Loading cards</Box>}</HStack>
+            <HStack flexWrap="wrap" justifyContent={["center", "center", "left"]} spacing={3}>{cards}</HStack>
         </Box>
 
     </Grid>)
