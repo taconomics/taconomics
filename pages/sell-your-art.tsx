@@ -36,12 +36,12 @@ function ContactUs() {
         <Box fontWeight="extrabold" fontSize="lg" marginBottom={5}>Contact us on social media or leave a message.</Box>
         <SellSocialIcons></SellSocialIcons>
         <Formik initialValues={{ name: "" }} onSubmit={(values, actions) => {
+            sendEmail(formref.current);
             onOpen()
-            // sendEmail(formref.current);
+            
         }}>
             {
                 (props) => {
-                    console.log("errors", props)
                     return (
                         <Form ref={formref}>
                             <VStack spacing={"5"}>
@@ -75,7 +75,7 @@ function ThanksModal({ isOpen, onClose }) {
             <ModalCloseButton />
             <ModalBody>
                 <VStack textAlign="center">
-                    <Image src="/icons/taco_icon.svg" width={size} height={size}></Image>
+                    <Image src="/icons/Taco_Icon.svg" width={size} height={size}></Image>
                     <Box fontWeight="bold" fontSize="lg">Thanks for reaching out!</Box>
                     <Box>Our team will get in contact with you as soon as possible.</Box>
                 </VStack>
@@ -96,9 +96,9 @@ function SellSocialContainer(props) {
 }
 
 async function sendEmail(form: HTMLFormElement) {
-    let i = init("user_JkJBZ6GPc0fnHDkELaHFs");
+    let i = init("user_M1xCz5TrkHFpofloEPYfV");
 
-    let response = await emailjs.sendForm("service_1lgrnn9", "template_tj7r92o", form);
+    let response = await emailjs.sendForm("service_tqk4ooo", "template_gv2f9u8", form);
 
     console.log("email response", response);
 

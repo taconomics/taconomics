@@ -64,8 +64,8 @@ function WalletContainer(props: { unifty: Unifty, changer, variant?}) {
     return (
         <Flex width={["auto", "auto", "100%"]} flexDir={["column", "column", "row"]} alignItems={["start", "start", "center"]} justifyContent={"space-between"}>
 
-            {isWhitelist && <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>}
-            <Box fontFamily="Nunito" fontWeight="extrabold"><NextLink href="/my-items">My items</NextLink></Box>
+            {isWhitelist && <Box fontFamily="Nunito" fontWeight="bold"><NextLink href="/collections/manager">Collection manager</NextLink></Box>}
+            <Box fontFamily="Nunito" fontWeight="bold"><NextLink href="/my-items">My items</NextLink></Box>
             <MyEarnings unifty={props.unifty}></MyEarnings>
             <Coins changer={props.changer} unifty={props.unifty}></Coins>
         </Flex>)

@@ -10,7 +10,22 @@ export default function BuyTacoPage(props: TacoProps) {
     const [buyingTaco, setBuyingTaco] = useState(true);
     props.changeTitle("Buy taco")
     return (<Center flexDir="column">
-        {
+        <Center width="100%">
+            <Flex padding={5} backgroundColor="white" alignItems="center" justifyContent="center" shadow="figma" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5}>
+                <TacoSwitch onChange={(e,a) => {
+                    if (a == "taco") {
+                        setBuyingTaco(true);
+                    } else {
+                        setBuyingTaco(false);
+                    }
+
+                }}>
+                    <TacoOption key="taco" name="taco">Stake TACO</TacoOption>
+                    <TacoOption key="salsa" name="salsa">Stake Salsa</TacoOption>
+                </TacoSwitch>
+            </Flex>
+        </Center>
+        {buyingTaco&&
             <VStack marginBottom={5} spacing={5}>
                 <LinkSwap href={"https://matcha.xyz/markets/TACO"} name="Matcha"></LinkSwap>
                 <LinkSwap href={"https://app.uniswap.org/#/swap?outputCurrency=0x00d1793d7c3aae506257ba985b34c76aaf642557"} name="Uniswap"></LinkSwap>
@@ -20,15 +35,20 @@ export default function BuyTacoPage(props: TacoProps) {
                 <LinkSwap href={"https://www.dharma.io/ "} name="Dharma"></LinkSwap>
             </VStack>
         }
+        {!buyingTaco&&
+            <VStack marginBottom={5} spacing={5}>
+                <LinkSwap href={"https://pools.balancer.exchange/#/pool/0xe104a1e9ac002218123e19685bc78291d976b954/"} name="Balancer"></LinkSwap>
+            </VStack>
+        }
 
 
     </Center>)
 }
 
 function LinkSwap(props: { href, name }) {
-    const goToLink = ()=>{
+    const goToLink = () => {
         window.open(props.href, "_blank");
     }
     const color = "figma.orange.700";
-    return (<Box cursor="pointer" border="1px" borderColor={color} _hover={{backgroundColor:"figma.orange.50"}} color={color} padding={5} w={"500px"} textAlign="center" fontWeight="bold" onClick={goToLink}>{props.name}</Box>)
+    return (<Box borderRadius="md" backgroundColor="white" boxShadow="figma" cursor="pointer" border="1px" borderColor={color} _hover={{ backgroundColor: "figma.orange.50" }} color={color} padding={5} w={"500px"} textAlign="center" fontWeight="bold" onClick={goToLink}>{props.name}</Box>)
 }

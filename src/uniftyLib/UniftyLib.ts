@@ -104,11 +104,11 @@ export default class Unifty {
 
     getCoinName(address: string) {
         if (address == this.tacoshiFarm) {
-            return "Lemon"
+            return "Chile"
         }
 
         if (address == this.rabbitFarm) {
-            return "Chile"
+            return "Lemon"
         }
     }
 

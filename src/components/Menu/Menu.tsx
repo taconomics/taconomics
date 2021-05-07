@@ -11,7 +11,7 @@ export default function Menu(props: TacoProps) {
 
     const [isMobile] = useMediaQuery("(max-width: 768px)")
 
-    return (<Flex flexDir="row" w="100%" alignItems="center" justifyContent={"space-between"} fontFamily="Nunito">
+    return (<Flex flexDir="row" w="100%" alignItems={["center"]} justifyContent={["space-between"]} fontFamily="Nunito">
         {isMobile && <MenuItemsMobile taco={props}></MenuItemsMobile>}
         <Logo></Logo>
         {!isMobile && <MenuItems></MenuItems>}
@@ -38,7 +38,7 @@ export function Logo(props: { variant?: LogoVariants }) {
 export function MenuItemsMobile(props: { taco: TacoProps }) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef()
-    return <><Button onClick={onOpen}><Image src="/icons/Burger.svg" layout="intrinsic" width={20} height={20} /></Button>
+    return <><Button border="1px" onClick={onOpen}><Image src="/icons/Burger.svg" layout="intrinsic" width={20} height={20} /></Button>
         <Drawer
             isOpen={isOpen}
             placement="left"

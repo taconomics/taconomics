@@ -245,11 +245,13 @@ function Switch({ c }) {
 function StakeDescription({ isTaco }) {
     const coin = isTaco ? "$TACO" : "$Salsa";
     const give = isTaco ? "lemon" : "chili";
+    const amountGive = isTaco?"2.5":"5.4"
+    const amountStake = isTaco?"100":"1"
     const gives = give + "s";
     return (
         <VStack marginBottom={5} alignItems="start" justifyContent="start">
             <Box fontWeight="bold">Deposit {coin}, earn {gives}, Mint NFTs.</Box>
-            <Box color="gray.300">Staking 1 {coin} token in the pool earns you roughly 1 {give} per day. With enough {gives}, you can mint an exclusive edition NFT.</Box>
+            <Box color="gray.300">Staking {amountStake} {coin} token in the pool earns you roughly {amountGive} {give} per day. With enough {gives}, you can mint an exclusive edition NFT.</Box>
         </VStack>)
 }
 
