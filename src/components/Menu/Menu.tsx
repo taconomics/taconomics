@@ -38,7 +38,7 @@ export function Logo(props: { variant?: LogoVariants }) {
 export function MenuItemsMobile(props: { taco: TacoProps }) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef()
-    return <><Button border="1px" onClick={onOpen}><Image src="/icons/Burger.svg" layout="intrinsic" width={20} height={20} /></Button>
+    return <><Button onClick={onOpen}><Image src="/icons/Burger.svg" layout="intrinsic" width={20} height={20} /></Button>
         <Drawer
             isOpen={isOpen}
             placement="left"

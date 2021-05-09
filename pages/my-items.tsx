@@ -7,23 +7,23 @@ import Loading from "../src/components/Loading";
 import { NoNfts } from "../src/components/NoData";
 import { TacoProps } from "../src/components/TacoLayout";
 import { ICardInfo } from "../src/hooks/useCardInfo";
+import { PieceNFT } from "../src/hooks/useGetPieces";
 import { useMyItems } from "../src/hooks/useMyItems";
 
 export default function myItems(props: TacoProps) {
     const items = useMyItems(props);
-    console.log("My items", items)
     props.changeTitle("My items")
-    const cards = items.myCollections.map((val) => {
-        return val.nfts.map((nft: ICardInfo) => {
-            return <Card nft={nft} tacoProps={props}></Card>
-        })
+    const cards = items.nfts.map((nft: PieceNFT) => {
+        return <Card nft={nft.nft} tacoProps={props}></Card>
     })
     return (<GridContent>
-        <VStack alignItems="start">
+        <VStack alignItems="start" w="100%">
             <Box fontWeight="bold" fontSize="x-large">My Items</Box>
+            <Center w="100%">{!items.loaded && <Loading color="figma.orange.500" customText="Searching your items, please wait..."></Loading>}</Center>
+            <HStack alignItems="center" justifyContent="center" wrap="wrap">{cards}</HStack>
+            {items.nfts.length <= 0 && items.loaded && <NoNfts></NoNfts>}
+            
 
-                {items.loaded ? items.myCollections.length > 0 ? <HStack alignItems="center" wrap="wrap">{cards}</HStack> : <NoNfts></NoNfts> : <Loading></Loading>}
-  
 
         </VStack>
     </GridContent>)

@@ -19,7 +19,7 @@ export interface SearchConfig {
     minimumNfts: number,
     tacoProps: TacoProps;
 }
-interface PieceNFT {
+export interface PieceNFT {
     nft: IFarmData,
     metaUri: string
 }

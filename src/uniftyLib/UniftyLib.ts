@@ -778,6 +778,49 @@ export default class Unifty {
     /**
      * Nfts
      */
+     async getErc1155(address, index){
+        await this.sleep(this.sleep_time);
+        let erc1155 = await this.genesis.methods.getPool(address, index).call({from:this.account});
+        let meta = await this.getErc1155Meta(erc1155);
+        let _pool = {erc1155: erc1155, contractURI: meta.contractURI, name: meta.name, symbol: meta.symbol};
+        return _pool;
+    };
+     async getErc1155Length(address){
+        await this.sleep(this.sleep_time);
+        return await this.genesis.methods.getPoolsLength(address).call({from:this.account});
+    };
+     async getNftsByAddress(address, erc1155Address){
+
+        await this.sleep(this.sleep_time);
+
+        let erc1155 = new this.web3.eth.Contract( erc1155ABI, erc1155Address, {from:this.account} );
+
+        let events = await erc1155.getPastEvents('TransferSingle', {
+            filter: {
+                _to: address
+            },
+            fromBlock: 0,
+            toBlock: 'latest'
+        });
+
+        let nfts = [];
+
+        if(Array.isArray(events)){
+
+            events = events.reverse();
+
+            for(let i = 0; i < events.length; i++){
+
+                if(typeof events[i] == 'object') {
+                    if(!nfts.includes(events[i].returnValues._id)) {
+                        nfts.push(events[i].returnValues._id);
+                    }
+                }
+            }
+        }
+
+        return nfts;
+    };
 
     async getMyNfts(erc1155Address) {
         try {

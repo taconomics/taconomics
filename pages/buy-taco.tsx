@@ -20,8 +20,8 @@ export default function BuyTacoPage(props: TacoProps) {
                     }
 
                 }}>
-                    <TacoOption key="taco" name="taco">Stake TACO</TacoOption>
-                    <TacoOption key="salsa" name="salsa">Stake Salsa</TacoOption>
+                    <TacoOption key="taco" name="taco">Buy TACO</TacoOption>
+                    <TacoOption key="salsa" name="salsa">Make SALSA</TacoOption>
                 </TacoSwitch>
             </Flex>
         </Center>

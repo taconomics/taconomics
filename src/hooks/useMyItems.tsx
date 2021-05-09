@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import myItems from "../../pages/my-items";
 import { TacoProps } from "../components/TacoLayout";
 import { getCardInfo, ICardInfo } from "./useCardInfo";
+import { PieceNFT, useAsyncNfts, useGetPieces } from "./useGetPieces";
 
 export interface ICollection{
     erc1155:string;
@@ -12,40 +13,36 @@ export interface ICollection{
 }
 
 export function useMyItems(taco:TacoProps){
-    const [myCollections,setMyCollections] = useState<ICollection[]>([]);
-    const [loaded,setLoaded] = useState(false);
+    //const [loaded,setLoaded] = useState(false);
+    const [newNfts,setNfts] = useState<PieceNFT[]>([]);
 
-    console.log(myCollections)
+    const {nfts,loaded} = useAsyncNfts({tacoProps:taco,minimumNfts:30,nextCount:0},()=>true)
+
+    console.log(nfts)
 
     useEffect(()=>{
         async function func(){
-            setLoaded(false);
+           // setLoaded(false);
             await taco.unifty.isConnected();
-            const length = await taco.unifty.getMyErc1155Length();
-            const cols:ICollection[] = []
-            for(let a=0;a<length;a++){
-                const colection = await taco.unifty.getMyErc1155(a)
-               
-                console.log(colection);
-                const nfts:ICardInfo[] = []
-
-                const mynfts = await taco.unifty.getMyNfts(colection.erc1155)
-                for(const index of mynfts){
-                    const nft = await taco.unifty.getNft(colection.erc1155,index)
-                    const info = await getCardInfo(taco,colection.erc1155,index)
-                    nfts.push(info)
-                    //console.log("NFT",nft)
+           // const length = await taco.unifty.getMyErc1155Length();
+            const p:PieceNFT[] = []
+            for(let nft of nfts){
+                let balanceof = await taco.unifty.balanceof(nft.nft.erc1155, taco.unifty.account,nft.nft.id);
+                console.log("balance of",balanceof);
+                if(balanceof>0){
+                    p.push(nft);
                 }
-
-                cols.push({...colection,nfts});
-                
             }
-            setMyCollections(cols);
-            setLoaded(true)
+            if(p.length>newNfts.length){
+                setNfts(p); 
+                //setLoaded(true)
+            }
+           
+           
             
         }
         func()
-    },[taco.changer])
+    },[taco.changer,nfts])
 
-    return {myCollections,loaded}
+    return {nfts:newNfts,loaded}
 }
