@@ -10,11 +10,13 @@ import Carousel from 'react-elastic-carousel'
 import { BePartTacoCommunity } from "..";
 import GridContent from "../../src/components/GridContent";
 import { IMetaNft } from "../../src/hooks/useCardInfo";
+import { useAsyncNfts, useGetPieces } from "../../src/hooks/useGetPieces";
+import Loading from "../../src/components/Loading";
 
 export default function Collections(props: TacoProps) {
     props.changeTitle("Collections")
     return (<>
-        <AllCollections changer={props.changer} unifty={props.unifty}></AllCollections>
+        <AllCollections taco={props}></AllCollections>
         <BePartTacoCommunity></BePartTacoCommunity>
     </>)
 }
@@ -36,30 +38,33 @@ export async function getFeaturedCollections(unifty: Unifty) {
 
 }
 
-export function AllCollections(props: { unifty: Unifty, changer }) {
+export function AllCollections(props: {taco:TacoProps}) {
     let featuredCollections = [];
-    let [cards, setCards] = useState([]);
-    useEffect(() => {
+    let [cards, setCards] = useState<string[]>([]);
 
-        const func = async () => {
-            featuredCollections = await getFeaturedCollections(props.unifty);
-            let mCards = []
-            if (featuredCollections) {
-                for (let i of featuredCollections) {
-                    mCards.push(<CollectionCard changer={props.changer} address={i} key={i} unifty={props.unifty}></CollectionCard>)
-                }
+    const search = useAsyncNfts({tacoProps:props.taco,minimumNfts:30,nextCount:0},()=>true);
+    useEffect(()=>{
+        const newCards = [...cards];
+        for(let nft of search.nfts){
+            if(newCards.indexOf(nft.nft.erc1155)==-1){
+                newCards.push(nft.nft.erc1155);
             }
-
-            setCards(mCards);
+            if(newCards.length>cards.length){
+                setCards(newCards);
+            }
+            
         }
-        func();
-    }, [props.changer])
+
+    },[search.nfts])
 
     return (<GridContent>
         <Box fontWeight="bold" marginBottom={5} fontSize="x-large">All Collections</Box>
+       <Center marginY={5}> {!search.loaded&&<Loading color="figma.orange.500" customText="Loading all collections, please wait."></Loading>}</Center>
         <Flex w="100%" flexWrap="wrap">
 
-            {cards}
+            {cards.map((value,index)=>{
+                return <CollectionCard changer={props.taco.changer} address={value} key={index} unifty={props.taco.unifty}></CollectionCard>
+            })}
         </Flex>
     </GridContent>
     )
@@ -120,17 +125,6 @@ export function CollectionCard(props: { address, unifty: Unifty, changer }) {
             setMeta(realmeta);
         }
         func();
-        /* if (address != undefined) {
-             
-             (unifty as Unifty).getErc1155Meta(address).then(metaUri => {
- 
-                 fetch(metaUri.contractURI).then(r => r.json()).then(e => {
-                     setMeta(e);
-                 }).catch(e => { console.error(e) })
- 
-             })
- 
-         }*/
 
     }, [changer, address])
 
