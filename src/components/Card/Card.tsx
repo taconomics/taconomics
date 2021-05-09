@@ -11,6 +11,7 @@ import { TacoProps } from '../TacoLayout';
 import { FaRegSadTear } from 'react-icons/fa'
 import { CardButton } from './CardButton';
 import Loading from '../Loading';
+import Twemoji from 'react-twemoji'
 
 export const cardWidth = 240;
 export const cardHeight = 300;
@@ -19,19 +20,19 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
     const nft = props.nft ? props.nft : { erc1155: undefined, id: undefined };
     const unifty = props.tacoProps.unifty;
     const [hover, setHover] = useState(false);
-    let {cardInfo,loaded} = useCardInfo(props.tacoProps, nft.erc1155, nft.id, { useExtras: true, useFarmData: true, useMeta: true })
+    let { cardInfo, loaded } = useCardInfo(props.tacoProps, nft.erc1155, nft.id, { useExtras: true, useFarmData: true, useMeta: true })
     const router = useRouter();
     const goToItem = () => {
         router.push("/items/" + cardInfo.erc1155 + "/" + cardInfo.id)
     }
 
 
-    return (<EmptyCard setHover={props.canEdit?setHover:undefined} valid={true}>
-        {!loaded?
+    return (<EmptyCard setHover={props.canEdit ? setHover : undefined} valid={true}>
+        {!loaded ?
             <Loading></Loading> :
 
             <Flex padding="5px" width={cardWidth + "px"} height={cardHeight + "px"} justifyContent="space-between" flexDirection="column" alignItems="center" gridRow="1/2" zIndex="101" gridColumn="1/1">
-                <CardTypeBadge maxSupply={cardInfo.nft?cardInfo.nft.supply:0}></CardTypeBadge>
+                <CardTypeBadge maxSupply={cardInfo.nft ? cardInfo.nft.supply : 0}></CardTypeBadge>
                 <Image marginTop={10} maxHeight={cardHeight / 3.4 + "px"} cursor="pointer" onClick={goToItem} src={cardInfo.meta.image}></Image>
                 <Box cursor="pointer" fontSize="large" textAlign="center" fontWeight="bold" onClick={goToItem}>
                     {cardInfo.meta.name}
@@ -48,7 +49,7 @@ export default function Card(props: { nft: any, canEdit?: boolean, tacoProps: Ta
                 <Image src={cardInfo.meta.image}></Image>
             </Box>}
         {props.canEdit &&
-            <EditCard id={nft.id} height={cardHeight} hover={hover?hover:undefined}></EditCard>
+            <EditCard id={nft.id} height={cardHeight} hover={hover ? hover : undefined}></EditCard>
         }
     </EmptyCard>)
 }
@@ -97,9 +98,11 @@ function FarmInfo(props: { CardInfo: ICardInfo }) {
 }
 
 function CardTypeBadge({ maxSupply }) {
-    return (<Flex flexDirection="row" backgroundColor="white" borderRadius="md" padding="5px" color="#41b4e6" fontWeight="extrabold">
-        <Image marginRight={1} src="/icons/Diamante_Icon.svg"></Image>
-        <Box fontSize="small">{getCardType(maxSupply).toUpperCase()}</Box>
+    const cardType = getCardType(maxSupply)
+    return (<Flex flexDirection="row" backgroundColor="white" alignItems="center" alignContent="center" borderRadius="md" padding="5px" color="#41b4e6" fontWeight="extrabold">
+
+        <Box marginRight={1}><Twemoji options={{ className: 'twemoji', size: "36x36" }}>{CardEmoji[cardType]}</Twemoji></Box>
+        <Box fontSize="small">{cardType.toUpperCase()}</Box>
     </Flex>)
 }
 
@@ -108,6 +111,13 @@ export const CardTypes = {
     rare: 10,
     regular: 100,
     common: 150
+}
+export const CardEmoji = {
+    legendary: "💎",
+    rare: "🌟",
+    regular: "🎨",
+    common: "📟",
+    unknown:"❓"
 }
 
 export function getCardType(maxSupply) {
