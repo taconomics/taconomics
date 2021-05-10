@@ -10,7 +10,7 @@ function SocialIconsSX(props: { iconColor?, size?, Container?}) {
     size = size ? size : "20px"
     Container = Container ? Container : <Box></Box>
     return (<Flex {...props}>
-        <a target="_blank" href="https://t.me/taconomics101" rel="noopener noreferrer"><LinkBox>
+        <a target="_blank" href="https://t.me/taconomics" rel="noopener noreferrer"><LinkBox>
         <Container><FaTelegramPlane color={iconColor} size={size}/></Container></LinkBox></a>
         <a target="_blank" href="http://twitter.com/taconomics101" rel="noopener noreferrer"><LinkBox>
         <Container><AiOutlineTwitter color={iconColor} size={size}></AiOutlineTwitter></Container></LinkBox></a>
