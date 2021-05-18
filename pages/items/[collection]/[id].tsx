@@ -81,7 +81,7 @@ function ItemDescription(props: { taco: TacoProps, cardInfo: ICardInfo, loaded }
                         <Box fontSize="xx-large" fontWeight="bold" marginRight={5} color="figma.darkgray">{props.cardInfo.meta.name}</Box>
                         <HStack fontSize="md" color="gray.500"><Box fontWeight="bold">{props.cardInfo.extras ? props.cardInfo.extras.balanceOf : 0}/{props.cardInfo.extras ? props.cardInfo.farmData.supply : 0}</Box> <Box>available</Box></HStack>
                     </HStack>
-                    <HStack><Image src={"/icons/" + "Lemon" + "_Icon.svg"} h={45}></Image>
+                    <HStack><Image src={"/icons/" + props.cardInfo.extras.coin + "_Icon.svg"} h={45}></Image>
                         <Box fontWeight="bold" fontSize="xx-large" color="figma.darkgray">{props.cardInfo.extras ? props.cardInfo.extras.pointsPrice : 0}</Box>
                         {props.cardInfo.farmData && Number(props.cardInfo.farmData.prices.totalFee) > 0 &&
                             <HStack fontSize="lg" fontWeight="bold">
