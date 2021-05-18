@@ -60,10 +60,11 @@ function FullImage(props: { cardInfo: ICardInfo,loaded }) {
 function ItemDescription(props: { taco: TacoProps, cardInfo: ICardInfo, loaded }) {
     const [isHoverBack, setHoverBack] = useState(false)
     console.log("Item description", props.cardInfo.farmData);
+    console.log("Extras", props.cardInfo.extras);
 
     return (
         <>
-            {props.loaded && <VStack flexGrow={4} alignItems="start" paddingLeft={5}>
+            {props.loaded && props.cardInfo.extras && <VStack flexGrow={4} alignItems="start" paddingLeft={5}>
                 <HStack cursor="pointer" fontWeight="semibold" transition="color .5s" color={isHoverBack ? "figma.orange.500" : "gray.500"} 
                 onClick={()=>{router.push("/available-pieces")}}
                 onPointerEnter={()=>{setHoverBack(true)}}

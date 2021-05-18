@@ -1,7 +1,7 @@
 import { Box, chakra, Flex, LinkBox,Image } from "@chakra-ui/react";
 import React from "react";
-import { AiOutlineInstagram, AiOutlineTwitter, AiOutlineGithub } from 'react-icons/ai'
-import {FaTelegramPlane} from 'react-icons/fa'
+import { AiOutlineInstagram, AiOutlineTwitter, AiOutlineGithub} from 'react-icons/ai'
+import {FaTelegramPlane, FaDiscord} from 'react-icons/fa'
 import NextLink from 'next/link'
 
 function SocialIconsSX(props: { iconColor?, size?, Container?}) {
@@ -12,6 +12,8 @@ function SocialIconsSX(props: { iconColor?, size?, Container?}) {
     return (<Flex {...props}>
         <a target="_blank" href="https://t.me/taconomics" rel="noopener noreferrer"><LinkBox>
         <Container><FaTelegramPlane color={iconColor} size={size}/></Container></LinkBox></a>
+        <a target="_blank" href="https://discord.gg/WHN6SwrPU9" rel="noopener noreferrer"><LinkBox>
+        <Container><FaDiscord color={iconColor} size={size}/></Container></LinkBox></a>
         <a target="_blank" href="http://twitter.com/taconomics101" rel="noopener noreferrer"><LinkBox>
         <Container><AiOutlineTwitter color={iconColor} size={size}></AiOutlineTwitter></Container></LinkBox></a>
         <a target="_blank" href="https://taconomics.medium.com" rel="noopener noreferrer">
