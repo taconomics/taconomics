@@ -28,8 +28,8 @@ export default function BuyTacoPage(props: TacoProps) {
         {buyingTaco&&
             <VStack marginBottom={5} spacing={5}>
                 <LinkSwap href={"https://matcha.xyz/markets/TACO"} name="Matcha"></LinkSwap>
-                <LinkSwap href={"https://app.uniswap.org/#/swap?outputCurrency=0x00d1793d7c3aae506257ba985b34c76aaf642557"} name="Uniswap"></LinkSwap>
-                <LinkSwap href={"https://balancer.exchange/#/swap/0x00d1793d7c3aae506257ba985b34c76aaf642557"} name="Balancer"></LinkSwap>
+                {/* <LinkSwap href={"https://app.uniswap.org/#/swap?outputCurrency=0x00d1793d7c3aae506257ba985b34c76aaf642557"} name="Uniswap"></LinkSwap> */}
+                {/* <LinkSwap href={"https://balancer.exchange/#/swap/0x00d1793d7c3aae506257ba985b34c76aaf642557"} name="Balancer"></LinkSwap> */}
                 <LinkSwap href={"https://app.1inch.io/#/1/swap/TACO"} name="1Inch"></LinkSwap>
                 <LinkSwap href={"https://app.zerion.io/invest/asset/TACO-0x00d1793d7c3aae506257ba985b34c76aaf642557"} name="Zerion"></LinkSwap>
                 <LinkSwap href={"https://www.dharma.io/ "} name="Dharma"></LinkSwap>

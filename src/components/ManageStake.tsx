@@ -236,17 +236,17 @@ function Switch({ c }) {
             <Flex padding={5} backgroundColor="white" alignItems="center" justifyContent="center" shadow="figma" width={["80%", "60%", "30vw"]} borderRadius="lg" marginBottom={5}>
                 <TacoSwitch onChange={c}>
                     <TacoOption key="taco" name="taco">Stake TACO</TacoOption>
-                    <TacoOption key="salsa" name="salsa">Stake Salsa</TacoOption>
+                    <TacoOption key="salsa" name="salsa">Stake SALSA</TacoOption>
                 </TacoSwitch>
             </Flex>
         </Center>)
 }
 
 function StakeDescription({ isTaco }) {
-    const coin = isTaco ? "$TACO" : "$Salsa";
-    const give = isTaco ? "lemon" : "chili";
-    const amountGive = isTaco?"2.5":"5.4"
-    const amountStake = isTaco?"100":"1"
+    const coin = isTaco ? "$TACO" : "$SALSA";
+    const give = isTaco ? "lemon" : "chile";
+    const amountGive = isTaco? "2.5":"5.4"
+    const amountStake = isTaco? "100":"1"
     const gives = give + "s";
     return (
         <VStack marginBottom={5} alignItems="start" justifyContent="start">
@@ -256,10 +256,10 @@ function StakeDescription({ isTaco }) {
 }
 
 function AmountStaked(props: { isTaco, unifty: Unifty, minmax, staked, farmLeft }) {
-    const coin = props.isTaco ? "$TACO" : "$Salsa";
+    const coin = props.isTaco ? "$TACO" : "$SALSA";
 
     return (<Box marginTop={5}>
         <Box display="inline" color="gray.600">You currently are staking <chakra.b marginX={1} fontWeight="bold">{props.staked} {coin}</chakra.b>
-            - The maximum is {props.farmLeft.split(".")[0]} {coin} and minimun is {props.minmax.min}.</Box>
+            - The maximum is {props.minmax.max} {coin} and minimun is {props.minmax.min}.</Box>
     </Box>)
 }

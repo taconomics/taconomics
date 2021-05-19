@@ -78,8 +78,8 @@ function Coins(props: { unifty: Unifty, changer }) {
     const [lemonBalance, setLemons] = useState(0);
     async function func() {
         let connected = await props.unifty.isConnected();
-        let chilesPoints = await props.unifty.farmPointsEarned(props.unifty.tacoshiFarm, props.unifty.account);
-        let lemonPoints = await props.unifty.farmPointsEarned(props.unifty.rabbitFarm, props.unifty.account);
+        let chilesPoints = await props.unifty.farmPointsEarned(props.unifty.rabbitFarm, props.unifty.account);
+        let lemonPoints = await props.unifty.farmPointsEarned(props.unifty.tacoshiFarm, props.unifty.account);
         setChiles(Math.ceil(chilesPoints));
         setLemons(Math.ceil(lemonPoints));
     }
@@ -117,8 +117,8 @@ function ManageStakeMenu(props: { unifty: Unifty, changer }) {
     useEffect(() => {
         async function name() {
             await props.unifty.isConnected();
-            let tacoStake = await props.unifty.farmBalanceOf(props.unifty.rabbitFarm, props.unifty.account)
-            let salsaStake = await props.unifty.farmBalanceOf(props.unifty.tacoshiFarm, props.unifty.account)
+            let tacoStake = await props.unifty.farmBalanceOf(props.unifty.tacoshiFarm, props.unifty.account)
+            let salsaStake = await props.unifty.farmBalanceOf(props.unifty.rabbitFarm, props.unifty.account)
 
             setTaco(tacoStake);
             setSalsa(salsaStake);
@@ -129,8 +129,8 @@ function ManageStakeMenu(props: { unifty: Unifty, changer }) {
     let iconSize = "20px"
     let marginTop = "20px"
     return (<Flex flexDir="column" alignItems="center">
-        <Flex marginTop={marginTop}><Coin balance={taco} iconSize={iconSize} img={Taco_Icon} spacing={0} >Stacked</Coin></Flex>
-        <Flex marginTop={marginTop}><Coin balance={salsa} iconSize={iconSize} img={Molcajete_Icon} spacing={0} >Stacked</Coin></Flex>
+        <Flex marginTop={marginTop}><Coin balance={taco} iconSize={iconSize} img={Taco_Icon} spacing={0} >Staked</Coin></Flex>
+        <Flex marginTop={marginTop}><Coin balance={salsa} iconSize={iconSize} img={Molcajete_Icon} spacing={0} >Staked</Coin></Flex>
         <Button marginTop="20px" onClick={onOpen} colorScheme="blackButton"><Image paddingRight={2} height={5} src={Cubiertos_Icon}></Image>Manage Stake</Button>
         <ManageStake unifty={props.unifty} isOpen={isOpen} onClose={onClose} onOpen={onOpen}></ManageStake>
     </Flex>)

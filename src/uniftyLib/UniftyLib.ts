@@ -96,18 +96,18 @@ export default class Unifty {
             this.farmShop = new this.web3.eth.Contract(farmShopABI, '0x3E58801d8F3379bb5090Dc742e60614bC94b1bd8', { from: this.account });
             this.account = '';
             this.defaultProxyRegistryAddress = '0xa5409ec958c83c3f309868babaca7c86dcb077c1'; // opensea
-            this.rabbitFarm = "0xA6fBbE582D41c6ebbb4ad5803793dcce8662C910";
-            this.tacoshiFarm = "0xe567c8eE1C362C6CfCb217e43aCfd0F68dC456F2";
+            this.rabbitFarm = "0xe567c8eE1C362C6CfCb217e43aCfd0F68dC456F2";
+            this.tacoshiFarm = "0xA6fBbE582D41c6ebbb4ad5803793dcce8662C910";
 
         }
     }
 
     getCoinName(address: string) {
-        if (address == this.tacoshiFarm) {
+        if (address == this.rabbitFarm) {
             return "Chile"
         }
 
-        if (address == this.rabbitFarm) {
+        if (address == this.tacoshiFarm) {
             return "Lemon"
         }
     }
@@ -139,7 +139,7 @@ export default class Unifty {
         }
     }
     getFarmAddress(isTaco) {
-        return isTaco ? this.rabbitFarm : this.tacoshiFarm;
+        return isTaco ? this.tacoshiFarm : this.rabbitFarm;
     }
 
     async setAccount() {

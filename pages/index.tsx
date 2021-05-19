@@ -44,8 +44,8 @@ export function SliderInfo() {
 
   return (<>
     <Box flexDir="row" gridColumn="2 / 2" width={{ lg: "100%", md: "100%" }} zIndex={1000} fontSize="x-large" fontWeight="bold">
-      {page == 0 && <Box flexDir={["column", "column", "row"]}><span>Do you want to buy unique pieces of Tacoart? </span><span style={{color:"gray"}}>(Staking Taco)</span></Box>}
-      {page == 1 && <Box flexDir={["column", "column", "row"]}><span>Do you want to buy unique pieces of Tacoart? </span><span style={{color:"gray"}}>(Staking Salsa)</span></Box>}
+      {page == 0 && <Box flexDir={["column", "column", "row"]}><span>Do you want to buy unique pieces of Tacoart? </span><span style={{color:"gray"}}>(Staking TACO)</span></Box>}
+      {page == 1 && <Box flexDir={["column", "column", "row"]}><span>Do you want to buy unique pieces of Tacoart? </span><span style={{color:"gray"}}>(Staking SALSA)</span></Box>}
       {page == 2 && <Flex flexDir={["column", "column", "row"]}><Box>Do you want to sell Tacoart? </Box></Flex>}
     </Box>
     <Center gridColumn="2 / 2" marginBottom="20px">
@@ -62,7 +62,7 @@ export function SliderInfo() {
         <SliderPage>
           <SliderItem title="1. Buy $TACO" image="/img/slider/buy_tacoT.svg"></SliderItem>
           <SliderItem title="2. Make salsa" image="/img/slider/make_salsaT.svg"></SliderItem>
-          <SliderItem title="3. Stake Salsa and obtain Chiles" image="/img/slider/stake_salsaT.svg" subtitle="Staking 1 $Salsa token in the pool earns you roughly 5.4 chile per day"></SliderItem>
+          <SliderItem title="3. Stake SALSA and obtain Chiles" image="/img/slider/stake_salsaT.svg" subtitle="Staking 1 $SALSA token in the pool earns you roughly 5.4 chile per day"></SliderItem>
           <SliderItem title="4. Buy Tacoart using your Chiles" image="/img/slider/buy_tacoartT.svg"></SliderItem>
         </SliderPage>
 

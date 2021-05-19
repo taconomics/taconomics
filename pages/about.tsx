@@ -21,7 +21,7 @@ function WhatIsTaconomics() {
         <VStack justifyContent="center" alignItems="center">
             <Box fontSize="x-large" fontWeight="bold">What is Taconomics?</Box>
             <Box>
-                <Box paddingY={5}>Taconomics is a dapp that seeks to create a launchpad so that Latino artists can make themselves known through their art. </Box>
+                <Box paddingY={5}>Taconomics is a Dapp that seeks to create a launchpad so that Latino artists can make themselves known through their art. </Box>
                 <Box>We seek to be a "fair" art gallery in the sense that both artists and the platform can grow together, the artists making their
                     works known and the platform establishing itself in the Ethereum ecosystem.</Box>
             </Box>
@@ -35,7 +35,7 @@ function WhatsSpecial() {
         <Flex flexWrap="wrap" justifyContent="center" alignItems="center">
             <SpecialIcon image="/icons/Wale_Icon.svg" title="Fair" description="No pre-sale discount, no whales." color="#00AEE0"></SpecialIcon>
             <SpecialIcon image="/icons/Palm_Icon.svg" title="Fixed" description="No new $TACO can be minted." color="#FF6C63"></SpecialIcon>
-            <SpecialIcon image="/icons/Fire_Icon.svg" title="Deflatory" description="$TACO has a deflatory mechanism." color="#F3D158"></SpecialIcon>
+            <SpecialIcon image="/icons/Fire_Icon.svg" title="Deflationary" description="$TACO has a deflatorionary mechanism." color="#F3D158"></SpecialIcon>
             <SpecialIcon image="/icons/Taco_Info_Icon.svg" title="Taco inspired" description="Artist's inspired by TACO will be dropping art to the farm." color="#F3D158"></SpecialIcon>
             <SpecialIcon image="/icons/Check_Icon.svg" title="Verifable" description="Smart contracts can be audited." color="#00AEE0"></SpecialIcon>
             <SpecialIcon image="/icons/Lock_Icon.svg" title="Locked" description="Liquidity is locked in the $TACO Uniswap pool." color="#FF6C63"></SpecialIcon>
@@ -86,9 +86,8 @@ function SmartContracts() {
         </Flex>
         <Contract name="TacoToken" dir="0x00D1793D7C3aAE506257Ba985b34C76AaF642557"></Contract>
         <Contract name="Salsa" dir="0x82e5aec4e37b37fca34925c13429506209a98536"></Contract>
-        <Contract name="Tacoshi's Quest" dir="0xD5Dfb159788856f9fd5F897509d5a68b7b571Ea8"></Contract>
-        <Contract name="Tacoshi's Rabbit Hole" dir="0xA6fBbE582D41c6ebbb4ad5803793dcce8662C910"></Contract>
-        <Contract name="Tacoshi's Farm" dir="0xe567c8eE1C362C6CfCb217e43aCfd0F68dC456F2"></Contract>
+        <Contract name="Tacoshi's Farm" dir="0xA6fBbE582D41c6ebbb4ad5803793dcce8662C910"></Contract>
+        <Contract name="Tacoshi's Rabbit Hole" dir="0xe567c8eE1C362C6CfCb217e43aCfd0F68dC456F2"></Contract>
 
     </Flex>)
 }
